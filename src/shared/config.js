@@ -36,8 +36,8 @@ const defaults = {
   // 'mock'   → canned demo output. Works now, no key. UI fully testable.
   // 'gemini' → call Gemini directly from the browser (demo only — exposes key).
   // 'proxy'  → call YOUR backend, which holds the key (recommended).
-  aiProvider: 'mock',
-  geminiApiKey: '',                          // ← add Gemini API key
+  aiProvider: 'proxy',
+  geminiApiKey: '',                          // unused in proxy mode — key lives in api/.env on the server
   geminiModel: 'gemini-1.5-flash',
   geminiEndpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
   aiProxyEndpoint: '/api/summarize',         // ← your serverless route (proxy mode)
