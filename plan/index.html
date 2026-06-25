@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tinig sa Liwanag — Full Project Document</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Design Tokens */
+    :root {
+      --sun-yellow: #F7C948;
+      --sun-light: #FFF5CC;
+      --sky-blue: #2D6BE4;
+      --ink: #1A1A2E;
+      --paper: #FAFAF5;
+      --muted: #6B7280;
+      --divider: #E5E7EB;
+      --success: #16A34A;
+      --warning: #D97706;
+      --danger: #DC2626;
+
+      /* Typography scale */
+      --font-size-base: 18px;
+      --font-size-large: 22px;
+      --font-size-xlarge: 26px;
+
+      /* Reading spacing options */
+      --letter-spacing-normal: normal;
+      --letter-spacing-medium: 0.05em;
+      --letter-spacing-high: 0.12em;
+      
+      --transition-speed: 0.2s;
+    }
+
+    /* Base Elements */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: var(--font-size-base);
+      line-height: 1.75;
+      background-color: var(--paper);
+      color: var(--ink);
+      transition: font-size var(--transition-speed), letter-spacing var(--transition-speed), font-family var(--transition-speed);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Dyslexic and Reader Customizations */
+    body.font-opendyslexic {
+      font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+    }
+    body.font-size-large-body {
+      font-size: var(--font-size-large);
+    }
+    body.font-size-xlarge-body {
+      font-size: var(--font-size-xlarge);
+    }
+    body.spacing-medium-body {
+      letter-spacing: var(--letter-spacing-medium);
+    }
+    body.spacing-high-body {
+      letter-spacing: var(--letter-spacing-high);
+    }
+
+    /* Fallback OpenDyslexic implementation if font file is locally available */
+    @font-face {
+      font-family: 'OpenDyslexic';
+      src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype'),
+           url('/fonts/OpenDyslexic-Regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* Header & Controls */
+    header {
+      background-color: var(--ink);
+      color: var(--paper);
+      padding: 1.5rem 2rem;
+      border-bottom: 5px solid var(--sun-yellow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .brand h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.2rem;
+      color: var(--sun-yellow);
+      line-height: 1.1;
+    }
+
+    .brand p {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-top: 0.2rem;
+    }
+
+    .accessibility-toolbar {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toolbar-group label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--sun-yellow);
+      font-weight: bold;
+    }
+
+    .toolbar-group select {
+      background-color: var(--ink);
+      color: var(--paper);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .toolbar-group select:focus {
+      border-color: var(--sun-yellow);
+    }
+
+    /* Layout structure */
+    .layout-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+    }
+
+    /* Sidebar Navigation */
+    aside {
+      background-color: #F0F0EA;
+      border-right: 1px solid var(--divider);
+      padding: 2.5rem 1.5rem;
+      position: sticky;
+      top: 92px; /* height of header */
+      height: calc(100vh - 92px);
+      overflow-y: auto;
+    }
+
+    .toc-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    aside ul {
+      list-style: none;
+    }
+
+    aside li {
+      margin-bottom: 0.4rem;
+    }
+
+    aside a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: block;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+      line-height: 1.3;
+    }
+
+    aside a:hover {
+      background-color: var(--sun-light);
+    }
+
+    aside a.active {
+      background-color: var(--sun-yellow);
+      color: var(--ink);
+    }
+
+    /* Main Content Area */
+    main {
+      padding: 3rem 4rem;
+      background-color: var(--paper);
+    }
+
+    section {
+      margin-bottom: 4.5rem;
+      scroll-margin-top: 120px;
+    }
+
+    section:not(:last-child) {
+      border-bottom: 2px solid var(--divider);
+      padding-bottom: 4rem;
+    }
+
+    .section-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--sky-blue);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .subsection-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      color: var(--ink);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 800;
+    }
+
+    .subtitle-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      margin-bottom: 2.5rem;
+      padding: 0.75rem 1rem;
+      background-color: var(--sun-light);
+      border-radius: 6px;
+      border-left: 4px solid var(--sun-yellow);
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      max-width: 75ch;
+    }
+
+    /* Feature Presentation Cards */
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--divider);
+      padding: 2.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .feature-card.star {
+      border: 2px solid var(--sun-yellow);
+      background-color: #FCFCF9;
+    }
+
+    .feature-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: var(--sun-yellow);
+      color: var(--ink);
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.35rem 1.25rem;
+      border-bottom-left-radius: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .feature-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--divider);
+      padding-bottom: 0.75rem;
+    }
+
+    .feature-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .feature-card-route {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: bold;
+      background-color: var(--sun-light);
+      color: var(--ink);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .feature-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--divider);
+    }
+
+    .feature-meta-item {
+      font-size: 0.85rem;
+    }
+
+    .feature-meta-label {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    /* Lists styling */
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+      max-width: 75ch;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Table formatting */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--divider);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    th {
+      background-color: var(--ink);
+      color: var(--paper);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) {
+      background-color: #FAFAF8;
+    }
+
+    /* Callouts */
+    .callout {
+      padding: 1.5rem;
+      border-left: 5px solid var(--sky-blue);
+      background-color: #F0F4FC;
+      border-radius: 0 8px 8px 0;
+      margin: 1.75rem 0;
+      max-width: 75ch;
+    }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background-color: #FFF9E6;
+    }
+
+    .callout.danger {
+      border-left-color: var(--danger);
+      background-color: #FDF2F2;
+    }
+
+    .callout.success {
+      border-left-color: var(--success);
+      background-color: #F2FAF5;
+    }
+
+    .callout-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Palette Swatches */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .swatch-card {
+      border: 1px solid var(--divider);
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+    .swatch-color {
+      height: 90px;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .swatch-details {
+      padding: 1rem;
+    }
+
+    .swatch-label {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .swatch-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .swatch-desc {
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Monospace formatting */
+    pre {
+      background-color: var(--ink);
+      color: #E2E8F0;
+      padding: 1.5rem 1.75rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin: 1.75rem 0;
+      border-left: 4px solid var(--sun-yellow);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #EAEAEA;
+      color: var(--ink);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+
+    pre code {
+      background-color: transparent;
+      color: inherit;
+      padding: 0;
+      font-weight: normal;
+    }
+
+    /* Timeline Tasks Checklist */
+    .timeline-day {
+      background: white;
+      border: 1px solid var(--divider);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.01);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2px solid var(--sun-yellow);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .day-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .day-goal {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .checklist {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 6px;
+      margin-bottom: 0.25rem;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .task-item:hover {
+      background-color: var(--sun-light);
+    }
+
+    .task-item input[type="checkbox"] {
+      margin-top: 0.35rem;
+      width: 1.1rem;
+      height: 1.1rem;
+      cursor: pointer;
+      accent-color: var(--ink);
+    }
+
+    .task-content {
+      flex: 1;
+      font-size: 0.95rem;
+    }
+
+    .task-item.completed .task-content {
+      text-decoration: line-through;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .task-notes {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Execution Plan split */
+    .split-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 1.5rem 0;
+    }
+
+    .split-col {
+      background: white;
+      border: 1px solid var(--divider);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+    }
+
+    .split-col-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--ink);
+      border-bottom: 2px solid var(--sky-blue);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Links */
+    a.doc-link {
+      color: var(--sky-blue);
+      text-decoration: underline;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    a.doc-link:hover {
+      color: var(--ink);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 950px) {
+      .layout-container {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        display: none; /* Hide standard sidebar on smaller layouts */
+      }
+
+      main {
+        padding: 2rem 1.5rem;
+      }
+
+      header {
+        padding: 1rem;
+      }
+
+      .brand h1 {
+        font-size: 1.8rem;
+      }
+
+      .accessibility-toolbar {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Premium Accessibility & Document Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <h1>Tinig sa Liwanag</h1>
+        <p>Voice in the Light: Filipino Reading Companion • Full Project Document</p>
+      </div>
+
+      <div class="accessibility-toolbar" aria-label="Reading Controls">
+        <div class="toolbar-group">
+          <label for="font-select">Font Style</label>
+          <select id="font-select">
+            <option value="atkinson">Atkinson Hyperlegible</option>
+            <option value="opendyslexic">OpenDyslexic</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="size-select">Text Size</label>
+          <select id="size-select">
+            <option value="normal">Normal (18px)</option>
+            <option value="large">Large (22px)</option>
+            <option value="xlarge">Extra Large (26px)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="spacing-select">Spacing</label>
+          <select id="spacing-select">
+            <option value="normal">Normal</option>
+            <option value="medium">Medium (+0.05em)</option>
+            <option value="high">High (+0.12em)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    
+    <!-- Table of Contents Sidebar -->
+    <aside>
+      <div class="toc-title">Document Directory</div>
+      <ul>
+        <li><a href="#part1" class="toc-link">1. Project Overview</a></li>
+        <li><a href="#part2" class="toc-link">2. Core Features</a></li>
+        <li><a href="#part3" class="toc-link">3. Supported Dialects</a></li>
+        <li><a href="#part4" class="toc-link">4. Technical Stack</a></li>
+        <li><a href="#part5" class="toc-link">5. Project Architecture</a></li>
+        <li><a href="#part6" class="toc-link">6. Design Language</a></li>
+        <li><a href="#part7" class="toc-link">7. Low-Bandwidth Strategy</a></li>
+        <li><a href="#part8" class="toc-link">8. Open Source Artifact</a></li>
+        <li><a href="#part9" class="toc-link">9. Known Constraints</a></li>
+        <li><a href="#part10" class="toc-link">10. Hackathon Timeline</a></li>
+        <li><a href="#part11" class="toc-link">11. Execution Strategy</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+
+      <div class="subtitle-meta">
+        <strong>Document Version:</strong> 1.0 | Hackathon Submission Blueprint<br>
+        <strong>Case Integrations:</strong> GitHub Education (Tinig sa Liwanag) + Accenture (AI-Powered Study Companion)<br>
+        <strong>Target Platforms:</strong> Web (Next.js 14 App Router) | <strong>Deployment:</strong> Vercel
+      </div>
+
+      <!-- PART 1 -->
+      <section id="part1">
+        <span class="section-tag">Part 1</span>
+        <h2 class="section-title">Project Overview</h2>
+        
+        <h3 class="subsection-title">Project Name & Translation</h3>
+        <p><strong>Tinig sa Liwanag</strong> (Translation: <em>"Voice in the Light"</em>)</p>
+
+        <h3 class="subsection-title">Tagline</h3>
+        <p><em>A Filipino reading companion built for every student, engineered for those who need it most.</em></p>
+
+        <h3 class="subsection-title">Mission</h3>
+        <p>To make reading accessible for Filipino students across all dialects and all learning needs — with dyslexic students as the north star of every design decision.</p>
+
+        <h3 class="subsection-title">The Problem</h3>
+        <p>The Philippines has more than 130 languages. Most of them are invisible in AI and speech technology. Tagalog has seen progress, but Cebuano, Ilocano, Hiligaynon, and dozens of others have no open datasets, no benchmarks, and no usable models. Meanwhile, 1 in 5 students has a reading difficulty, and existing learning platforms were built for English-primary, high-bandwidth, neurotypical users.</p>
+        <p>A Grade 7 student in Cebu reading a Tagalog science textbook on a slow mobile connection with an undiagnosed reading difficulty has no tools. Tinig sa Liwanag is built for them.</p>
+
+        <h3 class="subsection-title">The Two-Birds Approach</h3>
+        <p>This project simultaneously satisfies two competition case tracks:</p>
+        
+        <div class="callout success">
+          <div class="callout-title">GitHub Education Case (Tinig sa Liwanag Track)</div>
+          <ul>
+            <li>Curated PLD corpus subsets for 3 underrepresented dialects</li>
+            <li>Fine-tuned Coqui TTS / VITS model per dialect</li>
+            <li>Reproducible training pipeline</li>
+            <li>Published to HuggingFace under MIT license</li>
+            <li>The web application serves as production proof that the open model works</li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">Accenture Case (AI-Powered Study Companion Track)</div>
+          <ul>
+            <li>Reads and explains content in Filipino and regional languages</li>
+            <li>Grade-level-aware Gemini summarizer</li>
+            <li>Pronunciation rater gives personalized reading feedback</li>
+            <li>Designed for low-bandwidth and mobile-accessible use</li>
+            <li>Zero friction: No login, no install, works in any modern browser</li>
+          </ul>
+        </div>
+
+        <h3 class="subsection-title">Who It Is For</h3>
+        <p><strong>Primary Users:</strong> Filipino students, Grades 5-10, in any dialect region, who struggle with reading fluency, reading comprehension, or encountering academic text in an unfamiliar language. Dyslexic students are the north star — if a feature works for them, it works for everyone.</p>
+        <p><strong>Secondary Users:</strong> Any student who wants to listen to text, get a summary in their dialect, or look up an English word; teachers seeking a low-setup reading support tool.</p>
+      </section>
+
+      <!-- PART 2 -->
+      <section id="part2">
+        <span class="section-tag">Part 2</span>
+        <h2 class="section-title">Core Features</h2>
+
+        <div class="features-list">
+          
+          <!-- Feature 1 -->
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <h4 class="feature-card-title">FEATURE 1: BASAHIN MO (TTS Reader)</h4>
+              <span class="feature-card-route">/basahin</span>
+            </div>
+            <p><strong>What it does:</strong> Paste or upload text. Pick a dialect. Press play. A clean audio reader with adjustable speed and pitch. For students who learn better by listening, or who encounter text in a language they can read but struggle to process.</p>
+            
+            <div class="feature-meta-grid">
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Key Behaviors</span>
+                <ul>
+                  <li>Text input via paste or file upload (<code>.txt</code>, <code>.pdf</code> text layer)</li>
+                  <li>Dialect selector (Filipino, Tagalog, Cebuano, Ilocano, Hiligaynon)</li>
+                  <li>Speaking rate control (0.5x to 2.0x) and pitch control</li>
+                  <li>Sentence-level chunked TTS — playback starts fast, bandwidth stays low</li>
+                  <li>Session cache — replaying the same sentence uses cached audio (no repeat API calls)</li>
+                  <li>OGG Opus encoding when browser supports it (~half MP3 file size)</li>
+                </ul>
+              </div>
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Technology & Bandwidth</span>
+                <p>Google Cloud TTS API (fil-PH native voice)<br>Next.js API route proxy (API key stays server-side)</p>
+                <p><strong>Bandwidth profile:</strong> Optimized (sentence chunks, cached)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card star">
+            <div class="feature-badge">★ STAR FEATURE</div>
+            <div class="feature-card-header">
+              <h4 class="feature-card-title">FEATURE 2: SAMAHAN MO AKO (Co-Reader + Pronunciation Rater)</h4>
+              <span class="feature-card-route">/samahan</span>
+            </div>
+            <p><strong>What it does:</strong> Text is displayed and read word by word. The current word is shown in a highlighted pill. The student taps right or uses the right arrow key to advance, taps left to go back. While the TTS reads each word, the student reads it back into the mic. The system scores pronunciation in real time and colors each word based on the result. At session end, a summary shows which words need more practice.</p>
+            
+            <div class="feature-meta-grid">
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Key Behaviors & Highlights</span>
+                <ul>
+                  <li>Word-by-word display with bold pill highlight (shape + color)</li>
+                  <li>Tap right / swipe right / right arrow = next word; left = go back</li>
+                  <li>Mic access via Web Speech API <code>SpeechRecognition</code></li>
+                  <li>Pronunciation comparison (spoken word vs expected word) with three highlight states:
+                    <ul>
+                      <li><strong style="color: var(--success)">Green</strong> = correct pronunciation</li>
+                      <li><strong style="color: var(--warning)">Yellow</strong> = close, needs minor review</li>
+                      <li><strong style="color: var(--danger)">Red</strong> = incorrect, needs practice</li>
+                    </ul>
+                  </li>
+                  <li>Color + icon feedback (never color alone — colorblind safe)</li>
+                  <li>OpenDyslexic font toggle, 3 adjustable font sizes, 3 spacing levels</li>
+                  <li>Fallback for unsupported browsers: manual advance without scoring (compatibility notice shown)</li>
+                </ul>
+              </div>
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Technology & Bandwidth</span>
+                <p>Web Speech API <code>SpeechRecognition</code> (on-device, zero bandwidth)<br>Google Cloud TTS API<br>React state machine for word cursor</p>
+                <p><strong>Bandwidth profile:</strong> Zero for pronunciation scoring (on-device)<br><strong>Requirements:</strong> Chrome or Edge for pronunciation scoring</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <h4 class="feature-card-title">FEATURE 3: ANO ANG SALITA (Spelling & Dictionary Lookup)</h4>
+              <span class="feature-card-route">/salita</span>
+            </div>
+            <p><strong>What it does:</strong> Type any English word. Get the definition, word type, IPA pronunciation, and an example sentence. Reads the definition aloud on request. Cached locally so repeat lookups are instant and offline.</p>
+            
+            <div class="feature-meta-grid">
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Key Behaviors</span>
+                <ul>
+                  <li>Text input with instant lookup on submit</li>
+                  <li>Returns: word type, definition, IPA pronunciation, example sentence</li>
+                  <li>Optional TTS reads the definition aloud</li>
+                  <li>Each looked-up word is cached in <code>localStorage</code></li>
+                  <li>Second and subsequent lookups for the same word are instant and require no connection</li>
+                  <li>Graceful error state for words not found</li>
+                </ul>
+              </div>
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Technology & Bandwidth</span>
+                <p>Free Dictionary API (<code>dictionaryapi.dev</code>) — no API key needed<br>Google Cloud TTS API for read-aloud<br><code>localStorage</code> for offline word cache</p>
+                <p><strong>Bandwidth profile:</strong> Minimal (JSON response, locally cached)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <h4 class="feature-card-title">FEATURE 4: IPALIWANAG MO (Dialect Summarizer)</h4>
+              <span class="feature-card-route">/ipaliwanag</span>
+            </div>
+            <p><strong>What it does:</strong> Paste a textbook excerpt, article, or assignment. Pick a dialect and a grade level. Gemini summarizes it in plain, student-friendly language in that dialect. Output can be read aloud via TTS. The only tool of its kind for Philippine regional languages.</p>
+            
+            <div class="feature-meta-grid">
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Key Behaviors & Prompt Engineering</span>
+                <ul>
+                  <li>Text input (capped at 3,000 characters for demo tier)</li>
+                  <li>Dialect selector and Grade level selector (Grades 4-6, Grades 7-9, Grades 10-12)</li>
+                  <li>Gemini 1.5 Flash generates dialect-appropriate summary</li>
+                  <li>Read aloud button on output (routes to TTS)</li>
+                  <li><strong>Prompt engineering per dialect:</strong>
+                    <ul>
+                      <li><em>Filipino:</em> "Summarize in simple Filipino. Use words a Grade 5-8 student would understand."</li>
+                      <li><em>Cebuano:</em> "Summarize in simple Cebuano (Bisaya). Use vocabulary a student from Visayas/Mindanao would understand."</li>
+                      <li><em>Ilocano:</em> "Summarize in simple Ilocano. Use vocabulary a student from the Ilocos region would understand."</li>
+                      <li><em>Hiligaynon:</em> "Summarize in simple Hiligaynon. Use vocabulary a student from Western Visayas would understand."</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+              <div class="feature-meta-item">
+                <span class="feature-meta-label">Technology & Bandwidth</span>
+                <p>Gemini 1.5 Flash via <code>@google/generative-ai</code><br>Google Cloud TTS for read-aloud<br>Next.js API route proxy</p>
+                <p><strong>Bandwidth profile:</strong> Minimal (text only, response &lt; 2KB)</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PART 3 -->
+      <section id="part3">
+        <span class="section-tag">Part 3</span>
+        <h2 class="section-title">Supported Dialects</h2>
+        <p>The MVP supports five key linguistic profiles across the Philippines:</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Local Name</th>
+                <th>Major Region</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fil</code></td>
+                <td>Filipino</td>
+                <td>Filipino</td>
+                <td>National language</td>
+              </tr>
+              <tr>
+                <td><code>tgl</code></td>
+                <td>Tagalog</td>
+                <td>Tagalog</td>
+                <td>Metro Manila / Luzon</td>
+              </tr>
+              <tr>
+                <td><code>ceb</code></td>
+                <td>Cebuano</td>
+                <td>Bisaya / Cebuano</td>
+                <td>Visayas / Mindanao</td>
+              </tr>
+              <tr>
+                <td><code>ilo</code></td>
+                <td>Ilocano</td>
+                <td>Ilokano</td>
+                <td>Ilocos / Northern Luzon</td>
+              </tr>
+              <tr>
+                <td><code>hil</code></td>
+                <td>Hiligaynon</td>
+                <td>Ilonggo</td>
+                <td>Western Visayas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout warning">
+          <div class="callout-title">TTS Synthesis Dialect Note</div>
+          <p>Google Cloud TTS has native <code>fil-PH</code> support (Filipino and Tagalog). For Cebuano, Ilocano, and Hiligaynon, the text is pre-processed through Gemini to normalize pronunciation-consistent spelling before synthesis via the Filipino voice. This is a known approximation. The open-source Coqui model artifact is built specifically to close this gap in the research community.</p>
+        </div>
+      </section>
+
+      <!-- PART 4 -->
+      <section id="part4">
+        <span class="section-tag">Part 4</span>
+        <h2 class="section-title">Technical Stack</h2>
+        <p>Architected for rapid development, accessibility compliance, and low-latency response.</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>System Layer</th>
+                <th>Selected Technology</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Framework</strong></td>
+                <td>Next.js 14 App Router</td>
+              </tr>
+              <tr>
+                <td><strong>Styling</strong></td>
+                <td>Tailwind CSS</td>
+              </tr>
+              <tr>
+                <td><strong>TTS Engine</strong></td>
+                <td>Google Cloud TTS API (fil-PH)</td>
+              </tr>
+              <tr>
+                <td><strong>Pronunciation Scoring</strong></td>
+                <td>Web Speech API <code>SpeechRecognition</code></td>
+              </tr>
+              <tr>
+                <td><strong>Core AI/Summarizer</strong></td>
+                <td>Gemini 1.5 Flash</td>
+              </tr>
+              <tr>
+                <td><strong>Dictionary Service</strong></td>
+                <td><code>dictionaryapi.dev</code> (free, no auth key)</td>
+              </tr>
+              <tr>
+                <td><strong>Dyslexic/Universal Fonts</strong></td>
+                <td>Atkinson Hyperlegible + OpenDyslexic</td>
+              </tr>
+              <tr>
+                <td><strong>Cloud Deployment</strong></td>
+                <td>Vercel</td>
+              </tr>
+              <tr>
+                <td><strong>Open-Source Deliverables</strong></td>
+                <td>Coqui TTS + PLD corpus (published on HuggingFace)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="subsection-title">Required Credentials (.env)</h3>
+        <ul>
+          <li><code>GOOGLE_TTS_API_KEY</code>: Obtained via Google Cloud Console</li>
+          <li><code>GEMINI_API_KEY</code>: Obtained via Google AI Studio (aistudio.google.com)</li>
+        </ul>
+        
+        <div class="callout success">
+          <div class="callout-title">No API Keys Required For:</div>
+          <p><code>dictionaryapi.dev</code> (completely free, no authorization) and the Web Speech API (runs natively inside the student's browser, zero server footprint).</p>
+        </div>
+      </section>
+
+      <!-- PART 5 -->
+      <section id="part5">
+        <span class="section-tag">Part 5</span>
+        <h2 class="section-title">Project Architecture</h2>
+        <p>A modular folder structure structured inside the Next.js 14 App Router layout:</p>
+
+<pre><code>tinig-sa-liwanag/
+│
+├── src/
+│   ├── app/
+│   │   ├── page.tsx                 # Landing page (hero + tool cards)
+│   │   ├── layout.tsx               # Root layout + nav + fonts
+│   │   ├── globals.css              # Base styles + CSS variables
+│   │   │
+│   │   ├── basahin/
+│   │   │   └── page.tsx             # TTS Reader
+│   │   │
+│   │   ├── samahan/
+│   │   │   └── page.tsx             # Co-Reader + Pronunciation Rater
+│   │   │
+│   │   ├── salita/
+│   │   │   └── page.tsx             # Spelling & Dictionary
+│   │   │
+│   │   ├── ipaliwanag/
+│   │   │   └── page.tsx             # Dialect Summarizer
+│   │   │
+│   │   └── api/
+│   │       ├── tts/
+│   │       │   └── route.ts         # Google TTS proxy
+│   │       └── summarize/
+│   │           └── route.ts         # Gemini proxy
+│   │
+│   ├── components/
+│   │   ├── Nav.tsx                  # Top navigation
+│   │   ├── DialectPicker.tsx        # Reusable dialect selector
+│   │   ├── AudioPlayer.tsx          # Shared audio controls
+│   │   ├── WordHighlighter.tsx      # Co-reader word cursor + highlight
+│   │   ├── PronunciationRater.tsx   # Mic scoring + color feedback
+│   │   ├── GradeSelector.tsx        # Grade level picker
+│   │   └── SpeedControl.tsx         # TTS speed/pitch slider
+│   │
+│   ├── hooks/
+│   │   ├── useTTS.ts                # TTS request + audio playback hook
+│   │   ├── useSpeechRecognition.ts  # Web Speech API wrapper hook
+│   │   └── useWordCursor.ts         # Word-by-word cursor state hook
+│   │
+│   └── lib/
+│       ├── dialects.ts              # Dialect config (code, name, TTS params)
+│       ├── tts.ts                   # TTS client utilities
+│       └── cache.ts                 # localStorage cache utilities
+│
+├── public/
+│   ├── fonts/                       # Self-hosted Atkinson & OpenDyslexic
+│   └── manifest.json                # PWA manifest
+│
+├── .env.local.example               # API key template
+├── README.md
+├── next.config.mjs
+├── tailwind.config.ts
+└── tsconfig.json</code></pre>
+      </section>
+
+      <!-- PART 6 -->
+      <section id="part6">
+        <span class="section-tag">Part 6</span>
+        <h2 class="section-title">Design Language & System</h2>
+        <p>The interface uses clear, bright, warm tones tailored for accessibility and dyslexic readability, avoiding harsh high contrasts while ensuring WCAG compliance.</p>
+
+        <h3 class="subsection-title">Color Palette</h3>
+        <div class="palette-grid">
+          
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #F7C948;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Sun Yellow</span>
+              <span class="swatch-hex">#F7C948</span>
+              <p class="swatch-desc">Primary interactive element highlights and active focuses.</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #FFF5CC;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Sun Light</span>
+              <span class="swatch-hex">#FFF5CC</span>
+              <p class="swatch-desc">Warm yellow card and text container backgrounds.</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #2D6BE4;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Sky Blue</span>
+              <span class="swatch-hex">#2D6BE4</span>
+              <p class="swatch-desc">Hyperlinks, primary labels, and callout border accents.</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #1A1A2E;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Ink Dark</span>
+              <span class="swatch-hex">#1A1A2E</span>
+              <p class="swatch-desc">Primary body text, code blocks, and primary layouts.</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #FAFAF5;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Paper</span>
+              <span class="swatch-hex">#FAFAF5</span>
+              <p class="swatch-desc">Overall page background (warm off-white to prevent eye strain).</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #16A34A;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Success Green</span>
+              <span class="swatch-hex">#16A34A</span>
+              <p class="swatch-desc">Correct pronunciation feedback styling.</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #D97706;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Warning Amber</span>
+              <span class="swatch-hex">#D97706</span>
+              <p class="swatch-desc">Close attempt pronunciation feedback.</p>
+            </div>
+          </div>
+
+          <div class="swatch-card">
+            <div class="swatch-color" style="background-color: #DC2626;"></div>
+            <div class="swatch-details">
+              <span class="swatch-label">Danger Red</span>
+              <span class="swatch-hex">#DC2626</span>
+              <p class="swatch-desc">Incorrect pronunciation feedback styling.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 class="subsection-title">Typography System</h3>
+        <ul>
+          <li><strong>Default Body Font:</strong> Atkinson Hyperlegible. Designed specifically for low-vision readers to maximize character recognition. Default for all screens.</li>
+          <li><strong>Co-reader Font Option:</strong> OpenDyslexic. Features weighted bottoms to prevent rotation and flipping confusion in dyslexic readers.</li>
+          <li><strong>Display & Headings:</strong> Syne (800 weight). A strong, modern display font.</li>
+          <li><strong>Monospace elements:</strong> System Courier New (or JetBrains Mono). Used for paths, structures, and keys.</li>
+        </ul>
+
+        <h3 class="subsection-title">Reading Surface Rules</h3>
+        <ul>
+          <li>Minimum text/body size: <strong>18px</strong></li>
+          <li>Line height: <strong>1.75</strong></li>
+          <li>Letter spacing: Normal default, <code>+0.05em</code> in regular co-reader mode, and <code>+0.12em</code> in high-spacing mode.</li>
+          <li>Word highlight style: Bold filled pill (shape + color). Never rely on underlines or colors alone.</li>
+        </ul>
+
+        <h3 class="subsection-title">Accessibility Constraints</h3>
+        <ul>
+          <li>Pronunciation feedback must always combine color and icon indicator assets, never color alone.</li>
+          <li>Respected motion reduction queries (<code>prefers-reduced-motion</code>).</li>
+          <li>Full keyboard navigation support on the co-reader layout.</li>
+          <li>Passes WCAG AA minimum contrast ratio across all elements.</li>
+          <li>High-visibility focus rings on all active elements.</li>
+        </ul>
+      </section>
+
+      <!-- PART 7 -->
+      <section id="part7">
+        <span class="section-tag">Part 7</span>
+        <h2 class="section-title">Low-Bandwidth Strategy</h2>
+        <p>The Philippines has regional connectivity gaps that most applications ignore. Every core feature in Tinig sa Liwanag is optimized as a hard constraint, not an afterthought.</p>
+
+        <h3 class="subsection-title">Feature-by-Feature Bandwidth Architecture</h3>
+        
+        <div class="callout success">
+          <div class="callout-title">Pronunciation Rater (Cost: Zero)</div>
+          <p>Web Speech API SpeechRecognition is executed entirely inside the browser's engine. No voice audio is sent to the server for evaluation. Scoring works offline.</p>
+        </div>
+
+        <div class="callout success">
+          <div class="callout-title">Dialect Summarizer (Cost: Minimal)</div>
+          <p>Text-only responses. Gemini payloads are stripped and returned as pure string formats, ensuring transaction payloads are capped below 2KB.</p>
+        </div>
+
+        <div class="callout success">
+          <div class="callout-title">Dictionary Lookup (Cost: Single-Fetch)</div>
+          <p>Every looked-up word details are saved to <code>localStorage</code>. Subsequent definitions of the same words are loaded locally without trigger network queries.</p>
+        </div>
+
+        <div class="callout success">
+          <div class="callout-title">Text-to-Speech Audio (Cost: Optimized)</div>
+          <p>Synthesized in sentence chunks. One sentence is preloaded in the background while the current is playing. Opus OGG compression is favored to reduce download sizes by ~50% compared to standard MP3 codecs. Replaying a sentence loads from the browser cache.</p>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">Assets & Bundle Strategy</div>
+          <ul>
+            <li><strong>Fonts:</strong> Self-hosted, cached on first visit. Styled with <code>font-display: swap</code> to render text instantly.</li>
+            <li><strong>JS Bundling:</strong> App Router enables automated route-level code splitting. Readers do not load summarizer libraries.</li>
+            <li><strong>PWA:</strong> <code>manifest.json</code> and service workers load the core app shell instantly even on spotty networks.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- PART 8 -->
+      <section id="part8">
+        <span class="section-tag">Part 8</span>
+        <h2 class="section-title">Open Source Dataset & Checkpoints</h2>
+        <p>This is the GitHub Education case deliverable, published separately from the main application to support researchers across the region.</p>
+
+        <h3 class="subsection-title">Repository Directory Links</h3>
+        <ul>
+          <li><strong>GitHub Repository:</strong> <a href="https://github.com/[team]/tinig-sa-liwanag-corpus" class="doc-link" target="_blank">github.com/[team]/tinig-sa-liwanag-corpus</a></li>
+          <li><strong>HuggingFace Models:</strong> <a href="https://huggingface.co/datasets/[team]/pld-ph-tts" class="doc-link" target="_blank">huggingface.co/datasets/[team]/pld-ph-tts</a></li>
+        </ul>
+
+        <h3 class="subsection-title">Published Artifact Deliverables</h3>
+        <ol>
+          <li><strong>Curated PLD Corpus Subsets:</strong>
+            <ul>
+              <li>Source: Philippine Languages Database (PLD), LREC-COLING 2024.</li>
+              <li>Languages: Cebuano, Ilocano, Hiligaynon.</li>
+              <li>Cleaned, normalized, and formatted for direct Coqui TTS trainer ingest.</li>
+              <li>Includes meta schemas: Speaker ID, gender, region, and domain type.</li>
+            </ul>
+          </li>
+          <li><strong>Fine-tuned Model Checkpoints:</strong>
+            <ul>
+              <li>Architecture: VITS (via Coqui TTS).</li>
+              <li>One custom checkpoint generated per dialect.</li>
+              <li>Includes model cards detailing baseline comparisons and sample syntheses.</li>
+            </ul>
+          </li>
+          <li><strong>Training Pipeline Scripts:</strong>
+            <ul>
+              <li>Fully documented Python scripts.</li>
+              <li>Containerized Docker environments for reproducible results.</li>
+            </ul>
+          </li>
+          <li><strong>HuggingFace Dataset Card:</strong>
+            <ul>
+              <li>Linguistic metadata schemas per dialect.</li>
+              <li>Speaker demographic information and benchmarking data.</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="callout">
+          <div class="callout-title">Why This Matters</div>
+          <p>The primary application proves these models work in production. By publishing the training parameters and subsets openly, developers and researchers can extend text-to-speech coverage to the 120+ other minor dialects spoken across the Philippine archipelago.</p>
+        </div>
+      </section>
+
+      <!-- PART 9 -->
+      <section id="part9">
+        <span class="section-tag">Part 9</span>
+        <h2 class="section-title">Known Constraints & honest Limitations</h2>
+        <p>A transparent disclosure of the system's operational boundaries in MVP form:</p>
+
+        <div class="callout danger">
+          <div class="callout-title">1. Google TTS Dialect Approximation</div>
+          <p>Google TTS does not natively support Cebuano, Ilocano, or Hiligaynon. They are approximated by spelling text phonetic-consistently via Gemini before sending to the Filipino voice. Output quality is functional, but imperfect; the custom Coqui model is the long-term solution.</p>
+        </div>
+
+        <div class="callout warning">
+          <div class="callout-title">2. Pronunciation Rater Browser Requirements</div>
+          <p>The Web Speech API's SpeechRecognition is only fully implemented in Google Chrome and Microsoft Edge. Users on Safari or Firefox will receive a notice banner and fallback to reading without scoring.</p>
+        </div>
+
+        <div class="callout warning">
+          <div class="callout-title">3. Summarizer Input Limits</div>
+          <p>Payload inputs are limited to 3,000 characters per summarize query. This represents a security filter for rate limits during the hackathon tier, not a system design limit.</p>
+        </div>
+
+        <div class="callout success">
+          <div class="callout-title">4. Minimal Data Privacy Footprint</div>
+          <p>No account setups, no server tracking databases, and zero tracking scripts are used. Microphone audio is kept local in the browser runtime; vocabulary data remains inside the user's localStorage sandbox.</p>
+        </div>
+
+        <div class="callout warning">
+          <div class="callout-title">5. Regional Accent Gaps</div>
+          <p>The synthetic fil-PH voice will sound distinct from native Cebuano or Ilocano accents. This is highlighted to the student. It works for standard learning, and the open-source pipeline is intended to resolve this.</p>
+        </div>
+      </section>
+
+      <!-- PART 10 -->
+      <section id="part10">
+        <span class="section-tag">Part 10</span>
+        <h2 class="section-title">Hackathon Sprint Timeline</h2>
+        <p>An interactive checklist to track progress throughout the 4-day sprint. <em>Check off tasks below to track completion in real-time.</em></p>
+
+        <!-- DAY 0 -->
+        <div class="timeline-day">
+          <div class="day-header">
+            <h4 class="day-title">DAY 0: Environment Setup</h4>
+            <span class="day-goal">Goal: Zero Startup Blockers on Day 1</span>
+          </div>
+          <ul class="checklist">
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-1">
+              <div class="task-content">
+                <span>Create Next.js 14 App Router project (TypeScript, Tailwind, App Router, src/ dir)</span>
+                <span class="task-notes">npx create-next-app@latest tinig-sa-liwanag</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-2">
+              <div class="task-content">
+                <span>Install dependencies: @google/generative-ai, lucide-react, clsx, @types/node</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-3">
+              <div class="task-content">
+                <span>Configure environment template (.env.local from .env.local.example) with API keys</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-4">
+              <div class="task-content">
+                <span>Set up Vercel project, connect GitHub repository for automated deployments</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-5">
+              <div class="task-content">
+                <span>Download Atkinson Hyperlegible and OpenDyslexic fonts and place in public/fonts/</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-6">
+              <div class="task-content">
+                <span>Scaffold empty pages for routes: /basahin, /samahan, /salita, /ipaliwanag</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-7">
+              <div class="task-content">
+                <span>Create src/lib/dialects.ts dialect configuration schema mappings</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d0-8">
+              <div class="task-content">
+                <span>Perform curl tests to verify Google TTS and Gemini API keys are active</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="timeline-day">
+          <div class="day-header">
+            <h4 class="day-title">DAY 1: Layout & TTS Reader (Basahin Mo)</h4>
+            <span class="day-goal">Goal: Functional /basahin route live</span>
+          </div>
+          <ul class="checklist">
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-1">
+              <div class="task-content">
+                <span>Build root layout (layout.tsx) containing main Navigation headers and font definitions</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-2">
+              <div class="task-content">
+                <span>Build landing page (page.tsx) with hero section, tool cards, and warm high-contrast designs</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-3">
+              <div class="task-content">
+                <span>Build DialectPicker component for reusable dialect selector lists</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-4">
+              <div class="task-content">
+                <span>Build API proxy route: /api/tts/route.ts calling Google TTS REST API server-side</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-5">
+              <div class="task-content">
+                <span>Build useTTS React hook featuring sentence-level chunk parsing logic</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-6">
+              <div class="task-content">
+                <span>Build AudioPlayer component with play, pause, pitch, and speed controls</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-7">
+              <div class="task-content">
+                <span>Build SpeedControl slider steps with accessible aria labels</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d1-8">
+              <div class="task-content">
+                <span>Wire all components to /basahin template page and execute end-to-end audio check</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="timeline-day">
+          <div class="day-header">
+            <h4 class="day-title">DAY 2: Co-Reader Core (Samahan Mo Ako)</h4>
+            <span class="day-goal">Goal: Highlight advances and font controls active</span>
+          </div>
+          <ul class="checklist">
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-1">
+              <div class="task-content">
+                <span>Build useWordCursor word-tokenization and pointer index state hook</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-2">
+              <div class="task-content">
+                <span>Build WordHighlighter component showing highlight pills and smooth window scroll</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-3">
+              <div class="task-content">
+                <span>Build OpenDyslexic toolbar font toggle, spacing selectors, and font-size selectors</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-4">
+              <div class="task-content">
+                <span>Connect TTS to word cursor: synthesize word and advance text highlight</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-5">
+              <div class="task-content">
+                <span>Add keyboard listeners: right arrow (next), left arrow (back), space (replay)</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-6">
+              <div class="task-content">
+                <span>Add gesture swipe support using touch listener wrappers</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d2-7">
+              <div class="task-content">
+                <span>Wire samahan dashboard interface with empty score session templates</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="timeline-day">
+          <div class="day-header">
+            <h4 class="day-title">DAY 3: Real-Time Scoring, Dictionary, & Summary</h4>
+            <span class="day-goal">Goal: Pronunciation rating active, secondary tools finished</span>
+          </div>
+          <ul class="checklist">
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-1">
+              <div class="task-content">
+                <span>Build useSpeechRecognition SpeechRecognition hook wrapping browser APIs</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-2">
+              <div class="task-content">
+                <span>Build normalized Levenshtein-based spelling & digraph rating comparisons</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-3">
+              <div class="task-content">
+                <span>Build PronunciationRater recording buttons, active indicators, and score callbacks</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-4">
+              <div class="task-content">
+                <span>Add browser compatibility checks and unsupported warning notices for Safari/Firefox</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-5">
+              <div class="task-content">
+                <span>Build co-reader session end summary showing word lists needing practice</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-6">
+              <div class="task-content">
+                <span>Build /salita dictionary page with localStorage lookup cache utilities</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-7">
+              <div class="task-content">
+                <span>Build /api/summarize/route.ts calling Gemini Flash via Google AI SDK</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d3-8">
+              <div class="task-content">
+                <span>Build /ipaliwanag summarizer route with GradeSelector and character caps</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- DAY 4 -->
+        <div class="timeline-day">
+          <div class="day-header">
+            <h4 class="day-title">DAY 4: Polish, Testing, & Final Release</h4>
+            <span class="day-goal">Goal: Project submitted, public models verified</span>
+          </div>
+          <ul class="checklist">
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-1">
+              <div class="task-content">
+                <span>Refine Landing Page cards, add dialect badge lists, and mobile layout checks</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-2">
+              <div class="task-content">
+                <span>Review visual states: loading states on async actions, error alerts, empty layout messages</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-3">
+              <div class="task-content">
+                <span>Perform accessibility check: keyboard navigation focus, contrast levels, screen reader labels</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-4">
+              <div class="task-content">
+                <span>Verify responsive scaling: check layout structures on iPhone SE viewports</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-5">
+              <div class="task-content">
+                <span>Test browser compatibility fallbacks on Firefox and Safari platforms</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-6">
+              <div class="task-content">
+                <span>Write final project documentation files: README.md, CONTRIBUTING.md layout</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-7">
+              <div class="task-content">
+                <span>Confirm production deployment variables on Vercel Dashboard</span>
+              </div>
+            </li>
+            <li class="task-item">
+              <input type="checkbox" id="task-d4-8">
+              <div class="task-content">
+                <span>Prepare open-source repositories and dataset cards on HuggingFace</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </section>
+
+      <!-- PART 11 -->
+      <section id="part11">
+        <span class="section-tag">Part 11</span>
+        <h2 class="section-title">Execution Strategy</h2>
+        
+        <h3 class="subsection-title">Build Order Rationale</h3>
+        <p>The build sequence is designed to establish solid dependencies first, ensuring a demonstrable application state is met at the end of each day:</p>
+        <ul>
+          <li><strong>Day 1: TTS API & Reader</strong> — Solves the primary external API dependency first. TTS Reader is the simplest integration consumer, verifying basic audio pipelines.</li>
+          <li><strong>Day 2: Co-Reader Core</strong> — Core features are complex; prioritizing highlight states, font overrides, and keyboard navigation before adding mic capture simplifies debugging.</li>
+          <li><strong>Day 3: Pronunciation Rater & Auxiliary Services</strong> — Adds Web Speech APIs on top of the tested Day 2 foundation. Summarizer and dictionary routes run in parallel.</li>
+          <li><strong>Day 4: Polish & Documentation</strong> — Feature freeze. Focus entirely on layout tests, accessibility checks, and repository publication.</li>
+        </ul>
+
+        <h3 class="subsection-title">Parallel Work Distribution</h3>
+        <div class="split-grid">
+          <div class="split-col">
+            <div class="split-col-title">Person A: Feature Lead</div>
+            <ul>
+              <li><strong>Day 1:</strong> TTS APIs, proxy hooks, and base audio players.</li>
+              <li><strong>Day 2:</strong> Tokenization cursors, word highlighters, and per-word TTS play.</li>
+              <li><strong>Day 3:</strong> SpeechRecognition integrations and scoring comparisons.</li>
+              <li><strong>Day 4:</strong> Keyboard fixes, accessibility checks, and demo production.</li>
+            </ul>
+          </div>
+
+          <div class="split-col">
+            <div class="split-col-title">Person B: UI/UX Lead</div>
+            <ul>
+              <li><strong>Day 1:</strong> Layout, headers, landing routes, and dialect picks.</li>
+              <li><strong>Day 2:</strong> OpenDyslexic settings, spacing, size bars, and samahan layouts.</li>
+              <li><strong>Day 3:</strong> Dictionary, summarizer dashboard, and Grade level pickers.</li>
+              <li><strong>Day 4:</strong> Swatch alignments, mobile adjustments, and submission files.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="subsection-title">Project Risk Register</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Risk Vector</th>
+                <th>Likelihood / Impact</th>
+                <th>Mitigation Strategy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Google TTS Key Issue</strong></td>
+                <td>Medium / High</td>
+                <td>Test connection strings on Day 0. Fallback: browser-native SpeechSynthesis if keys are blocked.</td>
+              </tr>
+              <tr>
+                <td><strong>Web Speech API Compatibility</strong></td>
+                <td>Low-Medium / Medium</td>
+                <td>Target demo flows to Chrome/Edge. Render compatibility notices on unsupported browsers.</td>
+              </tr>
+              <tr>
+                <td><strong>Gemini Output Variant Quality</strong></td>
+                <td>Medium / Medium</td>
+                <td>Iterate and fix prompts early. Use Filipino and Tagalog as primary demo scripts.</td>
+              </tr>
+              <tr>
+                <td><strong>Vercel CI/CD Build Failures</strong></td>
+                <td>Low / High</td>
+                <td>Deploy a skeleton app on Day 0 to establish clean routing integrations early.</td>
+              </tr>
+              <tr>
+                <td><strong>Timeline Overrun on Co-Reader</strong></td>
+                <td>Medium / Medium</td>
+                <td>Build dictionary page as simple fetch-render. Strip summarizer grade filters if needed.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="subsection-title">Live Demonstration Script (5-7 mins)</h3>
+        <ol>
+          <li><strong>Landing Page (30s):</strong> Introduce the tagline, name the regional dialect gap, and state the accessibility focus.</li>
+          <li><strong>Ipaliwanag Mo (90s):</strong> Paste text. Summarize to Cebuano for Grade 7-9. Play the summary result via TTS.</li>
+          <li><strong>Samahan Mo Ako (2m):</strong> Highlight co-reader controls. Toggle OpenDyslexic mode. Speak into the mic to show correct (green) and incorrect (red) pronunciation, followed by the session recap.</li>
+          <li><strong>Basahin Mo (45s):</strong> Paste longer texts. Demonstrate speech rates, sentence chunking, and dialect selectors.</li>
+          <li><strong>Ano ang Salita (30s):</strong> Look up a term to showcase definitions and offline localStorage loads on second lookup.</li>
+          <li><strong>Closing (30s):</strong> Reiterate zero login, PWA support, and link to public GitHub/HuggingFace model checkpoints.</li>
+        </ol>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fontSelect = document.getElementById('font-select');
+      const sizeSelect = document.getElementById('size-select');
+      const spacingSelect = document.getElementById('spacing-select');
+      const taskCheckboxes = document.querySelectorAll('.task-item input[type="checkbox"]');
+      const sidebarLinks = document.querySelectorAll('aside a');
+
+      // Accessibility preference application
+      const applyPrefSettings = () => {
+        const font = localStorage.getItem('pref-font') || 'atkinson';
+        const size = localStorage.getItem('pref-size') || 'normal';
+        const spacing = localStorage.getItem('pref-spacing') || 'normal';
+
+        fontSelect.value = font;
+        sizeSelect.value = size;
+        spacingSelect.value = spacing;
+
+        // Apply Font family override
+        if (font === 'opendyslexic') {
+          document.body.classList.add('font-opendyslexic');
+        } else {
+          document.body.classList.remove('font-opendyslexic');
+        }
+
+        // Apply Font Size classes
+        document.body.classList.remove('font-size-large-body', 'font-size-xlarge-body');
+        if (size === 'large') {
+          document.body.classList.add('font-size-large-body');
+        } else if (size === 'xlarge') {
+          document.body.classList.add('font-size-xlarge-body');
+        }
+
+        // Apply Letter Spacing classes
+        document.body.classList.remove('spacing-medium-body', 'spacing-high-body');
+        if (spacing === 'medium') {
+          document.body.classList.add('spacing-medium-body');
+        } else if (spacing === 'high') {
+          document.body.classList.add('spacing-high-body');
+        }
+      };
+
+      // Control event listeners
+      fontSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pref-font', e.target.value);
+        applyPrefSettings();
+      });
+
+      sizeSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pref-size', e.target.value);
+        applyPrefSettings();
+      });
+
+      spacingSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pref-spacing', e.target.value);
+        applyPrefSettings();
+      });
+
+      // Initial settings load
+      applyPrefSettings();
+
+      // Timeline task tracking persistence
+      taskCheckboxes.forEach((cb) => {
+        const savedState = localStorage.getItem(cb.id);
+        if (savedState === 'true') {
+          cb.checked = true;
+          cb.closest('.task-item').classList.add('completed');
+        }
+
+        cb.addEventListener('change', () => {
+          const taskItem = cb.closest('.task-item');
+          if (cb.checked) {
+            taskItem.classList.add('completed');
+            localStorage.setItem(cb.id, 'true');
+          } else {
+            taskItem.classList.remove('completed');
+            localStorage.setItem(cb.id, 'false');
+          }
+        });
+      });
+
+      // Simple Table of Contents scroll highlight
+      const observerOptions = {
+        root: null,
+        rootMargin: '-10% 0px -80% 0px',
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            sidebarLinks.forEach(link => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('main section').forEach(section => {
+        observer.observe(section);
+      });
+    });
+  </script>
+</body>
+</html>
