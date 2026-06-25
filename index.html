@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GabAI-Basa — Filipino Reading Companion</title>
-  <meta name="description" content="GabAI-Basa is a browser-based reading companion for Filipino students across 5 Philippine languages, built for accessibility-first learning with dyslexia support, pronunciation rating, and dialect-aware text-to-speech.">
+  <meta name="description" content="GabAI-Basa is a browser-based reading companion for Filipino students, built for accessibility-first learning with dyslexia support, pronunciation rating, and bilingual text-to-speech.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -202,8 +202,8 @@
       50%      { box-shadow: 0 0 0 10px rgba(247,201,72,0); }
     }
 
-    /* ── Dialect cards ── */
-    .dialect-card {
+    /* ── Language cards ── */
+    .language-card {
       border: 1.5px solid #E5E7EB;
       border-radius: 10px;
       background: #fff;
@@ -211,7 +211,7 @@
       transition: border-color 0.2s, transform 0.2s;
     }
 
-    .dialect-card:hover {
+    .language-card:hover {
       border-color: #2D6BE4;
       transform: translateY(-2px);
     }
@@ -404,7 +404,7 @@
       <div class="max-w-[720px]">
         <!-- Eyebrow -->
         <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-6">
-          Hackathon MVP &nbsp;·&nbsp; GitHub Education + Accenture
+          By Muralla
         </p>
 
         <h1 class="font-display font-extrabold text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-tight mb-4">
@@ -418,17 +418,6 @@
         <p class="text-[15px] text-white/45 max-w-[520px] mb-10">
           Five tools. One URL. No login. No install. Works in any browser, on any connection, for any Filipino student who needs help reading.
         </p>
-
-        <!-- Tags -->
-        <div class="flex flex-wrap gap-2 mb-10">
-          <span class="pill bg-sun text-ink">GitHub Education</span>
-          <span class="pill bg-sky-brand text-white">Accenture</span>
-          <span class="pill border border-white/20 text-white/60">Web App</span>
-          <span class="pill border border-white/20 text-white/60">Next.js 14</span>
-          <span class="pill border border-white/20 text-white/60">5 Languages</span>
-          <span class="pill border border-white/20 text-white/60">Accessibility</span>
-        </div>
-
         <!-- CTAs -->
         <div class="flex flex-wrap gap-4">
           <a href="#tools" class="cta-primary">See the Tools ↓</a>
@@ -436,26 +425,6 @@
         </div>
       </div>
 
-      <!-- Platform meta (visible on tablet+) -->
-      <div class="hidden md:flex gap-10 mt-16 flex-wrap">
-        <div>
-          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Platform</span>
-          <span class="block text-[15px] text-white/85 font-bold">Web (Next.js 14)</span>
-        </div>
-        <div>
-          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Dialects</span>
-          <span class="block text-[15px] text-white/85 font-bold">5 Philippine Languages</span>
-        </div>
-        <div>
-          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Deploy</span>
-          <span class="block text-[15px] text-white/85 font-bold">Vercel</span>
-        </div>
-        <div>
-          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Open Artifact</span>
-          <span class="block text-[15px] text-white/85 font-bold">HuggingFace + GitHub</span>
-        </div>
-      </div>
-    </div>
 
     <!-- Scroll indicator -->
     <div class="scroll-indicator hidden md:flex" aria-hidden="true">
@@ -477,30 +446,30 @@
         <!-- Stats row -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
           <div>
-            <span class="stat-number text-5xl md:text-[56px]">130+</span>
-            <p class="text-muted text-sm italic mt-1">Philippine languages spoken across 7,000 islands</p>
+            <span class="stat-number text-5xl md:text-[56px]">2</span>
+            <p class="text-muted text-sm italic mt-1">Core languages supported: English and Filipino</p>
           </div>
           <div>
             <span class="stat-number text-5xl md:text-[56px]">1 in 5</span>
             <p class="text-muted text-sm italic mt-1">students affected by dyslexia or reading difficulties</p>
           </div>
           <div>
-            <span class="stat-number text-5xl md:text-[56px]">~4</span>
-            <p class="text-muted text-sm italic mt-1">Philippine languages with any open speech technology</p>
+            <span class="stat-number text-5xl md:text-[56px]">1</span>
+            <p class="text-muted text-sm italic mt-1">Unified platform for accessible reading</p>
           </div>
         </div>
 
         <p class="text-ink/80 max-w-[680px] mb-4">
-          Think about a Grade 7 student in Cebu. She's reading a Tagalog science textbook on her older brother's phone with a prepaid data plan. She has an undiagnosed reading difficulty. The textbook is in a language she can speak but struggles to read. The apps her teacher recommended are in English, need fast WiFi, and require a Google account.
+          Think about a Grade 7 student. She's reading a science textbook on her older brother's phone with a prepaid data plan. She has an undiagnosed reading difficulty. The textbook is in a language she can speak but struggles to read. The apps her teacher recommended are built for high-speed internet and require complex setups.
         </p>
         <p class="text-ink/80 max-w-[680px] mb-6">
-          She has no tools. Tagalog has a few speech models, but Cebuano, Ilocano, and Hiligaynon have almost nothing — no datasets, no benchmarks, no usable voice models.
+          She has no accessible tools tailored for her local curriculum that work seamlessly in both English and Filipino.
         </p>
 
         <!-- Callout -->
         <div class="border-l-4 border-sun bg-sun-light/60 rounded-r-lg px-6 py-5 max-w-[680px]">
           <p class="text-ink font-bold text-[15px]">
-            GabAI-Basa addresses both gaps at once: a browser-based reading companion that works on slow connections in any dialect, and an open-source speech dataset that researchers can actually use.
+            GabAI-Basa addresses both gaps at once: a browser-based reading companion that works on slow connections for English and Filipino text, and an open-source speech dataset that researchers can actually use.
           </p>
         </div>
       </div>
@@ -518,12 +487,12 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="border-l-4 border-sky-brand bg-white/5 rounded-r-lg px-5 py-4">
           <p class="text-white/90 text-[15px]">
-            <span class="font-bold text-sky-brand">Primary:</span> Filipino student, Grades 5–10, any dialect region, who struggles with reading fluency or encounters academic text in an unfamiliar language. Every design decision is tested first against: <em class="text-sun">does this work for a student with dyslexia?</em>
+            <span class="font-bold text-sky-brand">Primary:</span> Filipino student, Grades 5–10, who struggles with reading fluency or encounters academic text in an unfamiliar language. Every design decision is tested first against: <em class="text-sun">does this work for a student with dyslexia?</em>
           </p>
         </div>
         <div class="border-l-4 border-sun bg-white/5 rounded-r-lg px-5 py-4">
           <p class="text-white/90 text-[15px]">
-            <span class="font-bold text-sun">Secondary:</span> Any student who wants text read aloud, a summary in their dialect, or a quick English word lookup. Teachers who want a low-setup reading tool — open the URL, hand the phone to the student.
+            <span class="font-bold text-sun">Secondary:</span> Any student who wants text read aloud, a summary, or a quick word lookup. Teachers who want a low-setup reading tool — open the URL, hand the phone to the student.
           </p>
         </div>
       </div>
@@ -547,7 +516,7 @@
           <div class="border-l-4 border-sun bg-white p-5 rounded-r-lg border-t border-b border-r border-divider shadow-sm hover:-translate-y-1 transition-transform">
             <h3 class="font-display font-extrabold text-[17px] text-ink mb-1.5">Target 4.1: Equitable & Quality Education</h3>
             <p class="text-muted text-[14px] leading-relaxed mb-0">
-              Regional students frequently fall behind due to a lack of learning materials in their mother tongues. By introducing dialect-specific text-to-speech and AI content simplification, we democratize access to quality study tools regardless of geography or socioeconomic background.
+              Regional students frequently fall behind due to a lack of learning materials. By introducing bilingual text-to-speech and AI content simplification, we democratize access to quality study tools regardless of geography or socioeconomic background.
             </p>
           </div>
           
@@ -589,11 +558,11 @@
           <h3 class="font-display font-extrabold text-xl mb-1">Basahin Mo</h3>
           <p class="text-muted text-[13px] italic mb-3">TTS Reader</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
-            Paste any text. Pick a dialect. Press play. Audio plays sentence-by-sentence so it starts fast on slow connections. Speed and pitch are adjustable — a student can slow it down to 0.5x while learning a new word.
+            Paste any text. Pick a language. Press play. Audio plays sentence-by-sentence so it starts fast on slow connections. Speed and pitch are adjustable — a student can slow it down to 0.5x while learning a new word.
           </p>
           <div class="flex flex-wrap gap-1.5">
             <span class="pill bg-soft-blue text-sky-dark">Google Cloud TTS</span>
-            <span class="pill bg-soft-blue text-sky-dark">5 dialects</span>
+            <span class="pill bg-soft-blue text-sky-dark">English & Filipino</span>
             <span class="pill bg-soft-blue text-sky-dark">Speed control</span>
             <span class="pill bg-green-100 text-success">Low bandwidth</span>
           </div>
@@ -636,13 +605,13 @@
         <article class="tool-card p-6 fade-up" id="tool-ipaliwanag">
           <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/ipaliwanag</span>
           <h3 class="font-display font-extrabold text-xl mb-1">Ipaliwanag Mo</h3>
-          <p class="text-muted text-[13px] italic mb-3">Dialect Summarizer</p>
+          <p class="text-muted text-[13px] italic mb-3">Summarizer</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
-            Paste a textbook passage. Pick Cebuano and Grade 7. Gemini rewrites it in plain Cebuano a 13-year-old can follow. The output can be read aloud through TTS. There's nothing else like this for Philippine regional languages.
+            Paste a textbook passage. Pick a language and Grade 7. Gemini rewrites it in plain language a 13-year-old can follow. The output can be read aloud through TTS. There's nothing else like this for Filipino students.
           </p>
           <div class="flex flex-wrap gap-1.5">
             <span class="pill bg-soft-blue text-sky-dark">Gemini 1.5 Flash</span>
-            <span class="pill bg-soft-blue text-sky-dark">5 dialects</span>
+            <span class="pill bg-soft-blue text-sky-dark">English & Filipino</span>
             <span class="pill bg-soft-blue text-sky-dark">Grade-level aware</span>
             <span class="pill bg-soft-blue text-sky-dark">TTS output</span>
           </div>
@@ -713,39 +682,24 @@
       <div class="fade-up">
         <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Supported Languages</p>
         <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-8 text-ink">
-          Five Philippine languages at launch
+          English and Filipino support at launch
         </h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
-          <div class="dialect-card px-4 py-5">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-3 mb-8">
+          <div class="language-card px-4 py-5">
             <p class="font-display font-extrabold text-base mb-1">Filipino</p>
             <p class="text-muted text-[13px] italic">Filipino</p>
             <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">National</p>
           </div>
-          <div class="dialect-card px-4 py-5">
-            <p class="font-display font-extrabold text-base mb-1">Tagalog</p>
-            <p class="text-muted text-[13px] italic">Tagalog</p>
-            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">Metro Manila</p>
-          </div>
-          <div class="dialect-card px-4 py-5">
-            <p class="font-display font-extrabold text-base mb-1">Cebuano</p>
-            <p class="text-muted text-[13px] italic">Bisaya</p>
-            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">Visayas</p>
-          </div>
-          <div class="dialect-card px-4 py-5">
-            <p class="font-display font-extrabold text-base mb-1">Ilocano</p>
-            <p class="text-muted text-[13px] italic">Ilokano</p>
-            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">N. Luzon</p>
-          </div>
-          <div class="dialect-card px-4 py-5">
-            <p class="font-display font-extrabold text-base mb-1">Hiligaynon</p>
-            <p class="text-muted text-[13px] italic">Ilonggo</p>
-            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">W. Visayas</p>
+          <div class="language-card px-4 py-5">
+            <p class="font-display font-extrabold text-base mb-1">English</p>
+            <p class="text-muted text-[13px] italic">English</p>
+            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">Universal</p>
           </div>
         </div>
 
         <p class="text-muted text-sm max-w-[680px]">
-          Google Cloud TTS natively supports <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1.5 py-0.5 rounded">fil-PH</code>. For Cebuano, Ilocano, and Hiligaynon, text is pre-processed through Gemini for pronunciation-consistent spelling before synthesis. This is a known approximation — the open-source Coqui model is built to close that gap.
+          Google Cloud TTS natively supports <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1.5 py-0.5 rounded">fil-PH</code> and <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1.5 py-0.5 rounded">en-US</code>. These allow us to provide high-quality read-aloud functionality for the vast majority of local educational materials.
         </p>
       </div>
     </div>
@@ -770,7 +724,7 @@
           </div>
           <div class="bw-card">
             <p class="text-success text-[12px] font-bold uppercase tracking-[0.1em] mb-1">Minimal bandwidth</p>
-            <p class="font-bold text-[15px] mb-1">Dialect Summarizer</p>
+            <p class="font-bold text-[15px] mb-1">Summarizer</p>
             <p class="text-muted text-[13px]">Text in, text out. Gemini responses are under 2KB, even on 2G.</p>
           </div>
           <div class="bw-card">
@@ -886,15 +840,15 @@
           <ul class="space-y-4">
             <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
               <span class="text-sun flex-shrink-0">▸</span>
-              Curated PLD corpus subsets for Cebuano, Ilocano, and Hiligaynon — cleaned, normalized, and ready for TTS training
+              Curated corpus subsets for English and Filipino — cleaned, normalized, and ready for TTS training
             </li>
             <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
               <span class="text-sun flex-shrink-0">▸</span>
-              Fine-tuned VITS / Coqui TTS model checkpoint per dialect, with model card and training notes
+              Fine-tuned VITS / Coqui TTS model checkpoint, with model card and training notes
             </li>
             <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
               <span class="text-sun flex-shrink-0">▸</span>
-              Reproducible training pipeline in Python — any researcher can retrain or extend to new dialects
+              Reproducible training pipeline in Python — any researcher can retrain or extend to new languages
             </li>
             <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
               <span class="text-sun flex-shrink-0">▸</span>
@@ -967,7 +921,7 @@
         <ul class="space-y-4 max-w-[680px]">
           <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
             <span class="flex-shrink-0 mt-0.5">⚠️</span>
-            <span>Google TTS has <strong>native support for Filipino only</strong>. Cebuano, Ilocano, and Hiligaynon are approximated by normalizing spelling through Gemini before synthesis. The open-source Coqui model is designed to close this gap.</span>
+            <span>Google TTS has <strong>native support for English and Filipino</strong>. The open-source Coqui model is also being designed to close the gap for offline, on-device usage.</span>
           </li>
           <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
             <span class="flex-shrink-0 mt-0.5">⚠️</span>

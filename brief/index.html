@@ -441,15 +441,15 @@
     border-radius: 4px;
   }
 
-  /* DIALECT TABLE */
-  .dialect-grid {
+  /* LANGUAGE TABLE */
+  .language-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 14px;
     margin: 20px 0;
   }
 
-  .dialect-card {
+  .language-card {
     border: 1.5px solid var(--divider);
     border-radius: 10px;
     padding: 16px;
@@ -457,21 +457,21 @@
     text-align: center;
   }
 
-  .dialect-card-name {
+  .language-card-name {
     font-family: 'Syne', sans-serif;
     font-weight: 800;
     font-size: 16px;
     margin-bottom: 4px;
   }
 
-  .dialect-card-local {
+  .language-card-local {
     font-size: 13px;
     font-style: italic;
     color: var(--muted);
     margin-bottom: 0;
   }
 
-  .dialect-card-region {
+  .language-card-region {
     font-size: 11px;
     color: var(--sky);
     font-weight: 700;
@@ -862,7 +862,7 @@
     <span class="tag tag-outline">Web App</span>
     <span class="tag tag-outline">Next.js</span>
     <span class="tag tag-outline">Accessibility</span>
-    <span class="tag tag-outline">Philippine Languages</span>
+    <span class="tag tag-outline">Bilingual Support</span>
   </div>
   <div class="cover-meta">
     <div class="cover-meta-item">
@@ -870,8 +870,8 @@
       <span class="cover-meta-value">Web (Next.js 14)</span>
     </div>
     <div class="cover-meta-item">
-      <span class="cover-meta-label">Dialects</span>
-      <span class="cover-meta-value">5 Philippine Languages</span>
+      <span class="cover-meta-label">Languages</span>
+      <span class="cover-meta-value">English & Filipino</span>
     </div>
     <div class="cover-meta-item">
       <span class="cover-meta-label">Deploy Target</span>
@@ -893,25 +893,25 @@
 
     <div class="stats-row grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
-        <div class="problem-stat">130+</div>
-        <p class="problem-stat-label">Philippine languages spoken across the archipelago</p>
+        <div class="problem-stat">2</div>
+        <p class="problem-stat-label">Core languages supported: English and Filipino</p>
       </div>
       <div>
         <div class="problem-stat">1 in 5</div>
         <p class="problem-stat-label">Students affected by dyslexia and reading difficulties</p>
       </div>
       <div>
-        <div class="problem-stat">~4</div>
-        <p class="problem-stat-label">Philippine languages with meaningful open speech technology support</p>
+        <div class="problem-stat">1</div>
+        <p class="problem-stat-label">Unified platform for accessible reading</p>
       </div>
     </div>
 
-    <p>Despite the Philippines being home to more than 130 languages, most regional languages remain invisible in AI and speech technology. Tagalog has seen progress, but Cebuano, Ilocano, Hiligaynon, and dozens of others lack open datasets, benchmarks, and models. Meanwhile, millions of Filipino students navigate classrooms with no accessible reading support in their mother tongue.</p>
+    <p>Despite the progress in educational technology, many students navigate classrooms with no accessible reading support. Most existing tools are built for foreign contexts and lack support for the local curriculum.</p>
 
-    <p>Existing learning platforms are built for English-primary, high-bandwidth, and neurotypical users. They were not designed for a Grade 7 student in Cebu reading a Tagalog science textbook on a slow mobile connection with an undiagnosed reading difficulty.</p>
+    <p>Existing learning platforms are built for English-primary, high-bandwidth, and neurotypical users. They were not designed for a Grade 7 student reading a science textbook on a slow mobile connection with an undiagnosed reading difficulty.</p>
 
     <div class="callout">
-      <p><strong>GabAI-Basa</strong> addresses both gaps simultaneously: a browser-based reading companion for Filipino students, and an open-source speech infrastructure contribution for Philippine languages that researchers and developers can build on.</p>
+      <p><strong>GabAI-Basa</strong> addresses both gaps simultaneously: a browser-based reading companion for Filipino students, and an open-source speech infrastructure contribution for English and Filipino that researchers and developers can build on.</p>
     </div>
   </div>
 
@@ -926,8 +926,8 @@
       <div class="case-card github">
         <div class="case-title">&#128200; GitHub Education<br/><small style="font-weight:400;font-size:13px;color:#6B7280;">GabAI-Basa case</small></div>
         <ul class="case-items">
-          <li><span class="check">✓</span> Curated PLD corpus subsets for Cebuano, Ilocano, Hiligaynon published to HuggingFace</li>
-          <li><span class="check">✓</span> Fine-tuned Coqui TTS / VITS model checkpoint per dialect</li>
+          <li><span class="check">✓</span> Curated PLD corpus subsets for English and Filipino published to HuggingFace</li>
+          <li><span class="check">✓</span> Fine-tuned Coqui TTS / VITS model checkpoint per language</li>
           <li><span class="check">✓</span> Reproducible training pipeline with documentation</li>
           <li><span class="check">✓</span> The app itself is proof the open model works in production</li>
           <li><span class="check">✓</span> MIT-licensed, fully forkable, designed for extension</li>
@@ -936,7 +936,7 @@
       <div class="case-card accenture">
         <div class="case-title">&#127775; Accenture<br/><small style="font-weight:400;font-size:13px;color:#6B7280;">AI-Powered Study Companion case</small></div>
         <ul class="case-items">
-          <li><span class="check">✓</span> Explains and reads content in Filipino and regional languages</li>
+          <li><span class="check">✓</span> Explains and reads content in English and Filipino</li>
           <li><span class="check">✓</span> Grade-level-aware Gemini summarizer adapts to student level</li>
           <li><span class="check">✓</span> Pronunciation rater gives personalized reading feedback</li>
           <li><span class="check">✓</span> Designed for low-bandwidth and mobile use</li>
@@ -953,13 +953,13 @@
     <div class="section-label">Who It's For</div>
     <h2>Designed for everyone. Engineered for those who need it most.</h2>
 
-    <p>GabAI-Basa is not a dyslexia-only tool. Any Filipino student benefits from dialect-aware TTS, dialect summarization, and a co-reader. But every design decision is tested against one question first: <em>does this work for a student with dyslexia?</em> If it does, it works for everyone.</p>
+    <p>GabAI-Basa is not a dyslexia-only tool. Any Filipino student benefits from bilingual TTS, AI summarization, and a co-reader. But every design decision is tested against one question first: <em>does this work for a student with dyslexia?</em> If it does, it works for everyone.</p>
 
     <div class="callout callout-sky">
-      <p><strong>Primary user:</strong> Filipino student, Grades 5&ndash;10, any dialect region, who struggles with reading fluency, reading comprehension, or encountering academic text in an unfamiliar language.</p>
+      <p><strong>Primary user:</strong> Filipino student, Grades 5&ndash;10, any region, who struggles with reading fluency, reading comprehension, or encountering academic text in an unfamiliar language.</p>
     </div>
     <div class="callout">
-      <p><strong>Secondary users:</strong> Any student who wants to listen to text, get a summary in their dialect, or look up an English word. Teachers who want a low-setup reading support tool for their class.</p>
+      <p><strong>Secondary users:</strong> Any student who wants to listen to text, get a summary, or look up an English word. Teachers who want a low-setup reading support tool for their class.</p>
     </div>
   </div>
 
@@ -976,10 +976,10 @@
         <span class="feature-route">/basahin</span>
         <div class="feature-name">Basahin Mo</div>
         <div class="feature-tagline">TTS Reader</div>
-        <p class="feature-desc">Paste or upload text. Pick a dialect. Press play. A clean audio reader with adjustable speed and pitch. Sentence-level chunked playback keeps bandwidth low and lets the student follow along.</p>
+        <p class="feature-desc">Paste or upload text. Pick a language. Press play. A clean audio reader with adjustable speed and pitch. Sentence-level chunked playback keeps bandwidth low and lets the student follow along.</p>
         <div class="feature-pills">
           <span class="pill">Google Cloud TTS</span>
-          <span class="pill">5 dialects</span>
+          <span class="pill">English & Filipino</span>
           <span class="pill">Speed control</span>
           <span class="pill pill-green">Low bandwidth</span>
         </div>
@@ -1015,11 +1015,11 @@
       <div class="feature-card">
         <span class="feature-route">/ipaliwanag</span>
         <div class="feature-name">Ipaliwanag Mo</div>
-        <div class="feature-tagline">Dialect Summarizer</div>
-        <p class="feature-desc">Paste a textbook excerpt, article, or assignment. Pick a dialect and a grade level. Gemini summarizes it in plain, student-friendly language in that dialect. Output can be read aloud via TTS. The only tool of its kind for Philippine regional languages.</p>
+        <div class="feature-tagline">Summarizer</div>
+        <p class="feature-desc">Paste a textbook excerpt, article, or assignment. Pick a language and a grade level. Gemini summarizes it in plain, student-friendly language. Output can be read aloud via TTS. The only tool of its kind for Filipino students.</p>
         <div class="feature-pills">
           <span class="pill">Gemini 1.5 Flash</span>
-          <span class="pill">5 dialects</span>
+          <span class="pill">English & Filipino</span>
           <span class="pill">Grade-level aware</span>
           <span class="pill">TTS output</span>
         </div>
@@ -1066,40 +1066,25 @@
 
   <hr />
 
-  <!-- DIALECTS -->
+  <!-- LANGUAGES -->
   <div class="section">
     <div class="section-label">Supported Languages</div>
-    <h2>Five Philippine languages at launch</h2>
+    <h2>English and Filipino support at launch</h2>
 
-    <div class="dialect-grid">
-      <div class="dialect-card">
-        <div class="dialect-card-name">Filipino</div>
-        <p class="dialect-card-local">Filipino</p>
-        <p class="dialect-card-region">National language</p>
+    <div class="language-grid">
+      <div class="language-card">
+        <div class="language-card-name">Filipino</div>
+        <p class="language-card-local">Filipino</p>
+        <p class="language-card-region">National language</p>
       </div>
-      <div class="dialect-card">
-        <div class="dialect-card-name">Tagalog</div>
-        <p class="dialect-card-local">Tagalog</p>
-        <p class="dialect-card-region">Metro Manila / Luzon</p>
-      </div>
-      <div class="dialect-card">
-        <div class="dialect-card-name">Cebuano</div>
-        <p class="dialect-card-local">Bisaya / Cebuano</p>
-        <p class="dialect-card-region">Visayas / Mindanao</p>
-      </div>
-      <div class="dialect-card">
-        <div class="dialect-card-name">Ilocano</div>
-        <p class="dialect-card-local">Ilokano</p>
-        <p class="dialect-card-region">Ilocos / N. Luzon</p>
-      </div>
-      <div class="dialect-card">
-        <div class="dialect-card-name">Hiligaynon</div>
-        <p class="dialect-card-local">Ilonggo</p>
-        <p class="dialect-card-region">Western Visayas</p>
+      <div class="language-card">
+        <div class="language-card-name">English</div>
+        <p class="language-card-local">English</p>
+        <p class="language-card-region">Universal</p>
       </div>
     </div>
 
-    <p style="margin-top:16px;font-size:14px;color:var(--muted);">Google Cloud TTS has native <code>fil-PH</code> support. For Cebuano, Ilocano, and Hiligaynon, text is pre-processed through Gemini to normalize pronunciation-consistent spelling before synthesis. This is a known limitation the open-source Coqui model is designed to close.</p>
+    <p style="margin-top:16px;font-size:14px;color:var(--muted);">Google Cloud TTS natively supports <code>fil-PH</code> and <code>en-US</code>. These allow us to provide high-quality read-aloud functionality for the vast majority of local educational materials.</p>
   </div>
 
   <hr />
@@ -1162,7 +1147,7 @@
           <tr>
             <td>Open artifact</td>
             <td><strong>Coqui TTS</strong> + <strong>PLD corpus</strong></td>
-            <td>Fine-tuned VITS model per dialect, published to HuggingFace</td>
+            <td>Fine-tuned VITS model, published to HuggingFace</td>
           </tr>
         </tbody>
       </table>
@@ -1189,7 +1174,7 @@
 │   │   ├── <span class="dir">salita/</span>
 │   │   │   └── <span class="route">page.tsx</span>         <span class="comment">Spelling &amp; Dictionary</span>
 │   │   ├── <span class="dir">ipaliwanag/</span>
-│   │   │   └── <span class="route">page.tsx</span>         <span class="comment">Dialect Summarizer</span>
+│   │   │   └── <span class="route">page.tsx</span>         <span class="comment">Summarizer</span>
 │   │   └── <span class="dir">api/</span>
 │   │       ├── <span class="dir">tts/</span>
 │   │       │   └── <span class="route">route.ts</span>     <span class="comment">Google TTS proxy (API key server-side)</span>
@@ -1197,12 +1182,12 @@
 │   │           └── <span class="route">route.ts</span>     <span class="comment">Gemini proxy (API key server-side)</span>
 │   ├── <span class="dir">components/</span>
 │   │   ├── <span class="route">Nav.tsx</span>
-│   │   ├── <span class="route">DialectPicker.tsx</span>
+│   │   ├── <span class="route">LanguagePicker.tsx</span>
 │   │   ├── <span class="route">AudioPlayer.tsx</span>
 │   │   ├── <span class="route">WordHighlighter.tsx</span>  <span class="comment">Co-reader core state machine</span>
 │   │   └── <span class="route">PronunciationRater.tsx</span>
 │   └── <span class="dir">lib/</span>
-│       └── <span class="route">dialects.ts</span>          <span class="comment">Central dialect config</span>
+│       └── <span class="route">languages.ts</span>          <span class="comment">Central language config</span>
 ├── <span class="route">.env.local.example</span>
 └── <span class="route">README.md</span>
     </div>
@@ -1264,8 +1249,8 @@
       <div class="artifact-title">&#128218; HuggingFace Dataset + Model</div>
       <div class="artifact-sub">Published under MIT license, separate from the app repository</div>
       <ul class="artifact-items">
-        <li><span class="artifact-icon">&#9654;</span> Curated and formatted subset of the Philippine Languages Database (PLD) for Cebuano, Ilocano, and Hiligaynon — cleaned, normalized, and ready for TTS training</li>
-        <li><span class="artifact-icon">&#9654;</span> Fine-tuned VITS / Coqui TTS model checkpoint per dialect, with model card and training notes</li>
+        <li><span class="artifact-icon">&#9654;</span> Curated and formatted subset of the Philippine Languages Database (PLD) for English and Filipino — cleaned, normalized, and ready for TTS training</li>
+        <li><span class="artifact-icon">&#9654;</span> Fine-tuned VITS / Coqui TTS model checkpoint per language, with model card and training notes</li>
         <li><span class="artifact-icon">&#9654;</span> Reproducible training pipeline in Python with documented steps — any researcher can retrain or extend</li>
         <li><span class="artifact-icon">&#9654;</span> HuggingFace dataset card with language metadata, speaker demographics, and known limitations</li>
         <li><span class="artifact-icon">&#9654;</span> The app is the demonstration that the open model works in a real product — closing the loop between research artifact and usable technology</li>
@@ -1301,7 +1286,7 @@
     <h2>Honest limitations</h2>
 
     <ul class="constraint-list">
-      <li><span class="c-icon">&#9888;&#65039;</span><span>Google TTS has <strong>native support for Filipino only</strong>. Cebuano, Ilocano, and Hiligaynon are approximated by pre-processing text through Gemini for pronunciation-consistent spelling before synthesis. This is a known limitation the open-source model artifact is built to address.</span></li>
+      <li><span class="c-icon">&#9888;&#65039;</span><span>Google TTS has <strong>native support for English and Filipino</strong>. The open-source Coqui model is designed to close the gap for offline, on-device usage.</span></li>
       <li><span class="c-icon">&#9888;&#65039;</span><span>The <strong>Web Speech API</strong> (pronunciation rater) requires Chrome or Edge. Firefox and Safari users see a compatibility notice and fall back to manual tap-to-advance co-reading without scoring.</span></li>
       <li><span class="c-icon">&#9888;&#65039;</span><span>The <strong>Gemini summarizer</strong> requires a live connection and caps input at 3,000 characters to stay within Flash rate limits during the demo. This is a demo constraint, not a fundamental limitation.</span></li>
       <li><span class="c-icon">&#9888;&#65039;</span><span><strong>No user data is stored.</strong> Mic access is session-only and never sent to a server. Dictionary cache is browser-local. No account, no tracking.</span></li>

@@ -15,12 +15,12 @@ We will build **GabAI-Basa**, an accessibility-first Filipino reading companion 
 We have chosen **Accenture Case 2** (AI-Powered Study Companion), but our comprehensive approach ensures that the project also covers **Case 1**.
 
 The project will address two critical challenges simultaneously:
-1. **Linguistic Underrepresentation (GitHub Education Track):** We will provide open-source datasets and text-to-speech models for underrepresented regional dialects (Cebuano, Ilocano, and Hiligaynon).
-2. **Cognitive Accessibility (Accenture Track):** We will deliver a lightweight, browser-native AI study companion that will simplify, explain, read, and rate pronunciation in regional mother tongues.
+1. **Linguistic Underrepresentation (GitHub Education Track):** We will provide open-source datasets and text-to-speech models for English and Filipino.
+2. **Cognitive Accessibility (Accenture Track):** We will deliver a lightweight, browser-native AI study companion that will simplify, explain, read, and rate pronunciation in English and Filipino.
 
 ## 🎯 Alignment with UN Sustainable Development Goal #4: Quality Education
 GabAI-Basa is directly engineered to advance SDG #4, which aims to ensure inclusive and equitable quality education and promote lifelong learning opportunities for all. The project targets specific indicators under this goal by addressing foundational literacy gaps in the Philippine public education sector:
-•	**Target 4.1 (Free, Equitable, and Quality Primary/Secondary Education):** In the Philippines, regional students frequently fall behind due to a lack of learning materials in their native mother tongues. By introducing dialect-specific text-to-speech and AI-driven content simplification, we democratize access to quality study tools regardless of a student's geographic or socioeconomic background.
+•	**Target 4.1 (Free, Equitable, and Quality Primary/Secondary Education):** In the Philippines, regional students frequently fall behind due to a lack of learning materials. By introducing bilingual text-to-speech and AI-driven content simplification in English and Filipino, we democratize access to quality study tools regardless of a student's geographic or socioeconomic background.
 •	**Target 4.5 (Eliminate Gender and Literacy Disparities & Ensure Equal Access for the Vulnerable):** Traditional educational software widely overlooks neurodivergent learners. Our application places cognitive accessibility at the forefront—incorporating OpenDyslexic fonts, high-contrast visual pacing, and localized speech scoring to provide an equitable learning landscape for students dealing with dyslexia and reading difficulties.
 •	**Target 4.a (Build and Upgrade Inclusive and Safe Schools):** We extend the concept of an inclusive "learning environment" into the digital realm. By building a Progressive Web App (PWA) with zero-bandwidth scoring and extreme data optimization, we ensure that the software is fully functional in remote, low-connectivity public schools across rural regions.
 
@@ -29,8 +29,8 @@ GabAI-Basa is directly engineered to advance SDG #4, which aims to ensure inclus
 ## What We Will Build (Core Features)
 
 ### 1. Basahin Mo (TTS Reader) — `/basahin`
-We will develop an optimized Text-to-Speech audio reader enabling students to paste or upload text and listen to it read in various regional dialects.
-* **Key Capabilities:** We will implement sentence-level chunked playback, adjustable reading rate and pitch, support for five dialects, session caching to minimize API hits, and Opus OGG audio compression for low bandwidths.
+We will develop an optimized Text-to-Speech audio reader enabling students to paste or upload text and listen to it read in English and Filipino.
+* **Key Capabilities:** We will implement sentence-level chunked playback, adjustable reading rate and pitch, support for English and Filipino, session caching to minimize API hits, and Opus OGG audio compression for low bandwidths.
 * **Engine:** Google Cloud TTS API (Filipino native voice fallback with phonetic mapping).
 
 ### 2. Samahan Mo Ako (Co-Reader + Pronunciation Rater) — `/samahan`
@@ -43,9 +43,9 @@ We will integrate a clean dictionary lookup for word definitions, types, IPA pho
 * **Key Capabilities:** We will build offline caching using `localStorage` so repeat lookups of the same word will require zero network connectivity.
 * **Engine:** Free Dictionary API (`dictionaryapi.dev`) and browser cache.
 
-### 4. Ipaliwanag Mo (Dialect Summarizer) — `/ipaliwanag`
-We will construct an AI simplification tool designed to translate and summarize textbook content or articles into student-friendly phrasing relative to grade levels (4-6, 7-9, 10-12) in selected regional dialects.
-* **Key Capabilities:** Dialect-specific prompt engineering will ensure that summaries conform to cultural and regional vocabulary.
+### 4. Ipaliwanag Mo (Summarizer) — `/ipaliwanag`
+We will construct an AI simplification tool designed to translate and summarize textbook content or articles into student-friendly phrasing relative to grade levels (4-6, 7-9, 10-12) in English and Filipino.
+* **Key Capabilities:** Bilingual prompt engineering will ensure that summaries conform to appropriate English and Filipino vocabulary.
 * **Engine:** Gemini 1.5 Flash via Google AI Studio.
 
 ---
@@ -62,9 +62,9 @@ We will utilize the following technologies:
 
 ## 📦 Open Source Deliverables
 To support local speech infrastructure, our team will publish:
-* **Curated PLD Datasets:** Pre-processed subsets of the Philippine Languages Database (PLD) for Cebuano, Ilocano, and Hiligaynon.
-* **Fine-Tuned Checkpoints:** Customized VITS (Coqui TTS) checkpoints trained per dialect.
-* **Training Pipelines:** Dockerized scripts that will enable researchers to train models on new regional languages.
+* **Curated Datasets:** Pre-processed datasets for English and Filipino.
+* **Fine-Tuned Checkpoints:** Customized VITS (Coqui TTS) checkpoints trained for English and Filipino.
+* **Training Pipelines:** Dockerized scripts that will enable researchers to train models on these languages.
 * **HF Repository:** [huggingface.co/datasets/[team]/pld-ph-tts](https://huggingface.co/datasets/[team]/pld-ph-tts)
 * **GitHub Repository:** [github.com/jc-gt3rs/muralla](https://github.com/jc-gt3rs/muralla)
 
