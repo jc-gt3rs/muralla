@@ -7,6 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
+    /* Typography scale */
+    --font-size-base: 17px;
+    --font-size-large: 21px;
+    --font-size-xlarge: 25px;
+
+    /* Reading spacing options */
+    --letter-spacing-normal: normal;
+    --letter-spacing-medium: 0.05em;
+    --letter-spacing-high: 0.12em;
+    
+    --transition-speed: 0.2s;
     --sun: #F7C948;
     --sun-light: #FFF5CC;
     --sky: #2D6BE4;
@@ -27,8 +38,9 @@
     font-family: 'Atkinson Hyperlegible', Georgia, serif;
     background: var(--paper);
     color: var(--ink);
-    font-size: 17px;
+    font-size: var(--font-size-base);
     line-height: 1.75;
+    transition: font-size var(--transition-speed), letter-spacing var(--transition-speed), font-family var(--transition-speed);
   }
 
   /* COVER */
@@ -669,9 +681,150 @@
     body { font-size: 15px; }
     .page { padding: 32px 24px; }
   }
+
+  /* Dyslexic and Reader Customizations */
+  body.font-opendyslexic {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+  }
+  body.font-size-large-body {
+    font-size: var(--font-size-large);
+  }
+  body.font-size-xlarge-body {
+    font-size: var(--font-size-xlarge);
+  }
+  body.spacing-medium-body {
+    letter-spacing: var(--letter-spacing-medium);
+  }
+  body.spacing-high-body {
+    letter-spacing: var(--letter-spacing-high);
+  }
+
+  @font-face {
+    font-family: 'OpenDyslexic';
+    src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype'),
+         url('/fonts/OpenDyslexic-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  /* Sticky Header & Controls */
+  header {
+    background-color: var(--ink);
+    color: var(--paper);
+    padding: 1rem 2rem;
+    border-bottom: 5px solid var(--sun);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .brand h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--sun);
+    line-height: 1.1;
+  }
+
+  .brand p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 0.2rem;
+  }
+
+  .accessibility-toolbar {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .toolbar-group label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sun);
+    font-weight: bold;
+  }
+
+  .toolbar-group select {
+    background-color: var(--ink);
+    color: var(--paper);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .toolbar-group select:focus {
+    border-color: var(--sun);
+  }
 </style>
 </head>
 <body>
+  <!-- Premium Accessibility & Document Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <h1>Gabai-basa</h1>
+        <p>Reading Guide: Filipino Reading Companion • Project Brief</p>
+      </div>
+
+      <div class="accessibility-toolbar" aria-label="Reading Controls">
+        <div class="toolbar-group">
+          <label for="font-select">Font Style</label>
+          <select id="font-select">
+            <option value="atkinson">Atkinson Hyperlegible</option>
+            <option value="opendyslexic">OpenDyslexic</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="size-select">Text Size</label>
+          <select id="size-select">
+            <option value="normal">Normal (17px)</option>
+            <option value="large">Large (21px)</option>
+            <option value="xlarge">Extra Large (25px)</option>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="spacing-select">Spacing</label>
+          <select id="spacing-select">
+            <option value="normal">Normal</option>
+            <option value="medium">Medium (+0.05em)</option>
+            <option value="high">High (+0.12em)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
 
 <!-- COVER -->
 <div class="cover">
@@ -1142,5 +1295,72 @@
   </div>
 </div>
 
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const fontSelect = document.getElementById('font-select');
+    const sizeSelect = document.getElementById('size-select');
+    const spacingSelect = document.getElementById('spacing-select');
+
+    // Accessibility preference application
+    const applyPrefSettings = () => {
+      const font = localStorage.getItem('pref-font') || 'atkinson';
+      const size = localStorage.getItem('pref-size') || 'normal';
+      const spacing = localStorage.getItem('pref-spacing') || 'normal';
+
+      if (fontSelect) fontSelect.value = font;
+      if (sizeSelect) sizeSelect.value = size;
+      if (spacingSelect) spacingSelect.value = spacing;
+
+      // Apply Font family override
+      if (font === 'opendyslexic') {
+        document.body.classList.add('font-opendyslexic');
+      } else {
+        document.body.classList.remove('font-opendyslexic');
+      }
+
+      // Apply Font Size classes
+      document.body.classList.remove('font-size-large-body', 'font-size-xlarge-body');
+      if (size === 'large') {
+        document.body.classList.add('font-size-large-body');
+      } else if (size === 'xlarge') {
+        document.body.classList.add('font-size-xlarge-body');
+      }
+
+      // Apply Letter Spacing classes
+      document.body.classList.remove('spacing-medium-body', 'spacing-high-body');
+      if (spacing === 'medium') {
+        document.body.classList.add('spacing-medium-body');
+      } else if (spacing === 'high') {
+        document.body.classList.add('spacing-high-body');
+      }
+    };
+
+    // Control event listeners
+    if (fontSelect) {
+      fontSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pref-font', e.target.value);
+        applyPrefSettings();
+      });
+    }
+
+    if (sizeSelect) {
+      sizeSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pref-size', e.target.value);
+        applyPrefSettings();
+      });
+    }
+
+    if (spacingSelect) {
+      spacingSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pref-spacing', e.target.value);
+        applyPrefSettings();
+      });
+    }
+
+    // Initial settings load
+    applyPrefSettings();
+  });
+</script>
 </body>
 </html>
