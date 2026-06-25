@@ -1,6 +1,8 @@
 # GabAI-Basa (Reading Guide)
 ### Filipino Reading Companion & Open-Source Speech Infrastructure
 
+**Live MVP:** [muralla.didthat.lol](https://muralla.didthat.lol)
+
 **Team:** Muralla  
 **Members:**
 - John Cris Antor
@@ -58,7 +60,7 @@ To support local speech infrastructure, our team will publish:
 * **Fine-Tuned Checkpoints:** Customized VITS (Coqui TTS) checkpoints trained per dialect.
 * **Training Pipelines:** Dockerized scripts that will enable researchers to train models on new regional languages.
 * **HF Repository:** [huggingface.co/datasets/[team]/pld-ph-tts](https://huggingface.co/datasets/[team]/pld-ph-tts)
-* **GitHub Repository:** [github.com/[team]/GabAI-Basa-corpus](https://github.com/[team]/GabAI-Basa-corpus)
+* **GitHub Repository:** [github.com/jc-gt3rs/muralla](https://github.com/jc-gt3rs/muralla)
 
 ---
 
@@ -67,3 +69,10 @@ We will design this system specifically for the regional connectivity constraint
 * **Zero-Bandwidth Scoring:** The pronunciation scoring engine will run entirely locally on-device. No audio recordings will ever be uploaded.
 * **Smart Caching:** Dictionary lookups and TTS audio chunks will be cached in `localStorage` and session states.
 * **App Shell Architecture:** We will configure the project as a Progressive Web Application (PWA) cacheable by service workers for near-instant repeat loading.
+
+---
+
+## 🤖 AI Usage
+To accelerate our development and ensure high-quality implementation during the hackathon, we utilized AI tools in a clean, structured workflow:
+* **Claude:** Utilized for conceptual ideation, refining accessibility features, and structuring the initial project documentation and UI/UX design plans.
+* **Antigravity AI:** Integrated as an agentic coding assistant to rapidly scaffold the application, implement styling, and manage project architecture. This allowed us to iterate quickly on components and seamlessly draft our documentation.
