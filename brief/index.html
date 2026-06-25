@@ -1387,5 +1387,30 @@
     applyPrefSettings();
   });
 </script>
+
+  <script>
+    // Auto-hide header on scroll down
+    let lastScrollY = window.scrollY;
+    const header = document.querySelector('header');
+    
+    // Add transition style safely
+    if (header) {
+      header.style.transition = 'transform 0.3s ease-in-out';
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!header) return;
+      
+      if (window.scrollY > lastScrollY && window.scrollY > 120) {
+        // Scrolling down past 120px -> hide header
+        header.style.transform = 'translateY(-100%)';
+      } else {
+        // Scrolling up -> show header
+        header.style.transform = 'translateY(0)';
+      }
+      lastScrollY = window.scrollY;
+    });
+  </script>
+
 </body>
 </html>
