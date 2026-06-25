@@ -28,9 +28,9 @@ const defaults = {
   // ── Text-to-Speech (Basahin, Samahan) ───────────────────────────
   // 'browser' → Web Speech API. Works now, no key, zero bandwidth.
   // 'google'  → Google Cloud TTS. Higher-quality Filipino voice; needs a key.
-  ttsProvider: 'browser',
-  googleTtsApiKey: '',                       // ← add Google Cloud TTS key
-  googleTtsEndpoint: 'https://texttospeech.googleapis.com/v1/text:synthesize',
+  ttsProvider: 'google',
+  googleTtsApiKey: 'proxy',                  // ← set to 'proxy' to satisfy ttsCloudReady, key is on server
+  googleTtsEndpoint: '/api/tts',             // ← use proxy instead of calling Google directly
 
   // ── AI Summarizer (Ipaliwanag) ──────────────────────────────────
   // 'mock'   → canned demo output. Works now, no key. UI fully testable.

@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_KEY || '';
 const GEMINI_URL =
   'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+const GOOGLE_TTS_KEY = process.env.GOOGLE_TTS_KEY || '';
+const TTS_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize';
 
 // Allow requests only from our own domain (change if needed).
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://muralla.didthat.lol';
@@ -63,6 +65,29 @@ app.post('/api/summarize', async (req, res) => {
   } catch (err) {
     console.error('Proxy fetch failed:', err);
     res.status(500).json({ error: 'Proxy error. Check server logs.' });
+  }
+});
+
+app.post('/api/tts', async (req, res) => {
+  if (!GOOGLE_TTS_KEY) {
+    return res.status(500).json({ error: 'TTS key not configured on server.' });
+  }
+  try {
+    const r = await fetch(`${TTS_URL}?key=${GOOGLE_TTS_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
+    });
+    if (!r.ok) {
+      const msg = await r.text();
+      console.error('TTS error:', r.status, msg);
+      return res.status(502).json({ error: `TTS returned ${r.status}` });
+    }
+    const data = await r.json();
+    res.json(data);
+  } catch (err) {
+    console.error('TTS fetch failed:', err);
+    res.status(500).json({ error: 'TTS proxy error. Check server logs.' });
   }
 });
 
