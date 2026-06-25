@@ -46,7 +46,7 @@ We will construct an AI simplification tool designed to translate and summarize 
 We will utilize the following technologies:
 * **Framework:** Next.js 14 (App Router)
 * **Styling:** Tailwind CSS / Vanilla CSS
-* **Hosting/CI:** Vercel
+* **Hosting/CI:** Self-hosted (server ni jc)
 * **Primary APIs:** Google Cloud TTS, Gemini 1.5 Flash, Web Speech API (browser-native)
 * **Accessibility Fonts:** Atkinson Hyperlegible (default) & OpenDyslexic (toggleable)
 
