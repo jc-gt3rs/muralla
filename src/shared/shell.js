@@ -8,6 +8,7 @@
  */
 import { initA11y, renderA11yControls, getLang, setLang, onLangChange } from './a11y.js';
 import { config } from './config.js';
+import { buildSidebar } from './sidebar.js';
 
 /**
  * @param {{ title: string, subtitle?: string, route: string }} opts
@@ -21,16 +22,24 @@ export function mountShell({ title, subtitle = '', route }) {
   app.innerHTML = '';
   app.removeAttribute('aria-busy');
 
+  // ── Sidebar (tool navigation) ────────────────────────────────────
+  const { sidebar, backdrop, open: openSidebar } = buildSidebar(route);
+
   // ── Top bar ──────────────────────────────────────────────────────
   const bar = el('header', 'appbar');
+  const burger = el('button', 'appbar__burger');
+  burger.type = 'button';
+  burger.innerHTML = '<span aria-hidden="true">☰</span>';
+  burger.setAttribute('aria-label', 'Open tools menu');
+  burger.addEventListener('click', openSidebar);
+
   const home = el('a', 'appbar__home');
   home.href = '/';
   home.innerHTML = '<span aria-hidden="true">←</span> GabAI-Basa';
   home.setAttribute('aria-label', 'Back to home');
 
   const titleWrap = el('div', 'appbar__title');
-  titleWrap.innerHTML =
-    `<span class="appbar__route">${route}</span><span class="appbar__name">${title}</span>`;
+  titleWrap.innerHTML = `<span class="appbar__name">${title}</span>`;
 
   const actions = el('div', 'appbar__actions');
   const lang = buildLangToggle();
@@ -40,7 +49,7 @@ export function mountShell({ title, subtitle = '', route }) {
   a11yBtn.setAttribute('aria-label', 'Reading & accessibility settings');
   a11yBtn.setAttribute('aria-expanded', 'false');
   actions.append(lang, a11yBtn);
-  bar.append(home, titleWrap, actions);
+  bar.append(burger, home, titleWrap, actions);
 
   // ── Accessibility panel ──────────────────────────────────────────
   const panel = el('div', 'a11y-panel');
@@ -68,7 +77,11 @@ export function mountShell({ title, subtitle = '', route }) {
   container.appendChild(root);
   main.appendChild(container);
 
-  app.append(bar, panel, main);
+  // Sidebar sits outside the offset body; the body holds the rest of the chrome
+  // and is pushed right to clear the fixed rail on desktop.
+  const body = el('div', 'shell-body');
+  body.append(bar, panel, main);
+  app.append(sidebar, backdrop, body);
   return { root };
 }
 

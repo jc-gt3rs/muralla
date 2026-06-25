@@ -9,6 +9,7 @@ import { getLangMeta, onLangChange } from '../shared/a11y.js';
 import { speak, cancel, ttsSupported, hasVoiceFor } from '../shared/tts.js';
 import { splitSentences } from '../shared/text.js';
 import { consumeHandoff } from '../shared/handoff.js';
+import { mountUpload } from '../shared/upload.js';
 
 const SAMPLE =
   'Ang pagbasa ay parang paglalakbay. Sa bawat pahina, may bagong natutuhan. Hindi mahalaga kung mabagal ka. Ang mahalaga, hindi ka huminto.';
@@ -35,6 +36,14 @@ const inputRow = el('div', 'btn-row');
 inputRow.style.marginTop = '12px';
 inputRow.appendChild(loadBtn);
 inputPanel.append(labelled('Your text', ta), inputRow);
+
+const uploadBtn = mountUpload(ta, {
+  maxChars: 100000,
+  onStatus: (msg, kind) => notice(status, msg, kind),
+  onLoad: () => loadText(),
+  dropZone: inputPanel,
+});
+inputRow.appendChild(uploadBtn);
 
 const readerPanel = el('div', 'panel');
 readerPanel.hidden = true;

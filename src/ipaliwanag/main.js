@@ -14,6 +14,7 @@ import { speak, cancel } from '../shared/tts.js';
 import { summarize } from '../shared/ai.js';
 import { config, aiReady } from '../shared/config.js';
 import { consumeHandoff } from '../shared/handoff.js';
+import { mountUpload } from '../shared/upload.js';
 
 const { root } = mountShell({
   title: 'Ipaliwanag Mo',
@@ -72,7 +73,14 @@ controls.style.marginTop = '14px';
 controls.style.justifyContent = 'space-between';
 const runBtn = el('button', 'btn btn--primary');
 runBtn.textContent = 'Explain it simply';
-controls.append(counter, runBtn);
+
+const uploadBtn = mountUpload(ta, {
+  maxChars: MAX,
+  onStatus: (msg, kind) => notice(status, msg, kind),
+  dropZone: inputPanel,
+});
+
+controls.append(counter, uploadBtn, runBtn);
 
 inputPanel.append(labelled('Original text', ta), gradeWrap, controls);
 

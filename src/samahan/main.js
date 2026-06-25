@@ -1,9 +1,10 @@
 /**
  * Samahan Mo Ako — co-reader + pronunciation rater.
- * Words appear one at a time, large and centered. Tap right (next) / left
- * (prev); each word is read aloud (audio + visual learning). An optional
- * mic evaluator listens to the student read the word back and colors it
- * correct / close / wrong — all on-device, no audio uploaded.
+ * The full text is shown inline; the app reads it word by word and highlights
+ * the current word (like Basahin, but per-word). Tap a word to jump, or use the
+ * subtle ‹ back / next › indicators. An optional mic evaluator listens to the
+ * student read the word back and colors it correct / close / wrong —
+ * all on-device, no audio uploaded.
  */
 import '../shared/app.css';
 import { mountShell, el, notice } from '../shared/shell.js';
@@ -12,12 +13,13 @@ import { speak, cancel, ttsSupported } from '../shared/tts.js';
 import { listenOnce, asrSupported } from '../shared/asr.js';
 import { splitWords, gradePronunciation } from '../shared/text.js';
 import { consumeHandoff } from '../shared/handoff.js';
+import { mountUpload } from '../shared/upload.js';
 
 const SAMPLE = 'Ang bata ay masayang nagbabasa ng aklat sa silid-aklatan.';
 
 const { root } = mountShell({
   title: 'Samahan Mo Ako',
-  subtitle: 'Read one word at a time. Tap the right side for the next word, left to go back. Turn on the mic to check your pronunciation.',
+  subtitle: 'Read along word by word. Tap any word to hear it, or use back / next to move through the text. Turn on the mic to check your pronunciation.',
   route: '/samahan',
 });
 
@@ -40,6 +42,14 @@ startRow.style.marginTop = '12px';
 startRow.appendChild(startBtn);
 inputPanel.append(labelled('Your text', ta), startRow);
 
+const uploadBtn = mountUpload(ta, {
+  maxChars: 100000,
+  onStatus: (msg, kind) => notice(status, msg, kind),
+  onLoad: () => start(),
+  dropZone: inputPanel,
+});
+startRow.appendChild(uploadBtn);
+
 // ── Mic toggle (switch-style button) ──────────────────────────────
 const micPanel = el('div', 'panel');
 const micRow = el('div', 'a11y-group a11y-group--row');
@@ -51,20 +61,28 @@ micRow.append(micLabel, micSwitch);
 micPanel.appendChild(micRow);
 
 // ── Stage ─────────────────────────────────────────────────────────
+// The full text is shown inline (like Basahin) and the current word is
+// highlighted. Tap a word to jump there; subtle ‹ back / next › indicators
+// step word by word. Graded words keep their pronunciation colour.
 const stagePanel = el('div', 'panel');
 stagePanel.hidden = true;
-const stage = el('div', 'coreader-stage');
-const wordEl = el('div', 'coreader-word reading');
-wordEl.textContent = '—';
-const prevZone = el('button', 'tap-zone tap-zone--prev');
-prevZone.setAttribute('aria-label', 'Previous word');
-const nextZone = el('button', 'tap-zone tap-zone--next');
-nextZone.setAttribute('aria-label', 'Next word');
-const prevHint = el('span', 'tap-hint tap-hint--prev');
-prevHint.textContent = '‹ back';
-const nextHint = el('span', 'tap-hint tap-hint--next');
-nextHint.textContent = 'next ›';
-stage.append(prevZone, nextZone, wordEl, prevHint, nextHint);
+let listeningNow = false;
+
+const wordsEl = el('div', 'words reading');
+wordsEl.setAttribute('aria-label', 'Reading text — current word highlighted');
+
+// Subtle left / right navigation, with a quiet replay in the middle.
+const nav = el('div', 'word-nav');
+const prevBtn = el('button', 'word-nav__btn word-nav__btn--prev');
+prevBtn.innerHTML = '‹ back';
+prevBtn.setAttribute('aria-label', 'Previous word');
+const replayBtn = el('button', 'word-nav__btn word-nav__btn--replay');
+replayBtn.innerHTML = '🔊 replay';
+replayBtn.setAttribute('aria-label', 'Hear the current word again');
+const nextBtn = el('button', 'word-nav__btn word-nav__btn--next');
+nextBtn.innerHTML = 'next ›';
+nextBtn.setAttribute('aria-label', 'Next word');
+nav.append(prevBtn, replayBtn, nextBtn);
 
 const progress = el('div', 'coreader-progress');
 const progressLabel = el('span');
@@ -72,10 +90,7 @@ progressLabel.textContent = '0 / 0';
 const track = el('div', 'coreader-track');
 const fill = el('div', 'coreader-fill');
 track.appendChild(fill);
-const replayBtn = el('button', 'btn btn--ghost');
-replayBtn.textContent = '🔊 Replay';
-replayBtn.setAttribute('aria-label', 'Replay current word');
-progress.append(progressLabel, track, replayBtn);
+progress.append(progressLabel, track);
 
 const legend = el('div', 'legend');
 legend.innerHTML = `
@@ -83,7 +98,7 @@ legend.innerHTML = `
   <span><i style="background:var(--close)"></i> Close</span>
   <span><i style="background:var(--danger)"></i> Try again</span>`;
 const status = el('p', 'status');
-stagePanel.append(stage, progress, legend, status);
+stagePanel.append(wordsEl, nav, progress, legend, status);
 
 const ttsBanner = el('div', 'banner');
 if (!ttsSupported) ttsBanner.textContent = 'Speech synthesis is unavailable in this browser. Try Chrome or Edge.';
@@ -103,14 +118,40 @@ function start() {
 }
 
 function showWord() {
-  const word = words[index];
-  wordEl.textContent = word;
-  wordEl.className = 'coreader-word reading';
-  const g = grades[index];
-  if (g) wordEl.classList.add(`state-${g}`);
+  if (index < 0 || index >= words.length) return;
+  renderWords();
   progressLabel.textContent = `${index + 1} / ${words.length}`;
   fill.style.width = `${((index + 1) / words.length) * 100}%`;
-  speakWord(word);
+  speakWord(words[index]);
+}
+
+// Render the full text inline, marking the active word and any grades.
+function renderWords() {
+  wordsEl.innerHTML = '';
+  words.forEach((w, i) => {
+    const span = el('span', 'word');
+    span.textContent = w;
+    span.dataset.i = String(i);
+    const g = grades[i];
+    if (g) span.classList.add(`state-${g}`);
+    if (i === index) {
+      span.classList.add('is-active');
+      if (!g) span.classList.add('is-current');
+      if (listeningNow) span.classList.add('is-listening');
+    }
+    span.addEventListener('click', () => {
+      if (i === index) { speakWord(words[i]); return; }
+      index = i;
+      showWord();
+    });
+    wordsEl.appendChild(span);
+  });
+  const active = wordsEl.querySelector('.is-active');
+  if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function currentSpan() {
+  return wordsEl.querySelector('.word.is-active');
 }
 
 function speakWord(word) {
@@ -122,12 +163,14 @@ function speakWord(word) {
     onend: () => { if (micOn) startListening(word); },
     onerror: () => { if (micOn) startListening(word); },
   });
-  notice(status, micOn ? 'Listen, then read the word aloud…' : 'Tap the right side for the next word.', 'info');
+  notice(status, micOn ? 'Listen, then read the word aloud…' : 'Tap a word, or use ‹ › to move. Tap 🔊 to hear it again.', 'info');
 }
 
 function startListening(word) {
   if (!asrSupported) return;
-  wordEl.classList.add('state-listening');
+  listeningNow = true;
+  const span = currentSpan();
+  if (span) span.classList.add('is-listening');
   notice(status, '🎤 Listening… read the word now.', 'info');
   const meta = getLangMeta();
   listening = listenOnce({
@@ -136,26 +179,34 @@ function startListening(word) {
       const heard = transcript.split(/\s+/).pop() || transcript;
       const grade = gradePronunciation(word, heard);
       grades[index] = grade;
-      wordEl.classList.remove('state-listening');
-      wordEl.classList.add(`state-${grade}`);
+      listeningNow = false;
+      renderWords(); // re-paint so the word takes its grade colour
       const msg = {
         correct: '✓ Great pronunciation!',
         close: '≈ Close — try once more or move on.',
-        wrong: '✗ Let’s try that again. Tap 🔊 Replay.',
+        wrong: '✗ Let’s try that again. Tap 🔊 to hear it.',
       }[grade];
       notice(status, `${msg} (heard: “${heard}”)`, grade === 'wrong' ? 'error' : grade === 'correct' ? 'success' : 'warn');
     },
     onerror: () => {
-      wordEl.classList.remove('state-listening');
-      notice(status, 'Did not catch that — tap 🔊 Replay to try again.', 'warn');
+      listeningNow = false;
+      const s = currentSpan();
+      if (s) s.classList.remove('is-listening');
+      notice(status, 'Did not catch that — tap 🔊 to try again.', 'warn');
     },
-    onend: () => { wordEl.classList.remove('state-listening'); },
+    onend: () => {
+      listeningNow = false;
+      const s = currentSpan();
+      if (s) s.classList.remove('is-listening');
+    },
   });
 }
 
 function stopListening() {
   if (listening) { listening.stop(); listening = null; }
-  wordEl.classList.remove('state-listening');
+  listeningNow = false;
+  const s = currentSpan();
+  if (s) s.classList.remove('is-listening');
 }
 
 function step(delta) {
@@ -193,15 +244,9 @@ function toggleMic(on) {
 
 // ── Wire up ───────────────────────────────────────────────────────
 startBtn.addEventListener('click', start);
-nextZone.addEventListener('click', () => step(1));
-prevZone.addEventListener('click', () => step(-1));
+prevBtn.addEventListener('click', () => step(-1));
+nextBtn.addEventListener('click', () => step(1));
 replayBtn.addEventListener('click', () => { if (index >= 0) speakWord(words[index]); });
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'TEXTAREA') return;
-  if (e.key === 'ArrowRight') step(1);
-  if (e.key === 'ArrowLeft') step(-1);
-  if (e.key === ' ') { e.preventDefault(); if (index >= 0) speakWord(words[index]); }
-});
 onLangChange(() => { if (index >= 0) speakWord(words[index]); });
 
 // Prefill from the landing hero and show the first word ready to read.
@@ -209,7 +254,7 @@ const handoff = consumeHandoff('samahan');
 if (handoff && handoff.text) {
   ta.value = handoff.text.slice(0, 100000);
   start();
-  notice(status, 'Ready — tap the right side to begin reading.', 'info');
+  notice(status, 'Ready — tap a word, or use ‹ › to read along.', 'info');
 }
 
 // ── helpers ───────────────────────────────────────────────────────
