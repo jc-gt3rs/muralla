@@ -9,7 +9,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,7 +19,7 @@
       theme: {
         extend: {
           colors: {
-            'sun': '#F7C948',
+            'sun': '#2D6BE4',
             'sun-light': '#FFF5CC',
             'sky-brand': '#2D6BE4',
             'sky-dark': '#1A4BAA',
@@ -33,9 +33,9 @@
             'danger': '#DC2626',
           },
           fontFamily: {
-            'body': ['"Atkinson Hyperlegible"', 'Georgia', 'serif'],
-            'display': ['"Syne"', 'sans-serif'],
-            'mono': ['"JetBrains Mono"', 'monospace'],
+            'body': ['Inter', 'sans-serif'],
+            'display': ['Inter', 'sans-serif'],
+            'mono': ['Inter', 'monospace'],
           }
         }
       }
@@ -48,7 +48,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Atkinson Hyperlegible', Georgia, serif;
+      font-family: 'Inter', sans-serif;
       background: #FAFAF5;
       color: #1A1A2E;
       font-size: 17px;
@@ -80,8 +80,9 @@
     /* ── Hero section ── */
     .hero {
       position: relative;
-      background: #1A1A2E;
-      color: #fff;
+      background: #ffffff url('home-desktop-bg.svg') no-repeat center center;
+      background-size: cover;
+      color: #1A1A2E;
       overflow: hidden;
       min-height: 100vh;
       display: flex;
@@ -94,7 +95,7 @@
       right: -100px;
       width: 500px;
       height: 500px;
-      background: #F7C948;
+      background: #2D6BE4;
       border-radius: 50%;
       opacity: 0.06;
     }
@@ -116,7 +117,7 @@
       left: -80px;
       width: 200px;
       height: 200px;
-      background: #F7C948;
+      background: #2D6BE4;
       border-radius: 50%;
       opacity: 0.04;
     }
@@ -143,12 +144,12 @@
     }
 
     .tool-card:hover {
-      border-color: #F7C948;
+      border-color: #2D6BE4;
       transform: translateY(-3px);
     }
 
     .tool-card.star-card {
-      border-color: #F7C948;
+      border-color: #2D6BE4;
       border-width: 2px;
       background: linear-gradient(135deg, #fffef7 0%, #fff 100%);
     }
@@ -158,11 +159,11 @@
       position: absolute;
       top: 0;
       right: 0;
-      font-family: 'Syne', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.08em;
-      background: #F7C948;
+      background: #2D6BE4;
       color: #1A1A2E;
       padding: 5px 12px;
       border-radius: 0 8px 0 8px;
@@ -170,7 +171,7 @@
 
     /* ── Stat number animation ── */
     .stat-number {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 800;
       line-height: 1;
       color: #2D6BE4;
@@ -178,7 +179,7 @@
 
     /* ── Pronunciation demo ── */
     .rater-word {
-      font-family: 'Atkinson Hyperlegible', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 700;
       padding: 8px 16px;
       border-radius: 8px;
@@ -191,8 +192,8 @@
     .rater-word.wrong   { background: #DC2626; color: #fff; }
     .rater-word.current {
       background: rgba(255,255,255,0.12);
-      border: 2px solid #F7C948;
-      color: #F7C948;
+      border: 2px solid #2D6BE4;
+      color: #2D6BE4;
       animation: wordPulse 1.4s infinite;
     }
     .rater-word.unread { color: rgba(255,255,255,0.25); }
@@ -231,21 +232,21 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
       font-size: 15px;
-      letter-spacing: 0.02em;
-      background: #F7C948;
-      color: #1A1A2E;
+      letter-spacing: 0.01em;
+      background: #2D6BE4;
+      color: #fff;
       padding: 14px 32px;
       border-radius: 8px;
       text-decoration: none;
       transition: background 0.2s, transform 0.15s;
-      border: 2px solid #1A1A2E;
+      border: none;
     }
 
     .cta-primary:hover {
-      background: #f5d06b;
+      background: #1A4BAA;
       transform: translateY(-1px);
     }
 
@@ -253,21 +254,21 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-family: 'Syne', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 800;
       font-size: 15px;
       letter-spacing: 0.02em;
       background: transparent;
-      color: #fff;
+      color: #1A1A2E;
       padding: 14px 32px;
       border-radius: 8px;
       text-decoration: none;
-      border: 2px solid rgba(255,255,255,0.25);
+      border: 2px solid rgba(26,26,46,0.25);
       transition: border-color 0.2s, transform 0.15s;
     }
 
     .cta-secondary:hover {
-      border-color: #F7C948;
+      border-color: #2D6BE4;
       transform: translateY(-1px);
     }
 
@@ -297,16 +298,10 @@
       left: 0;
       right: 0;
       z-index: 100;
-      background: rgba(26,26,46,0.92);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom: 3px solid #F7C948;
-      transform: translateY(-100%);
-      transition: transform 0.35s ease;
-    }
-
-    .nav-bar.show {
-      transform: translateY(0);
+      border-bottom: 1px solid #E5E7EB;
     }
 
     /* ── Mobile nav overlay ── */
@@ -340,17 +335,40 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      color: rgba(255,255,255,0.35);
+      color: rgba(26,26,46,0.7);
       font-size: 12px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       animation: scrollBounce 2s infinite;
+      z-index: 30;
     }
 
     @keyframes scrollBounce {
       0%, 100% { transform: translateX(-50%) translateY(0); }
       50%      { transform: translateX(-50%) translateY(8px); }
     }
+
+
+    /* ── Segmented control (tool switcher) ── */
+    .tool-tab {
+      background: transparent;
+      color: #6B7280;
+      border: none;
+      cursor: pointer;
+    }
+    .tool-tab:hover {
+      color: #1A1A2E;
+      background: rgba(0,0,0,0.05);
+    }
+    .tool-tab.active {
+      background: #fff;
+      color: #1A1A2E;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.06);
+    }
+
+    /* ── No scrollbar utility ── */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
     /* ── Responsive breakpoints ── */
     @media (max-width: 375px) {
@@ -366,18 +384,18 @@
   <!-- ═══════════════ NAV BAR ═══════════════ -->
   <nav class="nav-bar" id="navBar" role="navigation" aria-label="Main navigation">
     <div class="max-w-[1280px] mx-auto px-5 md:px-8 flex items-center justify-between h-14">
-      <a href="#" class="font-display font-extrabold text-sun text-lg tracking-tight">GabAI-Basa</a>
+      <a href="#" class="font-extrabold text-ink text-lg tracking-tight nav-logo" style="transition: color 0.3s;">GabAI-Basa</a>
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-6">
-        <a href="#problem" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Problem</a>
-        <a href="#tools" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Tools</a>
-        <a href="#demo" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Demo</a>
-        <a href="#languages" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Languages</a>
-        <a href="#bandwidth" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Bandwidth</a>
-        <a href="#open-source" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Open Source</a>
+        <a href="#problem" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Problem</a>
+        <a href="#tools" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Tools</a>
+        <a href="#demo" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Demo</a>
+        <a href="#languages" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Languages</a>
+        <a href="#bandwidth" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Bandwidth</a>
+        <a href="#open-source" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Open Source</a>
       </div>
       <!-- Mobile hamburger -->
-      <button class="md:hidden text-white text-2xl outline-none focus:outline-none bg-transparent border-none p-0 cursor-pointer" style="-webkit-tap-highlight-color: transparent;" id="mobileNavOpen" aria-label="Open navigation menu">☰</button>
+      <button class="md:hidden text-ink text-2xl outline-none focus:outline-none bg-transparent border-none p-0 cursor-pointer nav-hamburger" style="-webkit-tap-highlight-color: transparent; transition: color 0.3s;" id="mobileNavOpen" aria-label="Open navigation menu">☰</button>
     </div>
   </nav>
 
@@ -396,38 +414,85 @@
 
   <!-- ═══════════════ HERO ═══════════════ -->
   <section class="hero" id="hero">
-    <div class="hero-shape-1" aria-hidden="true"></div>
-    <div class="hero-shape-2" aria-hidden="true"></div>
-    <div class="hero-shape-3" aria-hidden="true"></div>
 
-    <div class="max-w-[1280px] mx-auto px-6 md:px-12 lg:px-16 py-24 md:py-0 relative z-10 w-full">
-      <div class="max-w-[720px]">
+
+    <div class="max-w-[1340px] mx-auto px-6 md:px-12 lg:px-16 pt-28 pb-16 lg:pt-0 lg:pb-0 relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+      <div class="max-w-[720px] lg:max-w-[500px] xl:max-w-[560px]">
         <!-- Eyebrow -->
-        <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-6">
+        <p class="text-sky-brand font-semibold text-xs tracking-[0.18em] uppercase mb-6">
           By Muralla
         </p>
 
-        <h1 class="font-display font-extrabold text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-tight mb-4">
-          GabAI-<span class="text-sun">Basa</span>
+        <h1 class="font-extrabold text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-tight mb-4">
+          GabAI-<span class="text-sky-brand">Basa</span>
         </h1>
 
-        <p class="text-lg md:text-xl text-white/60 max-w-[540px] mb-3 italic">
+        <p class="text-lg md:text-xl text-ink/80 max-w-[540px] mb-3">
           Reading Guide — a Filipino reading companion built for every student, engineered for those who need it most.
         </p>
 
-        <p class="text-[15px] text-white/45 max-w-[520px] mb-10">
-          Five tools. One URL. No login. No install. Works in any browser, on any connection, for any Filipino student who needs help reading.
+        <p class="text-[15px] text-ink/60 max-w-[520px] mb-8">
+          Four tools. One URL. No login. No install. Works in any browser, on any connection, for any Filipino student who needs help reading.
         </p>
-        <!-- CTAs -->
-        <div class="flex flex-wrap gap-4">
-          <a href="#tools" class="cta-primary">See the Tools ↓</a>
-          <a href="#open-source" class="cta-secondary">Open Source Artifact</a>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="https://muralla.didthat.lol" class="cta-primary" target="_blank" rel="noopener">Try It Now ↗</a>
+          <a href="#tools" class="cta-secondary">See the tools</a>
         </div>
       </div>
 
+      <!-- Card UI -->
+      <div class="w-full lg:w-[560px] xl:w-[620px] flex-shrink-0 z-20">
+        <div class="bg-white rounded-[24px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-[#E6E6E6] w-full overflow-hidden flex flex-col relative">
+          <!-- Segmented control -->
+          <div class="px-5 pt-5 pb-0">
+            <div class="bg-[#EFEFEF] rounded-[14px] p-[4px] flex gap-[3px] overflow-x-auto no-scrollbar" id="toolSwitcher" role="tablist">
+              <button role="tab" aria-selected="true"  class="tool-tab active flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Basahin Mo</button>
+              <button role="tab" aria-selected="false" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Samahan Mo</button>
+              <button role="tab" aria-selected="false" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Anong Salita</button>
+              <button role="tab" aria-selected="false" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Ipaliwanag Mo</button>
+            </div>
+          </div>
+          
+          <!-- Text area -->
+          <div class="flex-1 flex flex-col">
+            <textarea
+              id="heroTextInput"
+              maxlength="10000"
+              placeholder="Paste your text here…"
+              class="w-full flex-1 min-h-[260px] resize-none outline-none border-none text-[15px] text-ink placeholder-ink/25 font-medium leading-relaxed bg-white px-5 pt-4 pb-2"
+              style="font-family: 'Inter', sans-serif; box-shadow: none;"
+            ></textarea>
+            <!-- Hidden file input -->
+            <input type="file" id="heroFileInput" accept=".txt,.pdf,.doc,.docx" class="hidden" aria-label="Upload file">
+          </div>
+
+          <!-- Footer -->
+          <div class="border-t border-[#E6E6E6] px-5 py-4 flex justify-between items-center bg-white gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <button
+                id="heroUploadBtn"
+                class="flex items-center gap-1.5 bg-[#EFEFEF] hover:bg-[#e4e4e4] text-ink/70 hover:text-ink px-3 py-2 rounded-[10px] transition-colors font-semibold text-[13px] active:scale-95 flex-shrink-0"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                Upload
+              </button>
+              <span id="heroCharCount" class="text-[13px] text-ink/40 font-medium tabular-nums">0 / 10,000</span>
+            </div>
+            <button
+              id="heroSubmitBtn"
+              class="bg-[#1A1A2E] hover:bg-ink/80 text-white font-bold text-[15px] px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors outline-none shadow-sm active:scale-95 flex-shrink-0"
+            >
+              Read
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Scroll indicator -->
-    <div class="scroll-indicator hidden md:flex" aria-hidden="true">
+    <div class="scroll-indicator hidden lg:flex" aria-hidden="true">
       <span>Scroll</span>
       <span style="font-size:18px;">↓</span>
     </div>
@@ -554,7 +619,6 @@
 
         <!-- Tool 1: Basahin Mo -->
         <article class="tool-card p-6 fade-up" id="tool-basahin">
-          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/basahin</span>
           <h3 class="font-display font-extrabold text-xl mb-1">Basahin Mo</h3>
           <p class="text-muted text-[13px] italic mb-3">TTS Reader</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -570,7 +634,6 @@
 
         <!-- Tool 2: Samahan Mo Ako (Star) -->
         <article class="tool-card star-card p-6 fade-up" id="tool-samahan">
-          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/samahan</span>
           <h3 class="font-display font-extrabold text-xl mb-1">Samahan Mo Ako</h3>
           <p class="text-muted text-[13px] italic mb-3">Co-Reader + Pronunciation Rater</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -587,7 +650,6 @@
 
         <!-- Tool 3: Ano ang Salita -->
         <article class="tool-card p-6 fade-up" id="tool-salita">
-          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/salita</span>
           <h3 class="font-display font-extrabold text-xl mb-1">Ano ang Salita</h3>
           <p class="text-muted text-[13px] italic mb-3">Dictionary Lookup</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -603,7 +665,6 @@
 
         <!-- Tool 4: Ipaliwanag Mo -->
         <article class="tool-card p-6 fade-up" id="tool-ipaliwanag">
-          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/ipaliwanag</span>
           <h3 class="font-display font-extrabold text-xl mb-1">Ipaliwanag Mo</h3>
           <p class="text-muted text-[13px] italic mb-3">Summarizer</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -652,7 +713,7 @@
               <span class="inline-block w-3 h-3 rounded-sm bg-success"></span> Correct
             </span>
             <span class="flex items-center gap-2 text-white/50 text-[13px]">
-              <span class="inline-block w-3 h-3 rounded-sm bg-sun"></span> Close
+              <span class="inline-block w-3 h-3 rounded-sm" style="background:#F7C948;"></span> Close
             </span>
             <span class="flex items-center gap-2 text-white/50 text-[13px]">
               <span class="inline-block w-3 h-3 rounded-sm bg-danger"></span> Incorrect
@@ -712,7 +773,7 @@
       <div class="fade-up">
         <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Low-Bandwidth Design</p>
         <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-3 text-ink">
-          Built for Philippine internet, not San Francisco WiFi
+          Built for Philippine internet
         </h2>
         <p class="text-muted text-[15px] mb-10 max-w-[600px]">Every feature was designed with a prepaid data plan in mind. Nothing is sacrificed for low bandwidth — the architecture was designed around it.</p>
 
@@ -897,7 +958,7 @@
           </li>
           <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
             <span class="flex-shrink-0 mt-0.5">💡</span>
-            <span>Filipino sun yellow <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1 py-0.5 rounded">#F7C948</code> as the primary interactive color. Warm, culturally grounded.</span>
+            <span>Filipino sun yellow <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1 py-0.5 rounded">#2D6BE4</code> as the primary interactive color. Warm, culturally grounded.</span>
           </li>
           <li class="flex gap-3 items-start text-[15px] text-ink/80">
             <span class="flex-shrink-0 mt-0.5">💡</span>
@@ -994,22 +1055,10 @@
       }
 
 
-      // ─── Nav bar show/hide on scroll ───
-      const navBar = document.getElementById('navBar');
-      const heroEl = document.getElementById('hero');
-      let lastScroll = 0;
+      // ─── Back to top FAB ───
+      const fab = document.getElementById('backToTop');
 
       window.addEventListener('scroll', () => {
-        const heroBottom = heroEl.getBoundingClientRect().bottom;
-
-        if (heroBottom < 0) {
-          navBar.classList.add('show');
-        } else {
-          navBar.classList.remove('show');
-        }
-
-        // Back to top button
-        const fab = document.getElementById('backToTop');
         if (window.scrollY > 600) {
           fab.style.opacity = '1';
           fab.style.pointerEvents = 'auto';
@@ -1017,8 +1066,6 @@
           fab.style.opacity = '0';
           fab.style.pointerEvents = 'none';
         }
-
-        lastScroll = window.scrollY;
       }, { passive: true });
 
 
@@ -1062,6 +1109,60 @@
       }, observerOptions);
 
       document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+
+
+      // ─── Hero text input + file upload ───
+      const heroText    = document.getElementById('heroTextInput');
+      const heroFile    = document.getElementById('heroFileInput');
+      const heroUpload  = document.getElementById('heroUploadBtn');
+      const heroCount   = document.getElementById('heroCharCount');
+      const heroSubmit  = document.getElementById('heroSubmitBtn');
+      const MAX_CHARS   = 10000;
+
+      function updateCount() {
+        const len = heroText.value.length;
+        heroCount.textContent = `${len.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
+        heroCount.style.color = len > MAX_CHARS * 0.9 ? '#DC2626' : '';
+      }
+
+      heroText.addEventListener('input', updateCount);
+
+      heroUpload.addEventListener('click', () => heroFile.click());
+
+      heroFile.addEventListener('change', () => {
+        const file = heroFile.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          heroText.value = e.target.result.slice(0, MAX_CHARS);
+          updateCount();
+          heroText.focus();
+        };
+        reader.readAsText(file);
+        heroFile.value = '';
+      });
+
+      // Exposed for tool implementation: window.getHeroText()
+      window.getHeroText = () => heroText.value.trim();
+
+      heroSubmit.addEventListener('click', () => {
+        const text = window.getHeroText();
+        if (!text) { heroText.focus(); return; }
+        // TODO: route to active tool implementation
+        console.log('[GabAI-Basa] submit →', document.querySelector('#toolSwitcher .tool-tab.active')?.textContent?.trim(), text.slice(0, 80));
+      });
+
+      // ─── Segmented control (tool switcher) ───
+      document.querySelectorAll('#toolSwitcher .tool-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#toolSwitcher .tool-tab').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+        });
+      });
 
     });
   </script>
