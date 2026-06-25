@@ -1,1 +1,1077 @@
-hello MVP
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GabAI-Basa — Filipino Reading Companion</title>
+  <meta name="description" content="GabAI-Basa is a browser-based reading companion for Filipino students across 5 Philippine languages, built for accessibility-first learning with dyslexia support, pronunciation rating, and dialect-aware text-to-speech.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: { preflight: false },
+      theme: {
+        extend: {
+          colors: {
+            'sun': '#F7C948',
+            'sun-light': '#FFF5CC',
+            'sky-brand': '#2D6BE4',
+            'sky-dark': '#1A4BAA',
+            'ink': '#1A1A2E',
+            'paper': '#FAFAF5',
+            'muted': '#6B7280',
+            'divider': '#E5E7EB',
+            'soft-blue': '#EEF2FF',
+            'success': '#16A34A',
+            'warn': '#D97706',
+            'danger': '#DC2626',
+          },
+          fontFamily: {
+            'body': ['"Atkinson Hyperlegible"', 'Georgia', 'serif'],
+            'display': ['"Syne"', 'sans-serif'],
+            'mono': ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Atkinson Hyperlegible', Georgia, serif;
+      background: #FAFAF5;
+      color: #1A1A2E;
+      font-size: 17px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── Mouse follower (desktop only) ── */
+    .cursor-glow {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      background: radial-gradient(circle, rgba(247,201,72,0.08) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+      opacity: 0;
+      will-change: left, top;
+    }
+
+    .cursor-glow.visible { opacity: 1; }
+
+    @media (max-width: 1023px) {
+      .cursor-glow { display: none !important; }
+    }
+
+    /* ── Hero section ── */
+    .hero {
+      position: relative;
+      background: #1A1A2E;
+      color: #fff;
+      overflow: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-shape-1 {
+      position: absolute;
+      top: -120px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      background: #F7C948;
+      border-radius: 50%;
+      opacity: 0.06;
+    }
+
+    .hero-shape-2 {
+      position: absolute;
+      bottom: -60px;
+      left: 10%;
+      width: 300px;
+      height: 300px;
+      background: #2D6BE4;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+
+    .hero-shape-3 {
+      position: absolute;
+      top: 40%;
+      left: -80px;
+      width: 200px;
+      height: 200px;
+      background: #F7C948;
+      border-radius: 50%;
+      opacity: 0.04;
+    }
+
+    /* ── Section transitions ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Feature card interactions ── */
+    .tool-card {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      background: #fff;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+
+    .tool-card:hover {
+      border-color: #F7C948;
+      transform: translateY(-3px);
+    }
+
+    .tool-card.star-card {
+      border-color: #F7C948;
+      border-width: 2px;
+      background: linear-gradient(135deg, #fffef7 0%, #fff 100%);
+    }
+
+    .tool-card.star-card::before {
+      content: '★ STAR FEATURE';
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      background: #F7C948;
+      color: #1A1A2E;
+      padding: 5px 12px;
+      border-radius: 0 8px 0 8px;
+    }
+
+    /* ── Stat number animation ── */
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      line-height: 1;
+      color: #2D6BE4;
+    }
+
+    /* ── Pronunciation demo ── */
+    .rater-word {
+      font-family: 'Atkinson Hyperlegible', sans-serif;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 8px;
+      letter-spacing: 0.04em;
+      display: inline-block;
+    }
+
+    .rater-word.correct { background: #16A34A; color: #fff; }
+    .rater-word.close   { background: #F7C948; color: #1A1A2E; }
+    .rater-word.wrong   { background: #DC2626; color: #fff; }
+    .rater-word.current {
+      background: rgba(255,255,255,0.12);
+      border: 2px solid #F7C948;
+      color: #F7C948;
+      animation: wordPulse 1.4s infinite;
+    }
+    .rater-word.unread { color: rgba(255,255,255,0.25); }
+
+    @keyframes wordPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(247,201,72,0.35); }
+      50%      { box-shadow: 0 0 0 10px rgba(247,201,72,0); }
+    }
+
+    /* ── Dialect cards ── */
+    .dialect-card {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      background: #fff;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .dialect-card:hover {
+      border-color: #2D6BE4;
+      transform: translateY(-2px);
+    }
+
+    /* ── Pill tags ── */
+    .pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.04em;
+      display: inline-block;
+    }
+
+    /* ── CTA buttons ── */
+    .cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      background: #F7C948;
+      color: #1A1A2E;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      border: 2px solid #1A1A2E;
+    }
+
+    .cta-primary:hover {
+      background: #f5d06b;
+      transform: translateY(-1px);
+    }
+
+    .cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      background: transparent;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 2px solid rgba(255,255,255,0.25);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .cta-secondary:hover {
+      border-color: #F7C948;
+      transform: translateY(-1px);
+    }
+
+    /* ── Bandwidth cards ── */
+    .bw-card {
+      border-radius: 10px;
+      padding: 20px;
+      border: 1.5px solid #E5E7EB;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+
+    .bw-card:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #1A1A2E;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ── Nav bar ── */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(26,26,46,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 3px solid #F7C948;
+      transform: translateY(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .nav-bar.show {
+      transform: translateY(0);
+    }
+
+    /* ── Mobile nav overlay ── */
+    .mobile-nav-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(26,26,46,0.97);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-nav-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── Scroll indicator ── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: scrollBounce 2s infinite;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── Responsive breakpoints ── */
+    @media (max-width: 375px) {
+      .hero { min-height: 100svh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mouse Follower (desktop only) -->
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <!-- ═══════════════ NAV BAR ═══════════════ -->
+  <nav class="nav-bar" id="navBar" role="navigation" aria-label="Main navigation">
+    <div class="max-w-[1280px] mx-auto px-5 md:px-8 flex items-center justify-between h-14">
+      <a href="#" class="font-display font-extrabold text-sun text-lg tracking-tight">GabAI-Basa</a>
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#problem" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Problem</a>
+        <a href="#tools" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Tools</a>
+        <a href="#demo" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Demo</a>
+        <a href="#languages" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Languages</a>
+        <a href="#bandwidth" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Bandwidth</a>
+        <a href="#open-source" class="text-white/70 hover:text-sun text-sm font-bold transition-colors">Open Source</a>
+      </div>
+      <!-- Mobile hamburger -->
+      <button class="md:hidden text-white text-2xl" id="mobileNavOpen" aria-label="Open navigation menu">☰</button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay">
+    <button class="absolute top-5 right-6 text-white text-3xl" id="mobileNavClose" aria-label="Close navigation menu">&times;</button>
+    <div class="flex flex-col gap-5 text-center">
+      <a href="#problem" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">The Problem</a>
+      <a href="#tools" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Tools</a>
+      <a href="#demo" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Pronunciation Demo</a>
+      <a href="#languages" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Languages</a>
+      <a href="#bandwidth" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Bandwidth</a>
+      <a href="#open-source" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Open Source</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-shape-1" aria-hidden="true"></div>
+    <div class="hero-shape-2" aria-hidden="true"></div>
+    <div class="hero-shape-3" aria-hidden="true"></div>
+
+    <div class="max-w-[1280px] mx-auto px-6 md:px-12 lg:px-16 py-24 md:py-0 relative z-10 w-full">
+      <div class="max-w-[720px]">
+        <!-- Eyebrow -->
+        <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-6">
+          Hackathon MVP &nbsp;·&nbsp; GitHub Education + Accenture
+        </p>
+
+        <h1 class="font-display font-extrabold text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-tight mb-4">
+          GabAI-<span class="text-sun">Basa</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-white/60 max-w-[540px] mb-3 italic">
+          Reading Guide — a Filipino reading companion built for every student, engineered for those who need it most.
+        </p>
+
+        <p class="text-[15px] text-white/45 max-w-[520px] mb-10">
+          Five tools. One URL. No login. No install. Works in any browser, on any connection, for any Filipino student who needs help reading.
+        </p>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2 mb-10">
+          <span class="pill bg-sun text-ink">GitHub Education</span>
+          <span class="pill bg-sky-brand text-white">Accenture</span>
+          <span class="pill border border-white/20 text-white/60">Web App</span>
+          <span class="pill border border-white/20 text-white/60">Next.js 14</span>
+          <span class="pill border border-white/20 text-white/60">5 Languages</span>
+          <span class="pill border border-white/20 text-white/60">Accessibility</span>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-4">
+          <a href="#tools" class="cta-primary">See the Tools ↓</a>
+          <a href="#open-source" class="cta-secondary">Open Source Artifact</a>
+        </div>
+      </div>
+
+      <!-- Platform meta (visible on tablet+) -->
+      <div class="hidden md:flex gap-10 mt-16 flex-wrap">
+        <div>
+          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Platform</span>
+          <span class="block text-[15px] text-white/85 font-bold">Web (Next.js 14)</span>
+        </div>
+        <div>
+          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Dialects</span>
+          <span class="block text-[15px] text-white/85 font-bold">5 Philippine Languages</span>
+        </div>
+        <div>
+          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Deploy</span>
+          <span class="block text-[15px] text-white/85 font-bold">Vercel</span>
+        </div>
+        <div>
+          <span class="block text-[11px] tracking-[0.15em] uppercase text-white/35 font-bold">Open Artifact</span>
+          <span class="block text-[15px] text-white/85 font-bold">HuggingFace + GitHub</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator hidden md:flex" aria-hidden="true">
+      <span>Scroll</span>
+      <span style="font-size:18px;">↓</span>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ THE PROBLEM ═══════════════ -->
+  <section id="problem" class="py-16 md:py-24 lg:py-32">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">The Problem</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-8 text-ink">
+          A reading gap that tools were never built to close
+        </h2>
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
+          <div>
+            <span class="stat-number text-5xl md:text-[56px]">130+</span>
+            <p class="text-muted text-sm italic mt-1">Philippine languages spoken across 7,000 islands</p>
+          </div>
+          <div>
+            <span class="stat-number text-5xl md:text-[56px]">1 in 5</span>
+            <p class="text-muted text-sm italic mt-1">students affected by dyslexia or reading difficulties</p>
+          </div>
+          <div>
+            <span class="stat-number text-5xl md:text-[56px]">~4</span>
+            <p class="text-muted text-sm italic mt-1">Philippine languages with any open speech technology</p>
+          </div>
+        </div>
+
+        <p class="text-ink/80 max-w-[680px] mb-4">
+          Think about a Grade 7 student in Cebu. She's reading a Tagalog science textbook on her older brother's phone with a prepaid data plan. She has an undiagnosed reading difficulty. The textbook is in a language she can speak but struggles to read. The apps her teacher recommended are in English, need fast WiFi, and require a Google account.
+        </p>
+        <p class="text-ink/80 max-w-[680px] mb-6">
+          She has no tools. Tagalog has a few speech models, but Cebuano, Ilocano, and Hiligaynon have almost nothing — no datasets, no benchmarks, no usable voice models.
+        </p>
+
+        <!-- Callout -->
+        <div class="border-l-4 border-sun bg-sun-light/60 rounded-r-lg px-6 py-5 max-w-[680px]">
+          <p class="text-ink font-bold text-[15px]">
+            GabAI-Basa addresses both gaps at once: a browser-based reading companion that works on slow connections in any dialect, and an open-source speech dataset that researchers can actually use.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ WHO IT'S FOR ═══════════════ -->
+  <section class="bg-ink py-14 md:py-20">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10 fade-up">
+      <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-2">Who It's For</p>
+      <h2 class="font-display font-extrabold text-2xl md:text-3xl text-white leading-tight mb-6">
+        Built for every student. Tested against the one who needs it most.
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="border-l-4 border-sky-brand bg-white/5 rounded-r-lg px-5 py-4">
+          <p class="text-white/90 text-[15px]">
+            <span class="font-bold text-sky-brand">Primary:</span> Filipino student, Grades 5–10, any dialect region, who struggles with reading fluency or encounters academic text in an unfamiliar language. Every design decision is tested first against: <em class="text-sun">does this work for a student with dyslexia?</em>
+          </p>
+        </div>
+        <div class="border-l-4 border-sun bg-white/5 rounded-r-lg px-5 py-4">
+          <p class="text-white/90 text-[15px]">
+            <span class="font-bold text-sun">Secondary:</span> Any student who wants text read aloud, a summary in their dialect, or a quick English word lookup. Teachers who want a low-setup reading tool — open the URL, hand the phone to the student.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ THE TOOLS ═══════════════ -->
+  <section id="tools" class="py-16 md:py-24 lg:py-32">
+    <div class="max-w-[960px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">The Tools</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-3 text-ink">
+          Four tools. One URL. No login.
+        </h2>
+        <p class="text-muted text-[15px] mb-10 max-w-[560px]">Each tool handles a different part of reading — listening, pronouncing, understanding, and looking up words. Pick the one you need.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- Tool 1: Basahin Mo -->
+        <article class="tool-card p-6 fade-up" id="tool-basahin">
+          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/basahin</span>
+          <h3 class="font-display font-extrabold text-xl mb-1">Basahin Mo</h3>
+          <p class="text-muted text-[13px] italic mb-3">TTS Reader</p>
+          <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
+            Paste any text. Pick a dialect. Press play. Audio plays sentence-by-sentence so it starts fast on slow connections. Speed and pitch are adjustable — a student can slow it down to 0.5x while learning a new word.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="pill bg-soft-blue text-sky-dark">Google Cloud TTS</span>
+            <span class="pill bg-soft-blue text-sky-dark">5 dialects</span>
+            <span class="pill bg-soft-blue text-sky-dark">Speed control</span>
+            <span class="pill bg-green-100 text-success">Low bandwidth</span>
+          </div>
+        </article>
+
+        <!-- Tool 2: Samahan Mo Ako (Star) -->
+        <article class="tool-card star-card p-6 fade-up" id="tool-samahan">
+          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/samahan</span>
+          <h3 class="font-display font-extrabold text-xl mb-1">Samahan Mo Ako</h3>
+          <p class="text-muted text-[13px] italic mb-3">Co-Reader + Pronunciation Rater</p>
+          <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
+            Words appear one at a time in a bold pill. Tap right to advance, left to go back. The app reads each word aloud, then the student reads it back — the mic scores their pronunciation live. Green means correct, yellow means close, red means try again.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="pill bg-sun-light text-[#92610a]">Web Speech API</span>
+            <span class="pill bg-soft-blue text-sky-dark">OpenDyslexic font</span>
+            <span class="pill bg-green-100 text-success">✓ Correct</span>
+            <span class="pill bg-yellow-100 text-[#92400e]">≈ Close</span>
+            <span class="pill bg-red-100 text-danger">✗ Needs practice</span>
+          </div>
+        </article>
+
+        <!-- Tool 3: Ano ang Salita -->
+        <article class="tool-card p-6 fade-up" id="tool-salita">
+          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/salita</span>
+          <h3 class="font-display font-extrabold text-xl mb-1">Ano ang Salita</h3>
+          <p class="text-muted text-[13px] italic mb-3">Dictionary Lookup</p>
+          <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
+            Type any English word. Get the definition, word type, IPA pronunciation, and an example sentence. Results are cached in the browser — look up "photosynthesis" once, and the definition loads instantly next time, even offline.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="pill bg-soft-blue text-sky-dark">Free Dictionary API</span>
+            <span class="pill bg-soft-blue text-sky-dark">IPA pronunciation</span>
+            <span class="pill bg-green-100 text-success">No API key</span>
+            <span class="pill bg-green-100 text-success">Offline cache</span>
+          </div>
+        </article>
+
+        <!-- Tool 4: Ipaliwanag Mo -->
+        <article class="tool-card p-6 fade-up" id="tool-ipaliwanag">
+          <span class="font-mono text-[13px] text-sky-brand bg-soft-blue px-2 py-1 rounded font-bold inline-block mb-3">/ipaliwanag</span>
+          <h3 class="font-display font-extrabold text-xl mb-1">Ipaliwanag Mo</h3>
+          <p class="text-muted text-[13px] italic mb-3">Dialect Summarizer</p>
+          <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
+            Paste a textbook passage. Pick Cebuano and Grade 7. Gemini rewrites it in plain Cebuano a 13-year-old can follow. The output can be read aloud through TTS. There's nothing else like this for Philippine regional languages.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="pill bg-soft-blue text-sky-dark">Gemini 1.5 Flash</span>
+            <span class="pill bg-soft-blue text-sky-dark">5 dialects</span>
+            <span class="pill bg-soft-blue text-sky-dark">Grade-level aware</span>
+            <span class="pill bg-soft-blue text-sky-dark">TTS output</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ PRONUNCIATION DEMO ═══════════════ -->
+  <section id="demo" class="bg-ink py-16 md:py-24">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-2">Feature Deep Dive</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight text-white mb-4">
+          The Pronunciation Rater
+        </h2>
+        <p class="text-white/55 text-[15px] max-w-[640px] mb-6">
+          This is what turns a reading app into a reading tutor. The co-reader highlights a word, the TTS reads it, then the student reads it back into their mic. The browser's Web Speech API scores the attempt on-device — no audio leaves the phone.
+        </p>
+
+        <!-- Live demo mockup -->
+        <div class="bg-white/[0.04] border border-white/10 rounded-xl p-6 md:p-8 mb-6">
+          <p class="text-[11px] tracking-[0.15em] uppercase text-white/30 font-bold mb-5">
+            Co-reader pronunciation rater — live word state
+          </p>
+          <div class="flex flex-wrap gap-3 items-center text-lg md:text-xl">
+            <span class="rater-word correct">Ang</span>
+            <span class="rater-word correct">bata</span>
+            <span class="rater-word close">ay</span>
+            <span class="rater-word current">nagbabasa</span>
+            <span class="rater-word unread">ng</span>
+            <span class="rater-word unread">aklat.</span>
+          </div>
+          <div class="flex flex-wrap gap-5 mt-5">
+            <span class="flex items-center gap-2 text-white/50 text-[13px]">
+              <span class="inline-block w-3 h-3 rounded-sm bg-success"></span> Correct
+            </span>
+            <span class="flex items-center gap-2 text-white/50 text-[13px]">
+              <span class="inline-block w-3 h-3 rounded-sm bg-sun"></span> Close
+            </span>
+            <span class="flex items-center gap-2 text-white/50 text-[13px]">
+              <span class="inline-block w-3 h-3 rounded-sm bg-danger"></span> Incorrect
+            </span>
+            <span class="flex items-center gap-2 text-white/50 text-[13px]">
+              <span class="inline-block w-3 h-3 rounded-sm border-2 border-sun bg-white/10"></span> Speaking now
+            </span>
+          </div>
+        </div>
+
+        <p class="text-white/45 text-sm max-w-[600px] mb-3">
+          After a session, a score summary shows which words need more practice. Feedback always uses color + icon together — not color alone — so it's safe for colorblind students.
+        </p>
+        <div class="border-l-4 border-sky-brand bg-white/[0.04] rounded-r-lg px-5 py-4 max-w-[600px]">
+          <p class="text-white/60 text-sm">
+            <span class="font-bold text-sky-brand">Browser note:</span> Web Speech API requires Chrome or Edge. Students on Safari or Firefox see a notice and fall back to manual tap-to-advance without scoring.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ SUPPORTED LANGUAGES ═══════════════ -->
+  <section id="languages" class="py-16 md:py-24 lg:py-32">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Supported Languages</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-8 text-ink">
+          Five Philippine languages at launch
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
+          <div class="dialect-card px-4 py-5">
+            <p class="font-display font-extrabold text-base mb-1">Filipino</p>
+            <p class="text-muted text-[13px] italic">Filipino</p>
+            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">National</p>
+          </div>
+          <div class="dialect-card px-4 py-5">
+            <p class="font-display font-extrabold text-base mb-1">Tagalog</p>
+            <p class="text-muted text-[13px] italic">Tagalog</p>
+            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">Metro Manila</p>
+          </div>
+          <div class="dialect-card px-4 py-5">
+            <p class="font-display font-extrabold text-base mb-1">Cebuano</p>
+            <p class="text-muted text-[13px] italic">Bisaya</p>
+            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">Visayas</p>
+          </div>
+          <div class="dialect-card px-4 py-5">
+            <p class="font-display font-extrabold text-base mb-1">Ilocano</p>
+            <p class="text-muted text-[13px] italic">Ilokano</p>
+            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">N. Luzon</p>
+          </div>
+          <div class="dialect-card px-4 py-5">
+            <p class="font-display font-extrabold text-base mb-1">Hiligaynon</p>
+            <p class="text-muted text-[13px] italic">Ilonggo</p>
+            <p class="text-sky-brand text-[11px] font-bold tracking-[0.06em] uppercase mt-2">W. Visayas</p>
+          </div>
+        </div>
+
+        <p class="text-muted text-sm max-w-[680px]">
+          Google Cloud TTS natively supports <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1.5 py-0.5 rounded">fil-PH</code>. For Cebuano, Ilocano, and Hiligaynon, text is pre-processed through Gemini for pronunciation-consistent spelling before synthesis. This is a known approximation — the open-source Coqui model is built to close that gap.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ LOW BANDWIDTH ═══════════════ -->
+  <section id="bandwidth" class="bg-paper py-16 md:py-24 border-t border-divider">
+    <div class="max-w-[960px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Low-Bandwidth Design</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-3 text-ink">
+          Built for Philippine internet, not San Francisco WiFi
+        </h2>
+        <p class="text-muted text-[15px] mb-10 max-w-[600px]">Every feature was designed with a prepaid data plan in mind. Nothing is sacrificed for low bandwidth — the architecture was designed around it.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bw-card">
+            <p class="text-success text-[12px] font-bold uppercase tracking-[0.1em] mb-1">Zero bandwidth</p>
+            <p class="font-bold text-[15px] mb-1">Pronunciation Rater</p>
+            <p class="text-muted text-[13px]">Web Speech API runs on-device. No audio leaves the phone.</p>
+          </div>
+          <div class="bw-card">
+            <p class="text-success text-[12px] font-bold uppercase tracking-[0.1em] mb-1">Minimal bandwidth</p>
+            <p class="font-bold text-[15px] mb-1">Dialect Summarizer</p>
+            <p class="text-muted text-[13px]">Text in, text out. Gemini responses are under 2KB, even on 2G.</p>
+          </div>
+          <div class="bw-card">
+            <p class="text-success text-[12px] font-bold uppercase tracking-[0.1em] mb-1">Cached locally</p>
+            <p class="font-bold text-[15px] mb-1">Dictionary Lookup</p>
+            <p class="text-muted text-[13px]">Each word cached in localStorage. Second lookup is instant and offline.</p>
+          </div>
+          <div class="bw-card">
+            <p class="text-warn text-[12px] font-bold uppercase tracking-[0.1em] mb-1">Optimized</p>
+            <p class="font-bold text-[15px] mb-1">TTS Audio</p>
+            <p class="text-muted text-[13px]">Sentence-by-sentence synthesis. OGG Opus encoding is half the size of MP3. One sentence ahead preloaded.</p>
+          </div>
+          <div class="bw-card">
+            <p class="text-success text-[12px] font-bold uppercase tracking-[0.1em] mb-1">One-time load</p>
+            <p class="font-bold text-[15px] mb-1">Fonts &amp; App Shell</p>
+            <p class="text-muted text-[13px]">Fonts self-hosted and cached. Service worker caches the shell after first visit.</p>
+          </div>
+          <div class="bw-card">
+            <p class="text-success text-[12px] font-bold uppercase tracking-[0.1em] mb-1">Route-split</p>
+            <p class="font-bold text-[15px] mb-1">JavaScript Bundle</p>
+            <p class="text-muted text-[13px]">Next.js splits code per route. A student using the co-reader never downloads the summarizer code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ TECH STACK ═══════════════ -->
+  <section class="py-16 md:py-24 border-t border-divider">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Technical Stack</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-8 text-ink">
+          Lean stack, one-click deploy
+        </h2>
+
+        <div class="overflow-x-auto rounded-lg border border-divider">
+          <table class="w-full text-[15px] border-collapse">
+            <thead>
+              <tr>
+                <th class="text-left px-4 py-3 bg-ink text-white font-display text-[13px] tracking-[0.06em] font-bold rounded-tl-lg">Layer</th>
+                <th class="text-left px-4 py-3 bg-ink text-white font-display text-[13px] tracking-[0.06em] font-bold">Technology</th>
+                <th class="text-left px-4 py-3 bg-ink text-white font-display text-[13px] tracking-[0.06em] font-bold rounded-tr-lg">Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="px-4 py-3 border-b border-divider">Framework</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">Next.js 14 App Router</td>
+                <td class="px-4 py-3 border-b border-divider text-muted">Built-in API routes, route-level splitting, Vercel deploys in one click</td>
+              </tr>
+              <tr class="bg-[#F9FAFB]">
+                <td class="px-4 py-3 border-b border-divider">Styling</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">Tailwind CSS</td>
+                <td class="px-4 py-3 border-b border-divider text-muted">Fast iteration, no runtime overhead</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 border-b border-divider">TTS</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">Google Cloud TTS <code class="font-mono text-[12px] bg-soft-blue text-sky-dark px-1 py-0.5 rounded">fil-PH</code></td>
+                <td class="px-4 py-3 border-b border-divider text-muted">Native Filipino voice, high quality</td>
+              </tr>
+              <tr class="bg-[#F9FAFB]">
+                <td class="px-4 py-3 border-b border-divider">Pronunciation</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">Web Speech API</td>
+                <td class="px-4 py-3 border-b border-divider text-muted">100% on-device, zero bandwidth, no API key</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 border-b border-divider">Summarizer</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">Gemini 1.5 Flash</td>
+                <td class="px-4 py-3 border-b border-divider text-muted">Fast, cheap, strong multilingual output for PH languages</td>
+              </tr>
+              <tr class="bg-[#F9FAFB]">
+                <td class="px-4 py-3 border-b border-divider">Dictionary</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">dictionaryapi.dev</td>
+                <td class="px-4 py-3 border-b border-divider text-muted">Free, no key, comprehensive English coverage</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 border-b border-divider">Fonts</td>
+                <td class="px-4 py-3 border-b border-divider font-bold">Atkinson Hyperlegible + OpenDyslexic</td>
+                <td class="px-4 py-3 border-b border-divider text-muted">Designed for reading accessibility, self-hosted</td>
+              </tr>
+              <tr class="bg-[#F9FAFB]">
+                <td class="px-4 py-3">Deploy</td>
+                <td class="px-4 py-3 font-bold">Vercel</td>
+                <td class="px-4 py-3 text-muted">Free tier, instant deploys, edge functions</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ OPEN SOURCE ARTIFACT ═══════════════ -->
+  <section id="open-source" class="py-16 md:py-24 bg-ink">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-2">Open Source Artifact</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight text-white mb-4">
+          The GitHub Education deliverable
+        </h2>
+        <p class="text-white/50 text-[15px] max-w-[640px] mb-8">
+          Separate from the app, the team publishes a reusable artifact on HuggingFace. This is what future researchers and developers can fork, extend, and train on.
+        </p>
+
+        <!-- Artifact box -->
+        <div class="bg-gradient-to-br from-[#0f1724] to-[#1a2744] rounded-xl p-7 md:p-10 border border-white/[0.06]">
+          <h3 class="font-display font-extrabold text-xl text-sun mb-2">📚 HuggingFace Dataset + Model</h3>
+          <p class="text-white/40 text-sm italic mb-6">Published under MIT license, separate from the app repository</p>
+
+          <ul class="space-y-4">
+            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
+              <span class="text-sun flex-shrink-0">▸</span>
+              Curated PLD corpus subsets for Cebuano, Ilocano, and Hiligaynon — cleaned, normalized, and ready for TTS training
+            </li>
+            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
+              <span class="text-sun flex-shrink-0">▸</span>
+              Fine-tuned VITS / Coqui TTS model checkpoint per dialect, with model card and training notes
+            </li>
+            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
+              <span class="text-sun flex-shrink-0">▸</span>
+              Reproducible training pipeline in Python — any researcher can retrain or extend to new dialects
+            </li>
+            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
+              <span class="text-sun flex-shrink-0">▸</span>
+              HuggingFace dataset card with language metadata, speaker demographics, and known limitations
+            </li>
+            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed">
+              <span class="text-sun flex-shrink-0">▸</span>
+              The app itself is proof the model works in production — closing the loop between research and usable technology
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ DESIGN PRINCIPLES ═══════════════ -->
+  <section class="py-16 md:py-24 border-t border-divider">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Design Language</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-8 text-ink">
+          Warm, accessible, student-first
+        </h2>
+
+        <ul class="space-y-4 max-w-[680px]">
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span><strong>Atkinson Hyperlegible</strong> as the default body font — designed for low-vision and reading-difficulty users. Open source via Google Fonts.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span><strong>OpenDyslexic</strong> toggle in the co-reader — extra-weighted bottoms prevent letter rotation confusion.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span>Minimum <strong>18px on all reading surfaces</strong>. Line height 1.75. Extra letter spacing in co-reader mode.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span>Word highlight is a <strong>bold filled pill</strong>, not just an underline. Shape + color, never color alone.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span>Pronunciation feedback uses <strong>color + icon</strong> — colorblind-safe by design.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span>Filipino sun yellow <code class="font-mono text-[13px] bg-soft-blue text-sky-dark px-1 py-0.5 rounded">#F7C948</code> as the primary interactive color. Warm, culturally grounded.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80">
+            <span class="flex-shrink-0 mt-0.5">💡</span>
+            <span>No modals, no popups, no distracting animations on reading surfaces. Motion is reserved for feedback only.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ KNOWN CONSTRAINTS ═══════════════ -->
+  <section class="py-16 md:py-24 bg-paper border-t border-divider">
+    <div class="max-w-[860px] mx-auto px-6 md:px-10">
+      <div class="fade-up">
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">Honest Limitations</p>
+        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight tracking-tight mb-8 text-ink">
+          What this MVP can't do yet
+        </h2>
+
+        <ul class="space-y-4 max-w-[680px]">
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">⚠️</span>
+            <span>Google TTS has <strong>native support for Filipino only</strong>. Cebuano, Ilocano, and Hiligaynon are approximated by normalizing spelling through Gemini before synthesis. The open-source Coqui model is designed to close this gap.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">⚠️</span>
+            <span>The <strong>pronunciation rater requires Chrome or Edge</strong>. Firefox and Safari students see a notice and fall back to manual co-reading without scoring.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
+            <span class="flex-shrink-0 mt-0.5">⚠️</span>
+            <span>The <strong>summarizer caps input at 3,000 characters</strong> to stay within Gemini Flash rate limits during the demo period. This is a demo constraint, not a design limit.</span>
+          </li>
+          <li class="flex gap-3 items-start text-[15px] text-ink/80">
+            <span class="flex-shrink-0 mt-0.5">🔒</span>
+            <span><strong>No user data is stored.</strong> Mic access is session-only and never sent to a server. Dictionary cache is browser-local. No account, no tracking, no cookies.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="py-8 px-6 md:px-12">
+    <div class="max-w-[1280px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[13px]">
+      <div>
+        <strong class="text-sun">GabAI-Basa</strong> &nbsp;·&nbsp; Filipino Reading Companion &nbsp;·&nbsp; Hackathon MVP
+      </div>
+      <div>
+        GitHub Education &nbsp;+&nbsp; Accenture &nbsp;·&nbsp; Next.js 14 &nbsp;·&nbsp; Vercel
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════ BACK TO TOP FAB ═══════════════ -->
+  <div class="fixed bottom-6 right-6 z-50" id="backToTop" style="opacity:0; pointer-events:none; transition: opacity 0.3s;">
+    <a href="#hero" class="bg-sun hover:bg-yellow-300 text-ink w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl border-2 border-ink transition-transform hover:scale-110" aria-label="Back to top">↑</a>
+  </div>
+
+
+  <!-- ═══════════════ SCRIPTS ═══════════════ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // ─── Mouse follower (desktop only) ───
+      const glow = document.getElementById('cursorGlow');
+      if (window.matchMedia('(min-width: 1024px)').matches && glow) {
+        let mouseX = 0, mouseY = 0;
+        let glowX = 0, glowY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          if (!glow.classList.contains('visible')) {
+            glow.classList.add('visible');
+          }
+        });
+
+        document.addEventListener('mouseleave', () => {
+          glow.classList.remove('visible');
+        });
+
+        function animateGlow() {
+          // Smooth follow with lerp
+          glowX += (mouseX - glowX) * 0.08;
+          glowY += (mouseY - glowY) * 0.08;
+          glow.style.left = glowX + 'px';
+          glow.style.top = glowY + 'px';
+          requestAnimationFrame(animateGlow);
+        }
+        animateGlow();
+      }
+
+
+      // ─── Nav bar show/hide on scroll ───
+      const navBar = document.getElementById('navBar');
+      const heroEl = document.getElementById('hero');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', () => {
+        const heroBottom = heroEl.getBoundingClientRect().bottom;
+
+        if (heroBottom < 0) {
+          navBar.classList.add('show');
+        } else {
+          navBar.classList.remove('show');
+        }
+
+        // Back to top button
+        const fab = document.getElementById('backToTop');
+        if (window.scrollY > 600) {
+          fab.style.opacity = '1';
+          fab.style.pointerEvents = 'auto';
+        } else {
+          fab.style.opacity = '0';
+          fab.style.pointerEvents = 'none';
+        }
+
+        lastScroll = window.scrollY;
+      }, { passive: true });
+
+
+      // ─── Mobile nav ───
+      const mobileOverlay = document.getElementById('mobileNavOverlay');
+      const mobileOpen = document.getElementById('mobileNavOpen');
+      const mobileClose = document.getElementById('mobileNavClose');
+
+      mobileOpen.addEventListener('click', () => {
+        mobileOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      mobileClose.addEventListener('click', () => {
+        mobileOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileOverlay.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+
+
+      // ─── Scroll-reveal (fade-up) ───
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -60px 0px',
+        threshold: 0.1
+      };
+
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            fadeObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+
+    });
+  </script>
+
+</body>
+</html>
