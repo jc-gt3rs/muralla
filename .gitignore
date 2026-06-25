@@ -1,1 +1,10 @@
 private
+node_modules
+dist
+.DS_Store
+
+# Local API keys / runtime overrides — never commit real keys
+config.local.js
+*.local.js
+.env
+.env.*

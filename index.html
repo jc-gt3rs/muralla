@@ -370,6 +370,16 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+    /* ── Drag-and-drop on the hero card ── */
+    .hero-card-drag-over {
+      outline: 2px dashed #2D6BE4;
+      outline-offset: -3px;
+      background: #EEF2FF !important;
+    }
+    .hero-card-drag-over textarea {
+      background: #EEF2FF !important;
+    }
+
     /* ── Responsive breakpoints ── */
     @media (max-width: 375px) {
       .hero { min-height: 100svh; }
@@ -392,7 +402,6 @@
         <a href="#demo" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Demo</a>
         <a href="#languages" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Languages</a>
         <a href="#bandwidth" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Bandwidth</a>
-        <a href="#open-source" class="nav-link text-ink/60 hover:text-ink text-sm font-semibold transition-colors">Open Source</a>
       </div>
       <!-- Mobile hamburger -->
       <button class="md:hidden text-ink text-2xl outline-none focus:outline-none bg-transparent border-none p-0 cursor-pointer nav-hamburger" style="-webkit-tap-highlight-color: transparent; transition: color 0.3s;" id="mobileNavOpen" aria-label="Open navigation menu">☰</button>
@@ -443,14 +452,14 @@
 
       <!-- Card UI -->
       <div class="w-full lg:w-[560px] xl:w-[620px] flex-shrink-0 z-20">
-        <div class="bg-white rounded-[24px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-[#E6E6E6] w-full overflow-hidden flex flex-col relative">
+        <div id="heroCard" class="bg-white rounded-[24px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-[#E6E6E6] w-full overflow-hidden flex flex-col relative">
           <!-- Segmented control -->
           <div class="px-5 pt-5 pb-0">
             <div class="bg-[#EFEFEF] rounded-[14px] p-[4px] flex gap-[3px] overflow-x-auto no-scrollbar" id="toolSwitcher" role="tablist">
-              <button role="tab" aria-selected="true"  class="tool-tab active flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Basahin Mo</button>
-              <button role="tab" aria-selected="false" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Samahan Mo</button>
-              <button role="tab" aria-selected="false" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Anong Salita</button>
-              <button role="tab" aria-selected="false" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Ipaliwanag Mo</button>
+              <button role="tab" aria-selected="false" data-tool="basahin"    data-cta="Read"      data-placeholder="Paste text to listen to…"            class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Basahin Mo</button>
+              <button role="tab" aria-selected="true"  data-tool="samahan"    data-cta="Practice"  data-placeholder="Paste text to read word by word…"     class="tool-tab active flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Samahan Mo</button>
+              <button role="tab" aria-selected="false" data-tool="salita"     data-cta="Look up"   data-placeholder="Type a word — spell it how it sounds…" class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Anong Salita</button>
+              <button role="tab" aria-selected="false" data-tool="ipaliwanag" data-cta="Explain"   data-placeholder="Paste a hard passage to simplify…"     class="tool-tab        flex-1 min-w-max px-4 py-2 rounded-[10px] font-semibold text-[13px] whitespace-nowrap outline-none transition-all">Ipaliwanag Mo</button>
             </div>
           </div>
           
@@ -464,7 +473,7 @@
               style="font-family: 'Inter', sans-serif; box-shadow: none;"
             ></textarea>
             <!-- Hidden file input -->
-            <input type="file" id="heroFileInput" accept=".txt,.pdf,.doc,.docx" class="hidden" aria-label="Upload file">
+            <input type="file" id="heroFileInput" accept=".txt,.md,.pdf,.docx" class="hidden" aria-label="Upload file">
           </div>
 
           <!-- Footer -->
@@ -483,7 +492,7 @@
               id="heroSubmitBtn"
               class="bg-[#1A1A2E] hover:bg-ink/80 text-white font-bold text-[15px] px-6 py-2.5 rounded-full flex items-center gap-2 transition-colors outline-none shadow-sm active:scale-95 flex-shrink-0"
             >
-              Read
+              Practice
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </button>
           </div>
@@ -509,18 +518,21 @@
         </h2>
 
         <!-- Stats row -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10 text-center">
           <div>
-            <span class="stat-number text-5xl md:text-[56px]">2</span>
-            <p class="text-muted text-sm italic mt-1">Core languages supported: English and Filipino</p>
+            <span class="stat-number text-5xl md:text-[56px]">90%</span>
+            <p class="text-muted text-sm mt-1">of Filipino Grade 4 students read below minimum proficiency</p>
+            <a href="https://www.worldbank.org/en/country/philippines/publication/philippine-education-for-the-21st-century" target="_blank" rel="noopener" class="text-[11px] text-sky-brand/60 hover:text-sky-brand mt-1 inline-block transition-colors">World Bank, 2023 ↗</a>
           </div>
           <div>
             <span class="stat-number text-5xl md:text-[56px]">1 in 5</span>
-            <p class="text-muted text-sm italic mt-1">students affected by dyslexia or reading difficulties</p>
+            <p class="text-muted text-sm mt-1">students worldwide are affected by dyslexia or reading difficulties</p>
+            <a href="https://www.nichd.nih.gov/health/topics/reading/conditioninfo/risk" target="_blank" rel="noopener" class="text-[11px] text-sky-brand/60 hover:text-sky-brand mt-1 inline-block transition-colors">NIH / NICHD ↗</a>
           </div>
           <div>
-            <span class="stat-number text-5xl md:text-[56px]">1</span>
-            <p class="text-muted text-sm italic mt-1">Unified platform for accessible reading</p>
+            <span class="stat-number text-5xl md:text-[56px]">2</span>
+            <p class="text-muted text-sm mt-1">official languages in PH education — yet most tools support only one</p>
+            <a href="https://www.deped.gov.ph/wp-content/uploads/2019/08/DO_s2019_021.pdf" target="_blank" rel="noopener" class="text-[11px] text-sky-brand/60 hover:text-sky-brand mt-1 inline-block transition-colors">DepEd Order No. 21, 2019 ↗</a>
           </div>
         </div>
 
@@ -885,41 +897,38 @@
   <section id="open-source" class="py-16 md:py-24 bg-ink">
     <div class="max-w-[860px] mx-auto px-6 md:px-10">
       <div class="fade-up">
-        <p class="text-sun font-bold text-xs tracking-[0.18em] uppercase mb-2">Open Source Artifact</p>
-        <h2 class="font-display font-extrabold text-[clamp(26px,4vw,36px)] leading-tight text-white mb-4">
-          The GitHub Education deliverable
+        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">The Tools</p>
+        <h2 class="font-extrabold text-[clamp(26px,4vw,36px)] leading-tight text-white mb-4">
+          Four tools. One URL. No login.
         </h2>
-        <p class="text-white/50 text-[15px] max-w-[640px] mb-8">
-          Separate from the app, the team publishes a reusable artifact on HuggingFace. This is what future researchers and developers can fork, extend, and train on.
+        <p class="text-white/50 text-[15px] max-w-[600px] mb-10">
+          Each tool is a standalone page built for a single job. Open it, use it, leave. No account. No install. No bandwidth wasted on features you didn't ask for.
         </p>
 
-        <!-- Artifact box -->
-        <div class="bg-gradient-to-br from-[#0f1724] to-[#1a2744] rounded-xl p-7 md:p-10 border border-white/[0.06]">
-          <h3 class="font-display font-extrabold text-xl text-sun mb-2">📚 HuggingFace Dataset + Model</h3>
-          <p class="text-white/40 text-sm italic mb-6">Published under MIT license, separate from the app repository</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a href="/basahin" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
+            <h3 class="font-extrabold text-white text-lg mb-1">Basahin Mo</h3>
+            <p class="text-white/40 text-[13px] mb-3">TTS Reader</p>
+            <p class="text-white/60 text-[14px] leading-relaxed">Paste text, pick a language, press play. Reads sentence-by-sentence in English or Filipino.</p>
+          </a>
 
-          <ul class="space-y-4">
-            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
-              <span class="text-sun flex-shrink-0">▸</span>
-              Curated corpus subsets for English and Filipino — cleaned, normalized, and ready for TTS training
-            </li>
-            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
-              <span class="text-sun flex-shrink-0">▸</span>
-              Fine-tuned VITS / Coqui TTS model checkpoint, with model card and training notes
-            </li>
-            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
-              <span class="text-sun flex-shrink-0">▸</span>
-              Reproducible training pipeline in Python — any researcher can retrain or extend to new languages
-            </li>
-            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed border-b border-white/[0.06] pb-4">
-              <span class="text-sun flex-shrink-0">▸</span>
-              HuggingFace dataset card with language metadata, speaker demographics, and known limitations
-            </li>
-            <li class="flex gap-3 text-white/75 text-[15px] leading-relaxed">
-              <span class="text-sun flex-shrink-0">▸</span>
-              The app itself is proof the model works in production — closing the loop between research and usable technology
-            </li>
-          </ul>
+          <a href="/samahan" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
+            <h3 class="font-extrabold text-white text-lg mb-1">Samahan Mo Ako</h3>
+            <p class="text-white/40 text-[13px] mb-3">Co-Reader + Pronunciation Rater</p>
+            <p class="text-white/60 text-[14px] leading-relaxed">Word-by-word guided reading with live on-device pronunciation scoring. No audio leaves the phone.</p>
+          </a>
+
+          <a href="/salita" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
+            <h3 class="font-extrabold text-white text-lg mb-1">Ano ang Salita</h3>
+            <p class="text-white/40 text-[13px] mb-3">Dictionary Lookup</p>
+            <p class="text-white/60 text-[14px] leading-relaxed">Definition, IPA, word type, and example sentence. Cached offline after first lookup.</p>
+          </a>
+
+          <a href="/ipaliwanag" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
+            <h3 class="font-extrabold text-white text-lg mb-1">Ipaliwanag Mo</h3>
+            <p class="text-white/40 text-[13px] mb-3">AI Summarizer</p>
+            <p class="text-white/60 text-[14px] leading-relaxed">Paste a textbook passage. Gemini rewrites it in plain language at your grade level, in English or Filipino.</p>
+          </a>
         </div>
       </div>
     </div>
@@ -936,10 +945,7 @@
         </h2>
 
         <ul class="space-y-4 max-w-[680px]">
-          <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
-            <span class="flex-shrink-0 mt-0.5">💡</span>
-            <span><strong>Atkinson Hyperlegible</strong> as the default body font — designed for low-vision and reading-difficulty users. Open source via Google Fonts.</span>
-          </li>
+
           <li class="flex gap-3 items-start text-[15px] text-ink/80 border-b border-divider pb-4">
             <span class="flex-shrink-0 mt-0.5">💡</span>
             <span><strong>OpenDyslexic</strong> toggle in the co-reader — extra-weighted bottoms prevent letter rotation confusion.</span>
@@ -1117,7 +1123,18 @@
       const heroUpload  = document.getElementById('heroUploadBtn');
       const heroCount   = document.getElementById('heroCharCount');
       const heroSubmit  = document.getElementById('heroSubmitBtn');
+      const heroSubmitLabel = heroSubmit.childNodes[0]; // the "Read" text node
       const MAX_CHARS   = 10000;
+
+      // Handoff contract shared with the tool pages (src/shared/handoff.js).
+      // Stored in sessionStorage; the destination tool reads + consumes it.
+      const HANDOFF_KEY = 'gabai.handoff';
+
+      let uploadedFileName = '';
+
+      function activeTab() {
+        return document.querySelector('#toolSwitcher .tool-tab.active');
+      }
 
       function updateCount() {
         const len = heroText.value.length;
@@ -1125,34 +1142,175 @@
         heroCount.style.color = len > MAX_CHARS * 0.9 ? '#DC2626' : '';
       }
 
-      heroText.addEventListener('input', updateCount);
+      function setUploadStatus(msg, kind) {
+        if (!msg) { updateCount(); return; }
+        heroCount.textContent = msg;
+        heroCount.style.color = kind === 'error' ? '#DC2626' : kind === 'ok' ? '#16A34A' : '#6B7280';
+      }
+
+      heroText.addEventListener('input', () => { updateCount(); uploadedFileName = ''; });
 
       heroUpload.addEventListener('click', () => heroFile.click());
 
-      heroFile.addEventListener('change', () => {
+      // Lazy-load a CDN script once, resolving when its global is ready.
+      const scriptCache = {};
+      function loadScript(src) {
+        if (scriptCache[src]) return scriptCache[src];
+        scriptCache[src] = new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = () => reject(new Error('Failed to load parser. Check your connection.'));
+          document.head.appendChild(s);
+        });
+        return scriptCache[src];
+      }
+
+      const PDFJS_VER = '3.11.174';
+      async function extractPdf(file) {
+        await loadScript(`https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VER}/build/pdf.min.js`);
+        const pdfjs = window.pdfjsLib;
+        pdfjs.GlobalWorkerOptions.workerSrc =
+          `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VER}/build/pdf.worker.min.js`;
+        const data = await file.arrayBuffer();
+        const doc = await pdfjs.getDocument({ data }).promise;
+        const pages = [];
+        for (let p = 1; p <= doc.numPages; p++) {
+          const page = await doc.getPage(p);
+          const content = await page.getTextContent();
+          pages.push(content.items.map((it) => it.str).join(' '));
+        }
+        return pages.join('\n\n');
+      }
+
+      async function extractDocx(file) {
+        await loadScript('https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js');
+        const arrayBuffer = await file.arrayBuffer();
+        const res = await window.mammoth.extractRawText({ arrayBuffer });
+        return res.value || '';
+      }
+
+      heroFile.addEventListener('change', async () => {
         const file = heroFile.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          heroText.value = e.target.result.slice(0, MAX_CHARS);
-          updateCount();
+        const name = file.name.toLowerCase();
+        setUploadStatus(`Reading ${file.name}…`);
+        try {
+          let text = '';
+          if (name.endsWith('.pdf') || file.type === 'application/pdf') {
+            text = await extractPdf(file);
+          } else if (name.endsWith('.docx')) {
+            text = await extractDocx(file);
+          } else if (name.endsWith('.txt') || name.endsWith('.md') || file.type.startsWith('text/')) {
+            text = await file.text();
+          } else {
+            throw new Error('Unsupported file. Use .txt, .md, .pdf, or .docx.');
+          }
+          text = text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+          if (!text) throw new Error('No readable text found in this file.');
+          if (text.length > MAX_CHARS) {
+            heroText.value = text.slice(0, MAX_CHARS);
+            uploadedFileName = file.name;
+            setUploadStatus(`${file.name} loaded — trimmed to ${MAX_CHARS.toLocaleString()} chars`, 'ok');
+          } else {
+            heroText.value = text;
+            uploadedFileName = file.name;
+            setUploadStatus(`${file.name} loaded ✓`, 'ok');
+          }
           heroText.focus();
-        };
-        reader.readAsText(file);
-        heroFile.value = '';
+        } catch (err) {
+          setUploadStatus(err.message || 'Could not read this file.', 'error');
+        } finally {
+          heroFile.value = '';
+        }
       });
 
-      // Exposed for tool implementation: window.getHeroText()
+      // ─── Drag-and-drop on the hero card ───
+      const heroCard = document.getElementById('heroCard');
+      let dragDepth = 0; // track enter/leave on nested children
+
+      heroCard.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        dragDepth++;
+        heroCard.classList.add('hero-card-drag-over');
+      });
+
+      heroCard.addEventListener('dragover', (e) => {
+        e.preventDefault(); // allow drop
+      });
+
+      heroCard.addEventListener('dragleave', () => {
+        dragDepth--;
+        if (dragDepth === 0) heroCard.classList.remove('hero-card-drag-over');
+      });
+
+      heroCard.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        dragDepth = 0;
+        heroCard.classList.remove('hero-card-drag-over');
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        const name = file.name.toLowerCase();
+        setUploadStatus(`Reading ${file.name}…`);
+        try {
+          let text = '';
+          if (name.endsWith('.pdf') || file.type === 'application/pdf') {
+            text = await extractPdf(file);
+          } else if (name.endsWith('.docx')) {
+            text = await extractDocx(file);
+          } else if (name.endsWith('.txt') || name.endsWith('.md') || file.type.startsWith('text/')) {
+            text = await file.text();
+          } else {
+            throw new Error('Unsupported file. Drop a .txt, .md, .pdf, or .docx.');
+          }
+          text = text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+          if (!text) throw new Error('No readable text found in this file.');
+          if (text.length > MAX_CHARS) {
+            heroText.value = text.slice(0, MAX_CHARS);
+            uploadedFileName = file.name;
+            setUploadStatus(`${file.name} loaded — trimmed to ${MAX_CHARS.toLocaleString()} chars`, 'ok');
+          } else {
+            heroText.value = text;
+            uploadedFileName = file.name;
+            setUploadStatus(`${file.name} loaded ✓`, 'ok');
+          }
+          heroText.focus();
+        } catch (err) {
+          setUploadStatus(err.message || 'Could not read this file.', 'error');
+        }
+      });
+
+      // Exposed for any other caller: window.getHeroText()
       window.getHeroText = () => heroText.value.trim();
 
-      heroSubmit.addEventListener('click', () => {
+      // ─── Read → store handoff, redirect to the active tool page ───
+      function submitToTool() {
+        const tab = activeTab();
+        const tool = tab ? tab.dataset.tool : 'basahin';
         const text = window.getHeroText();
         if (!text) { heroText.focus(); return; }
-        // TODO: route to active tool implementation
-        console.log('[GabAI-Basa] submit →', document.querySelector('#toolSwitcher .tool-tab.active')?.textContent?.trim(), text.slice(0, 80));
+        try {
+          sessionStorage.setItem(HANDOFF_KEY, JSON.stringify({
+            tool,
+            text,
+            fileName: uploadedFileName || '',
+            ts: Date.now(),
+          }));
+        } catch (_) { /* sessionStorage unavailable — proceed without handoff */ }
+        window.location.assign(`/${tool}/`);
+      }
+
+      heroSubmit.addEventListener('click', submitToTool);
+      heroText.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + Enter submits
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); submitToTool(); }
       });
 
       // ─── Segmented control (tool switcher) ───
+      function syncTabUI(btn) {
+        if (btn.dataset.placeholder) heroText.placeholder = btn.dataset.placeholder;
+        if (btn.dataset.cta && heroSubmitLabel) heroSubmitLabel.nodeValue = btn.dataset.cta + ' ';
+      }
       document.querySelectorAll('#toolSwitcher .tool-tab').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('#toolSwitcher .tool-tab').forEach(b => {
@@ -1161,8 +1319,11 @@
           });
           btn.classList.add('active');
           btn.setAttribute('aria-selected', 'true');
+          syncTabUI(btn);
         });
       });
+      // Initialize label/placeholder from the default active tab.
+      if (activeTab()) syncTabUI(activeTab());
 
     });
   </script>
