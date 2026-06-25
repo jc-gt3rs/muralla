@@ -686,38 +686,83 @@
       }
     }
   </style>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: { preflight: false },
+      theme: {
+        extend: {
+          colors: {
+            'sun': '#F7C948',
+            'ink': '#1A1A2E',
+            'paper': '#FAFAF5',
+          }
+        }
+      }
+    }
+  </script>
+
 </head>
 <body>
+  <!-- Tailwind Element: Mobile Navigation Menu -->
+  <div class="block lg:hidden fixed bottom-6 right-6 z-50">
+    <button onclick="document.getElementById('mobile-sidebar').classList.toggle('hidden')" class="bg-sun text-ink px-5 py-3 rounded-full shadow-2xl font-bold flex items-center gap-2 border-2 border-ink">
+      <span>☰ Menu</span>
+    </button>
+  </div>
+  
+  <div id="mobile-sidebar" class="hidden fixed inset-0 bg-ink/95 z-[100] p-8 text-paper overflow-y-auto backdrop-blur-md lg:hidden flex-col transition-all">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-sun font-bold text-2xl uppercase tracking-wider font-['Syne']">Directory</h2>
+      <button onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="text-4xl hover:text-sun transition-colors">&times;</button>
+    </div>
+    <ul class="flex flex-col gap-5 text-lg">
+      <li><a href="#part1" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">1. Project Overview</a></li>
+      <li><a href="#part2" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">2. Core Features</a></li>
+      <li><a href="#part3" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">3. Supported Dialects</a></li>
+      <li><a href="#part4" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">4. Technical Stack</a></li>
+      <li><a href="#part5" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">5. Project Architecture</a></li>
+      <li><a href="#part6" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">6. Design Language</a></li>
+      <li><a href="#part7" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">7. Low-Bandwidth Strategy</a></li>
+      <li><a href="#part8" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">8. Open Source Artifact</a></li>
+      <li><a href="#part9" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">9. Known Constraints</a></li>
+      <li><a href="#part10" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">10. Hackathon Timeline</a></li>
+      <li><a href="#part11" onclick="document.getElementById('mobile-sidebar').classList.add('hidden')" class="block p-3 rounded-lg hover:bg-white/10">11. Execution Strategy</a></li>
+    </ul>
+  </div>
+
 
   <!-- Premium Accessibility & Document Header -->
   <header>
-    <div class="header-container">
-      <div class="brand">
+    <div class="header-container flex flex-col md:flex-row md:items-center justify-between w-full">
+      <div class="brand text-center md:text-left mb-4 md:mb-0 w-full md:w-auto">
         <h1>GabAI-Basa</h1>
         <p>Reading Guide: Filipino Reading Companion • Full Project Document</p>
       </div>
 
-      <div class="accessibility-toolbar" aria-label="Reading Controls">
-        <div class="toolbar-group">
+      <div class="accessibility-toolbar flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto p-4 sm:p-2 bg-white/10 rounded-xl" aria-label="Reading Controls">
+        <div class="toolbar-group flex flex-col sm:flex-row items-start sm:items-center w-full sm:w-auto">
           <label for="font-select">Font Style</label>
-          <select id="font-select">
+          <select id="font-select" class="w-full sm:w-auto mt-1 sm:mt-0 p-2 rounded bg-ink text-paper border border-white/30 focus:border-sun">
             <option value="atkinson">Atkinson Hyperlegible</option>
             <option value="opendyslexic">OpenDyslexic</option>
           </select>
         </div>
 
-        <div class="toolbar-group">
+        <div class="toolbar-group flex flex-col sm:flex-row items-start sm:items-center w-full sm:w-auto">
           <label for="size-select">Text Size</label>
-          <select id="size-select">
+          <select id="size-select" class="w-full sm:w-auto mt-1 sm:mt-0 p-2 rounded bg-ink text-paper border border-white/30 focus:border-sun">
             <option value="normal">Normal (18px)</option>
             <option value="large">Large (22px)</option>
             <option value="xlarge">Extra Large (26px)</option>
           </select>
         </div>
 
-        <div class="toolbar-group">
+        <div class="toolbar-group flex flex-col sm:flex-row items-start sm:items-center w-full sm:w-auto">
           <label for="spacing-select">Spacing</label>
-          <select id="spacing-select">
+          <select id="spacing-select" class="w-full sm:w-auto mt-1 sm:mt-0 p-2 rounded bg-ink text-paper border border-white/30 focus:border-sun">
             <option value="normal">Normal</option>
             <option value="medium">Medium (+0.05em)</option>
             <option value="high">High (+0.12em)</option>
