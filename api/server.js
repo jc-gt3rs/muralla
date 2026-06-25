@@ -14,7 +14,7 @@ import { createServer } from 'node:http';
 const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_KEY || '';
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 // Allow requests only from our own domain (change if needed).
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://muralla.didthat.lol';
