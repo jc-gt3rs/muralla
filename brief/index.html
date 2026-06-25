@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tinig sa Liwanag — Project Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --sun: #F7C948;
+    --sun-light: #FFF5CC;
+    --sky: #2D6BE4;
+    --sky-dark: #1A4BAA;
+    --ink: #1A1A2E;
+    --paper: #FAFAF5;
+    --muted: #6B7280;
+    --divider: #E5E7EB;
+    --success: #16A34A;
+    --danger: #DC2626;
+    --warn: #D97706;
+    --soft-blue: #EEF2FF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Atkinson Hyperlegible', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  /* COVER */
+  .cover {
+    background: var(--ink);
+    color: #fff;
+    padding: 72px 64px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 360px; height: 360px;
+    background: var(--sun);
+    border-radius: 50%;
+    opacity: 0.12;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 200px;
+    width: 200px; height: 200px;
+    background: var(--sky);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+
+  .cover-eyebrow {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sun);
+    margin-bottom: 24px;
+  }
+
+  .cover-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .cover-title span {
+    color: var(--sun);
+  }
+
+  .cover-subtitle {
+    font-size: 18px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 16px;
+    max-width: 560px;
+    font-style: italic;
+  }
+
+  .cover-meta {
+    margin-top: 48px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .cover-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cover-meta-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    font-weight: 700;
+  }
+
+  .cover-meta-value {
+    font-size: 15px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 700;
+  }
+
+  .cover-tags {
+    margin-top: 36px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .tag-sun { background: var(--sun); color: var(--ink); }
+  .tag-sky { background: var(--sky); color: #fff; }
+  .tag-outline { border: 1.5px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); }
+
+  /* BODY LAYOUT */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 40px;
+  }
+
+  /* SECTION HEADERS */
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sky);
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 10px;
+    margin-top: 28px;
+  }
+
+  p {
+    margin-bottom: 16px;
+    max-width: 680px;
+  }
+
+  /* CALLOUT BOX */
+  .callout {
+    border-left: 4px solid var(--sun);
+    background: var(--sun-light);
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    margin: 24px 0;
+    max-width: 680px;
+  }
+
+  .callout p { margin-bottom: 0; }
+
+  .callout-sky {
+    border-left-color: var(--sky);
+    background: var(--soft-blue);
+  }
+
+  /* PROBLEM STATEMENT */
+  .problem-stat {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--sky);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .problem-stat-label {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 0;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+    margin: 32px 0;
+  }
+
+  /* FEATURE CARDS */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+  }
+
+  .feature-card {
+    border: 1.5px solid var(--divider);
+    border-radius: 12px;
+    padding: 24px;
+    background: #fff;
+    position: relative;
+  }
+
+  .feature-card.star {
+    border-color: var(--sun);
+    background: linear-gradient(135deg, #fffef7, #fff);
+  }
+
+  .feature-card.star::after {
+    content: 'STAR FEATURE';
+    position: absolute;
+    top: 16px; right: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    background: var(--sun);
+    color: var(--ink);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .feature-route {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--sky);
+    background: var(--soft-blue);
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .feature-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .feature-tagline {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 0;
+  }
+
+  .feature-pills {
+    margin-top: 14px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 12px;
+    background: var(--soft-blue);
+    color: var(--sky-dark);
+    letter-spacing: 0.04em;
+  }
+
+  .pill-sun { background: var(--sun-light); color: #92610a; }
+  .pill-green { background: #dcfce7; color: var(--success); }
+  .pill-red { background: #fee2e2; color: var(--danger); }
+
+  /* PRONUNCIATION RATER VISUAL */
+  .rater-demo {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 24px 0;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+  }
+
+  .rater-demo-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 16px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+  }
+
+  .rater-words {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .rater-word {
+    font-size: 22px;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .rater-word.correct { background: #16a34a; color: #fff; }
+  .rater-word.close   { background: var(--sun); color: var(--ink); }
+  .rater-word.wrong   { background: var(--danger); color: #fff; }
+  .rater-word.current {
+    background: rgba(255,255,255,0.15);
+    border: 2px solid var(--sun);
+    color: var(--sun);
+    animation: pulse 1.2s infinite;
+  }
+  .rater-word.unread  { color: rgba(255,255,255,0.3); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(247,201,72,0.4); }
+    50%       { box-shadow: 0 0 0 8px rgba(247,201,72,0); }
+  }
+
+  .rater-legend {
+    margin-top: 16px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+  }
+
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* TECH STACK TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 16px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child  { border-radius: 0 8px 0 0; }
+
+  td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--divider);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #F9FAFB; }
+
+  td code {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    background: var(--soft-blue);
+    color: var(--sky-dark);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* DIALECT TABLE */
+  .dialect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .dialect-card {
+    border: 1.5px solid var(--divider);
+    border-radius: 10px;
+    padding: 16px;
+    background: #fff;
+    text-align: center;
+  }
+
+  .dialect-card-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .dialect-card-local {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+
+  .dialect-card-region {
+    font-size: 11px;
+    color: var(--sky);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+
+  /* CASE MAPPING */
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .case-card {
+    border-radius: 12px;
+    padding: 24px;
+    border: 1.5px solid var(--divider);
+  }
+
+  .case-card.github { border-top: 4px solid var(--sky); }
+  .case-card.accenture { border-top: 4px solid var(--sun); }
+
+  .case-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .case-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .case-items li {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--divider);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    max-width: none;
+  }
+
+  .case-items li:last-child { border-bottom: none; }
+
+  .check { color: var(--success); font-weight: 700; flex-shrink: 0; }
+
+  /* ARCHITECTURE */
+  .arch-box {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.75);
+    overflow-x: auto;
+  }
+
+  .arch-box .route    { color: var(--sun); font-weight: 700; }
+  .arch-box .comment  { color: rgba(255,255,255,0.35); font-style: italic; }
+  .arch-box .dir      { color: #7dd3fc; }
+
+  /* BANDWIDTH SECTION */
+  .bw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .bw-card {
+    border-radius: 10px;
+    padding: 18px;
+    border: 1.5px solid var(--divider);
+    background: #fff;
+  }
+
+  .bw-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .bw-label.green { color: var(--success); }
+  .bw-label.yellow { color: var(--warn); }
+
+  .bw-feature {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .bw-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+
+  /* OPEN SOURCE ARTIFACT */
+  .artifact-box {
+    background: linear-gradient(135deg, #0f1724, #1a2744);
+    border-radius: 14px;
+    padding: 32px;
+    margin: 20px 0;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .artifact-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--sun);
+  }
+
+  .artifact-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .artifact-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .artifact-items li {
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    gap: 12px;
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .artifact-items li:last-child { border-bottom: none; }
+
+  .artifact-icon { color: var(--sun); flex-shrink: 0; }
+
+  /* CONSTRAINTS */
+  .constraint-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+  }
+
+  .constraint-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--divider);
+    font-size: 15px;
+    display: flex;
+    gap: 12px;
+    max-width: 680px;
+    margin-bottom: 0;
+  }
+
+  .constraint-list li:last-child { border-bottom: none; }
+
+  .c-icon { flex-shrink: 0; margin-top: 2px; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.45);
+    padding: 32px 64px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .footer strong { color: var(--sun); }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--divider);
+    margin: 48px 0;
+  }
+
+  @media (max-width: 640px) {
+    .cover { padding: 48px 28px 44px; }
+    .page { padding: 40px 24px; }
+    .case-grid { grid-template-columns: 1fr; }
+    .cover-meta { gap: 24px; }
+    .footer { padding: 24px 28px; }
+  }
+
+  @media print {
+    .cover::before, .cover::after { display: none; }
+    body { font-size: 15px; }
+    .page { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-eyebrow">Project Brief &nbsp;·&nbsp; Hackathon Submission</div>
+  <h1 class="cover-title">Tinig sa <span>Liwanag</span></h1>
+  <p class="cover-subtitle">Voice in the Light &mdash; a Filipino reading companion built for every student, engineered for those who need it most.</p>
+  <div class="cover-tags">
+    <span class="tag tag-sun">GitHub Education</span>
+    <span class="tag tag-sky">Accenture</span>
+    <span class="tag tag-outline">Web App</span>
+    <span class="tag tag-outline">Next.js</span>
+    <span class="tag tag-outline">Accessibility</span>
+    <span class="tag tag-outline">Philippine Languages</span>
+  </div>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Platform</span>
+      <span class="cover-meta-value">Web (Next.js 14)</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Dialects</span>
+      <span class="cover-meta-value">5 Philippine Languages</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Deploy Target</span>
+      <span class="cover-meta-value">Vercel</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Open Artifact</span>
+      <span class="cover-meta-value">HuggingFace + GitHub</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- PROBLEM -->
+  <div class="section">
+    <div class="section-label">The Problem</div>
+    <h2>A gap in language, technology, and learning support</h2>
+
+    <div class="stats-row">
+      <div>
+        <div class="problem-stat">130+</div>
+        <p class="problem-stat-label">Philippine languages spoken across the archipelago</p>
+      </div>
+      <div>
+        <div class="problem-stat">1 in 5</div>
+        <p class="problem-stat-label">Students affected by dyslexia and reading difficulties</p>
+      </div>
+      <div>
+        <div class="problem-stat">~4</div>
+        <p class="problem-stat-label">Philippine languages with meaningful open speech technology support</p>
+      </div>
+    </div>
+
+    <p>Despite the Philippines being home to more than 130 languages, most regional languages remain invisible in AI and speech technology. Tagalog has seen progress, but Cebuano, Ilocano, Hiligaynon, and dozens of others lack open datasets, benchmarks, and models. Meanwhile, millions of Filipino students navigate classrooms with no accessible reading support in their mother tongue.</p>
+
+    <p>Existing learning platforms are built for English-primary, high-bandwidth, and neurotypical users. They were not designed for a Grade 7 student in Cebu reading a Tagalog science textbook on a slow mobile connection with an undiagnosed reading difficulty.</p>
+
+    <div class="callout">
+      <p><strong>Tinig sa Liwanag</strong> addresses both gaps simultaneously: a browser-based reading companion for Filipino students, and an open-source speech infrastructure contribution for Philippine languages that researchers and developers can build on.</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- COMPETITION CASE MAP -->
+  <div class="section">
+    <div class="section-label">Two Birds, One Stone</div>
+    <h2>How this project satisfies both competition cases</h2>
+
+    <div class="case-grid">
+      <div class="case-card github">
+        <div class="case-title">&#128200; GitHub Education<br/><small style="font-weight:400;font-size:13px;color:#6B7280;">Tinig sa Liwanag case</small></div>
+        <ul class="case-items">
+          <li><span class="check">✓</span> Curated PLD corpus subsets for Cebuano, Ilocano, Hiligaynon published to HuggingFace</li>
+          <li><span class="check">✓</span> Fine-tuned Coqui TTS / VITS model checkpoint per dialect</li>
+          <li><span class="check">✓</span> Reproducible training pipeline with documentation</li>
+          <li><span class="check">✓</span> The app itself is proof the open model works in production</li>
+          <li><span class="check">✓</span> MIT-licensed, fully forkable, designed for extension</li>
+        </ul>
+      </div>
+      <div class="case-card accenture">
+        <div class="case-title">&#127775; Accenture<br/><small style="font-weight:400;font-size:13px;color:#6B7280;">AI-Powered Study Companion case</small></div>
+        <ul class="case-items">
+          <li><span class="check">✓</span> Explains and reads content in Filipino and regional languages</li>
+          <li><span class="check">✓</span> Grade-level-aware Gemini summarizer adapts to student level</li>
+          <li><span class="check">✓</span> Pronunciation rater gives personalized reading feedback</li>
+          <li><span class="check">✓</span> Designed for low-bandwidth and mobile use</li>
+          <li><span class="check">✓</span> No login, no install — accessible from any browser</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- USERS -->
+  <div class="section">
+    <div class="section-label">Who It's For</div>
+    <h2>Designed for everyone. Engineered for those who need it most.</h2>
+
+    <p>Tinig sa Liwanag is not a dyslexia-only tool. Any Filipino student benefits from dialect-aware TTS, dialect summarization, and a co-reader. But every design decision is tested against one question first: <em>does this work for a student with dyslexia?</em> If it does, it works for everyone.</p>
+
+    <div class="callout callout-sky">
+      <p><strong>Primary user:</strong> Filipino student, Grades 5&ndash;10, any dialect region, who struggles with reading fluency, reading comprehension, or encountering academic text in an unfamiliar language.</p>
+    </div>
+    <div class="callout">
+      <p><strong>Secondary users:</strong> Any student who wants to listen to text, get a summary in their dialect, or look up an English word. Teachers who want a low-setup reading support tool for their class.</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- FEATURES -->
+  <div class="section">
+    <div class="section-label">The Features</div>
+    <h2>Five tools. One URL. No login.</h2>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <span class="feature-route">/basahin</span>
+        <div class="feature-name">Basahin Mo</div>
+        <div class="feature-tagline">TTS Reader</div>
+        <p class="feature-desc">Paste or upload text. Pick a dialect. Press play. A clean audio reader with adjustable speed and pitch. Sentence-level chunked playback keeps bandwidth low and lets the student follow along.</p>
+        <div class="feature-pills">
+          <span class="pill">Google Cloud TTS</span>
+          <span class="pill">5 dialects</span>
+          <span class="pill">Speed control</span>
+          <span class="pill pill-green">Low bandwidth</span>
+        </div>
+      </div>
+
+      <div class="feature-card star">
+        <span class="feature-route">/samahan</span>
+        <div class="feature-name">Samahan Mo Ako</div>
+        <div class="feature-tagline">Co-Reader + Pronunciation Rater</div>
+        <p class="feature-desc">Text is read word by word, with the current word highlighted in a bold pill. Tap right to advance, tap left to go back. OpenDyslexic font toggle, adjustable spacing and size. While TTS reads each word, the student reads it back — the mic scores pronunciation in real time and colors each word green, yellow, or red.</p>
+        <div class="feature-pills">
+          <span class="pill pill-sun">Web Speech API</span>
+          <span class="pill">OpenDyslexic font</span>
+          <span class="pill pill-green">Correct</span>
+          <span class="pill" style="background:#fef9c3;color:#92400e;">Close</span>
+          <span class="pill pill-red">Needs practice</span>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-route">/salita</span>
+        <div class="feature-name">Ano ang Salita</div>
+        <div class="feature-tagline">Spelling &amp; Dictionary Lookup</div>
+        <p class="feature-desc">Type any English word. Get the definition, word type, IPA pronunciation, and an example sentence. Optional TTS reads the definition aloud. Results are cached locally so repeated lookups are instant and offline.</p>
+        <div class="feature-pills">
+          <span class="pill">Free Dictionary API</span>
+          <span class="pill">IPA pronunciation</span>
+          <span class="pill pill-green">No API key needed</span>
+          <span class="pill pill-green">Offline cache</span>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-route">/ipaliwanag</span>
+        <div class="feature-name">Ipaliwanag Mo</div>
+        <div class="feature-tagline">Dialect Summarizer</div>
+        <p class="feature-desc">Paste a textbook excerpt, article, or assignment. Pick a dialect and a grade level. Gemini summarizes it in plain, student-friendly language in that dialect. Output can be read aloud via TTS. The only tool of its kind for Philippine regional languages.</p>
+        <div class="feature-pills">
+          <span class="pill">Gemini 1.5 Flash</span>
+          <span class="pill">5 dialects</span>
+          <span class="pill">Grade-level aware</span>
+          <span class="pill">TTS output</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- PRONUNCIATION RATER DETAIL -->
+  <div class="section">
+    <div class="section-label">Feature Deep Dive</div>
+    <h2>The Pronunciation Rater</h2>
+
+    <p>This is the feature that turns a passive reading tool into an active reading tutor. Here is how it works in sequence:</p>
+
+    <p>The co-reader highlights a word and the TTS voice reads it aloud. The student then reads the same word back into their microphone. The browser's Web Speech API transcribes the student's spoken word and compares it to the expected word. The highlight updates immediately based on the result.</p>
+
+    <div class="rater-demo">
+      <div class="rater-demo-label">Co-reader pronunciation rater — live word state preview</div>
+      <div class="rater-words">
+        <span class="rater-word correct">Ang</span>
+        <span class="rater-word correct">bata</span>
+        <span class="rater-word close">ay</span>
+        <span class="rater-word current">nagbabasa</span>
+        <span class="rater-word unread">ng</span>
+        <span class="rater-word unread">aklat.</span>
+      </div>
+      <div class="rater-legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#16a34a;"></span> Correct pronunciation</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#F7C948;"></span> Close / needs review</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span> Incorrect</div>
+        <div class="legend-item"><span class="legend-dot" style="background:rgba(255,255,255,0.15);border:1.5px solid #F7C948;"></span> Current word (speaking)</div>
+      </div>
+    </div>
+
+    <p>At the end of a session, a score summary shows the student which words need more practice. Color feedback always pairs with an icon so it is never color-alone — accessible for colorblind users.</p>
+
+    <div class="callout callout-sky">
+      <p><strong>Browser note:</strong> Web Speech API requires Chrome or Edge. A compatibility notice is shown to students on unsupported browsers, with a fallback to manual tap-to-advance without scoring.</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- DIALECTS -->
+  <div class="section">
+    <div class="section-label">Supported Languages</div>
+    <h2>Five Philippine languages at launch</h2>
+
+    <div class="dialect-grid">
+      <div class="dialect-card">
+        <div class="dialect-card-name">Filipino</div>
+        <p class="dialect-card-local">Filipino</p>
+        <p class="dialect-card-region">National language</p>
+      </div>
+      <div class="dialect-card">
+        <div class="dialect-card-name">Tagalog</div>
+        <p class="dialect-card-local">Tagalog</p>
+        <p class="dialect-card-region">Metro Manila / Luzon</p>
+      </div>
+      <div class="dialect-card">
+        <div class="dialect-card-name">Cebuano</div>
+        <p class="dialect-card-local">Bisaya / Cebuano</p>
+        <p class="dialect-card-region">Visayas / Mindanao</p>
+      </div>
+      <div class="dialect-card">
+        <div class="dialect-card-name">Ilocano</div>
+        <p class="dialect-card-local">Ilokano</p>
+        <p class="dialect-card-region">Ilocos / N. Luzon</p>
+      </div>
+      <div class="dialect-card">
+        <div class="dialect-card-name">Hiligaynon</div>
+        <p class="dialect-card-local">Ilonggo</p>
+        <p class="dialect-card-region">Western Visayas</p>
+      </div>
+    </div>
+
+    <p style="margin-top:16px;font-size:14px;color:var(--muted);">Google Cloud TTS has native <code>fil-PH</code> support. For Cebuano, Ilocano, and Hiligaynon, text is pre-processed through Gemini to normalize pronunciation-consistent spelling before synthesis. This is a known limitation the open-source Coqui model is designed to close.</p>
+  </div>
+
+  <hr />
+
+  <!-- TECH STACK -->
+  <div class="section">
+    <div class="section-label">Technical Stack</div>
+    <h2>Built lean, built to deploy in one click</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Technology</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Framework</td>
+            <td><strong>Next.js 14 App Router</strong></td>
+            <td>API routes built-in, route-level code splitting, one-click Vercel deploy</td>
+          </tr>
+          <tr>
+            <td>Styling</td>
+            <td><strong>Tailwind CSS</strong></td>
+            <td>Fast iteration, no runtime overhead</td>
+          </tr>
+          <tr>
+            <td>TTS</td>
+            <td><strong>Google Cloud TTS</strong> <code>fil-PH</code></td>
+            <td>Native Filipino support, high quality, same billing as other Google services</td>
+          </tr>
+          <tr>
+            <td>Pronunciation scoring</td>
+            <td><strong>Web Speech API</strong> <code>SpeechRecognition</code></td>
+            <td>100% on-device, zero bandwidth cost, no API key</td>
+          </tr>
+          <tr>
+            <td>Summarizer</td>
+            <td><strong>Gemini 1.5 Flash</strong></td>
+            <td>Fast, cheap, strong multilingual output for Philippine languages</td>
+          </tr>
+          <tr>
+            <td>Dictionary</td>
+            <td><strong>dictionaryapi.dev</strong></td>
+            <td>Free, no key required, comprehensive English coverage</td>
+          </tr>
+          <tr>
+            <td>Fonts</td>
+            <td><strong>Atkinson Hyperlegible</strong> + <strong>OpenDyslexic</strong></td>
+            <td>Designed for reading accessibility; self-hosted and cached</td>
+          </tr>
+          <tr>
+            <td>Deploy</td>
+            <td><strong>Vercel</strong></td>
+            <td>Free tier, instant deploys, edge functions</td>
+          </tr>
+          <tr>
+            <td>Open artifact</td>
+            <td><strong>Coqui TTS</strong> + <strong>PLD corpus</strong></td>
+            <td>Fine-tuned VITS model per dialect, published to HuggingFace</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- ARCHITECTURE -->
+  <div class="section">
+    <div class="section-label">Architecture</div>
+    <h2>Project structure</h2>
+
+    <div class="arch-box">
+<span class="dir">tinig-sa-liwanag/</span>
+├── <span class="dir">src/</span>
+│   ├── <span class="dir">app/</span>
+│   │   ├── <span class="route">page.tsx</span>             <span class="comment">Landing — hero + tool selector</span>
+│   │   ├── <span class="route">layout.tsx</span>           <span class="comment">Root layout + nav</span>
+│   │   ├── <span class="dir">basahin/</span>
+│   │   │   └── <span class="route">page.tsx</span>         <span class="comment">TTS Reader</span>
+│   │   ├── <span class="dir">samahan/</span>
+│   │   │   └── <span class="route">page.tsx</span>         <span class="comment">Co-Reader + Pronunciation Rater</span>
+│   │   ├── <span class="dir">salita/</span>
+│   │   │   └── <span class="route">page.tsx</span>         <span class="comment">Spelling &amp; Dictionary</span>
+│   │   ├── <span class="dir">ipaliwanag/</span>
+│   │   │   └── <span class="route">page.tsx</span>         <span class="comment">Dialect Summarizer</span>
+│   │   └── <span class="dir">api/</span>
+│   │       ├── <span class="dir">tts/</span>
+│   │       │   └── <span class="route">route.ts</span>     <span class="comment">Google TTS proxy (API key server-side)</span>
+│   │       └── <span class="dir">summarize/</span>
+│   │           └── <span class="route">route.ts</span>     <span class="comment">Gemini proxy (API key server-side)</span>
+│   ├── <span class="dir">components/</span>
+│   │   ├── <span class="route">Nav.tsx</span>
+│   │   ├── <span class="route">DialectPicker.tsx</span>
+│   │   ├── <span class="route">AudioPlayer.tsx</span>
+│   │   ├── <span class="route">WordHighlighter.tsx</span>  <span class="comment">Co-reader core state machine</span>
+│   │   └── <span class="route">PronunciationRater.tsx</span>
+│   └── <span class="dir">lib/</span>
+│       └── <span class="route">dialects.ts</span>          <span class="comment">Central dialect config</span>
+├── <span class="route">.env.local.example</span>
+└── <span class="route">README.md</span>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- LOW BANDWIDTH -->
+  <div class="section">
+    <div class="section-label">Low-Bandwidth Design</div>
+    <h2>Designed for Philippine internet realities</h2>
+
+    <p>No feature is sacrificed for low bandwidth. The architecture is designed around it.</p>
+
+    <div class="bw-grid">
+      <div class="bw-card">
+        <div class="bw-label green">Zero bandwidth</div>
+        <div class="bw-feature">Pronunciation Rater</div>
+        <p class="bw-note">Web Speech API runs entirely on-device. No audio is ever sent to a server.</p>
+      </div>
+      <div class="bw-card">
+        <div class="bw-label green">Minimal bandwidth</div>
+        <div class="bw-feature">Summarizer</div>
+        <p class="bw-note">Text-in, text-out. Even on 2G, Gemini responses are under 2KB.</p>
+      </div>
+      <div class="bw-card">
+        <div class="bw-label green">Cached locally</div>
+        <div class="bw-feature">Dictionary Lookup</div>
+        <p class="bw-note">Each word cached in localStorage. Second lookup is instant and offline.</p>
+      </div>
+      <div class="bw-card">
+        <div class="bw-label yellow">Optimized</div>
+        <div class="bw-feature">TTS Audio</div>
+        <p class="bw-note">Synthesized sentence-by-sentence. Playback starts immediately. One sentence ahead is preloaded. OGG Opus encoding (~half of MP3 size) used when the browser supports it.</p>
+      </div>
+      <div class="bw-card">
+        <div class="bw-label green">One-time load</div>
+        <div class="bw-feature">Fonts &amp; App Shell</div>
+        <p class="bw-note">Fonts are self-hosted and cached. Service worker caches the app shell after first visit.</p>
+      </div>
+      <div class="bw-card">
+        <div class="bw-label green">Route-split</div>
+        <div class="bw-feature">JavaScript Bundle</div>
+        <p class="bw-note">Next.js App Router splits code per route. A student using only the co-reader never downloads the summarizer code.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- OPEN SOURCE ARTIFACT -->
+  <div class="section">
+    <div class="section-label">Open Source Artifact</div>
+    <h2>The GitHub Education deliverable</h2>
+
+    <p>Separate from the app, the team publishes a reusable open-source artifact that future researchers and developers can extend. This is what directly satisfies the GitHub Education case requirement for "foundational infrastructure."</p>
+
+    <div class="artifact-box">
+      <div class="artifact-title">&#128218; HuggingFace Dataset + Model</div>
+      <div class="artifact-sub">Published under MIT license, separate from the app repository</div>
+      <ul class="artifact-items">
+        <li><span class="artifact-icon">&#9654;</span> Curated and formatted subset of the Philippine Languages Database (PLD) for Cebuano, Ilocano, and Hiligaynon — cleaned, normalized, and ready for TTS training</li>
+        <li><span class="artifact-icon">&#9654;</span> Fine-tuned VITS / Coqui TTS model checkpoint per dialect, with model card and training notes</li>
+        <li><span class="artifact-icon">&#9654;</span> Reproducible training pipeline in Python with documented steps — any researcher can retrain or extend</li>
+        <li><span class="artifact-icon">&#9654;</span> HuggingFace dataset card with language metadata, speaker demographics, and known limitations</li>
+        <li><span class="artifact-icon">&#9654;</span> The app is the demonstration that the open model works in a real product — closing the loop between research artifact and usable technology</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- DESIGN PRINCIPLES -->
+  <div class="section">
+    <div class="section-label">Design Language</div>
+    <h2>Warm, accessible, student-first</h2>
+
+    <p>Every visual decision is tested against the dyslexic student first. If it works for them, it works for everyone.</p>
+
+    <ul class="constraint-list">
+      <li><span class="c-icon">&#128161;</span><span><strong>Atkinson Hyperlegible</strong> as the default body font — designed specifically for low-vision and reading-difficulty users, open source via Google Fonts.</span></li>
+      <li><span class="c-icon">&#128161;</span><span><strong>OpenDyslexic</strong> font available as a toggle in the co-reader — extra-weighted bottoms help prevent letter rotation confusion.</span></li>
+      <li><span class="c-icon">&#128161;</span><span>Minimum <strong>18px on all reading surfaces</strong>. Generous line height (1.75). Extra letter spacing in co-reader mode.</span></li>
+      <li><span class="c-icon">&#128161;</span><span>Word highlight is a <strong>bold pill</strong>, never just an underline or color change alone. Shape + color.</span></li>
+      <li><span class="c-icon">&#128161;</span><span>Pronunciation feedback uses <strong>color + icon</strong> — never color alone. Colorblind-safe by design.</span></li>
+      <li><span class="c-icon">&#128161;</span><span>Filipino sun yellow <code>#F7C948</code> as the primary interactive color. Warm, energetic, culturally grounded.</span></li>
+      <li><span class="c-icon">&#128161;</span><span>No modals, no popups, no distracting animations on reading surfaces. Motion is reserved for feedback moments only.</span></li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <!-- CONSTRAINTS -->
+  <div class="section">
+    <div class="section-label">Known Constraints</div>
+    <h2>Honest limitations</h2>
+
+    <ul class="constraint-list">
+      <li><span class="c-icon">&#9888;&#65039;</span><span>Google TTS has <strong>native support for Filipino only</strong>. Cebuano, Ilocano, and Hiligaynon are approximated by pre-processing text through Gemini for pronunciation-consistent spelling before synthesis. This is a known limitation the open-source model artifact is built to address.</span></li>
+      <li><span class="c-icon">&#9888;&#65039;</span><span>The <strong>Web Speech API</strong> (pronunciation rater) requires Chrome or Edge. Firefox and Safari users see a compatibility notice and fall back to manual tap-to-advance co-reading without scoring.</span></li>
+      <li><span class="c-icon">&#9888;&#65039;</span><span>The <strong>Gemini summarizer</strong> requires a live connection and caps input at 3,000 characters to stay within Flash rate limits during the demo. This is a demo constraint, not a fundamental limitation.</span></li>
+      <li><span class="c-icon">&#9888;&#65039;</span><span><strong>No user data is stored.</strong> Mic access is session-only and never sent to a server. Dictionary cache is browser-local. No account, no tracking.</span></li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>
+    <strong>Tinig sa Liwanag</strong> &nbsp;&middot;&nbsp; Filipino Reading Companion &nbsp;&middot;&nbsp; Hackathon Project Brief
+  </div>
+  <div>
+    GitHub Education &nbsp;+&nbsp; Accenture &nbsp;&middot;&nbsp; Next.js &nbsp;&middot;&nbsp; Vercel
+  </div>
+</div>
+
+</body>
+</html>
