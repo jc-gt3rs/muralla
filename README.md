@@ -18,6 +18,12 @@ The project will address two critical challenges simultaneously:
 1. **Linguistic Underrepresentation (GitHub Education Track):** We will provide open-source datasets and text-to-speech models for underrepresented regional dialects (Cebuano, Ilocano, and Hiligaynon).
 2. **Cognitive Accessibility (Accenture Track):** We will deliver a lightweight, browser-native AI study companion that will simplify, explain, read, and rate pronunciation in regional mother tongues.
 
+## 🎯 Alignment with UN Sustainable Development Goal #4: Quality Education
+GabAI-Basa is directly engineered to advance SDG #4, which aims to ensure inclusive and equitable quality education and promote lifelong learning opportunities for all. The project targets specific indicators under this goal by addressing foundational literacy gaps in the Philippine public education sector:
+•	**Target 4.1 (Free, Equitable, and Quality Primary/Secondary Education):** In the Philippines, regional students frequently fall behind due to a lack of learning materials in their native mother tongues. By introducing dialect-specific text-to-speech and AI-driven content simplification, we democratize access to quality study tools regardless of a student's geographic or socioeconomic background.
+•	**Target 4.5 (Eliminate Gender and Literacy Disparities & Ensure Equal Access for the Vulnerable):** Traditional educational software widely overlooks neurodivergent learners. Our application places cognitive accessibility at the forefront—incorporating OpenDyslexic fonts, high-contrast visual pacing, and localized speech scoring to provide an equitable learning landscape for students dealing with dyslexia and reading difficulties.
+•	**Target 4.a (Build and Upgrade Inclusive and Safe Schools):** We extend the concept of an inclusive "learning environment" into the digital realm. By building a Progressive Web App (PWA) with zero-bandwidth scoring and extreme data optimization, we ensure that the software is fully functional in remote, low-connectivity public schools across rural regions.
+
 ---
 
 ## What We Will Build (Core Features)
