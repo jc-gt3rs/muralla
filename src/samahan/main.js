@@ -359,7 +359,11 @@ function selectChallengeSentences(text) {
   // Filter to sentences with at least 3 words and at most 12 (to keep it manageable)
   let candidates = allSentences.filter(s => {
     const wc = s.trim().split(/\s+/).length;
-    return wc >= 3 && wc <= 12;
+    return wc >= 3 && wc <= 7;
+  });
+  if (candidates.length === 0) candidates = allSentences.filter(s => {
+    const wc = s.trim().split(/\s+/).length;
+    return wc >= 2 && wc <= 10;
   });
   if (candidates.length === 0) candidates = allSentences.filter(s => s.trim().split(/\s+/).length >= 2);
   if (candidates.length === 0) return [];
