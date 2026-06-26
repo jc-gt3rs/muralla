@@ -187,9 +187,9 @@ function startListening(word) {
   const meta = getLangMeta();
   listening = listenOnce({
     lang: meta.asrLang,
-    onresult: (transcript) => {
-      const heard = transcript.split(/\s+/).pop() || transcript;
-      const grade = gradePronunciation(word, heard);
+    onresult: (best, alts) => {
+      const grade = gradePronunciation(word, alts);
+      const heard = best || (alts && alts[0]) || '';
       grades[index] = grade;
       listeningNow = false;
       renderWords(); // re-paint so the word takes its grade colour
@@ -815,10 +815,9 @@ function showCompletion() {
     const meta = getLangMeta();
     practiceListening = listenOnce({
       lang: meta.asrLang,
-      onresult: (transcript) => {
-        const heard = transcript.split(/\s+/).pop() || transcript;
-        const grade = gradePronunciation(itemData.word, heard);
-        
+      onresult: (best, alts) => {
+        const grade = gradePronunciation(itemData.word, alts);
+
         itemData.grade = grade;
         if (itemData.index !== -1) {
           grades[itemData.index] = grade;

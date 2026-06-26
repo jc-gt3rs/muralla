@@ -6,7 +6,7 @@
  */
 import '../shared/app.css';
 import { mountShell, el, notice } from '../shared/shell.js';
-import { getLangMeta } from '../shared/a11y.js';
+import { getLang, getLangMeta, onLangChange } from '../shared/a11y.js';
 import { speak } from '../shared/tts.js';
 import { suggestWords } from '../shared/dict.js';
 import { consumeHandoff } from '../shared/handoff.js';
@@ -43,20 +43,22 @@ const results = el('div', 'suggestions');
 root.append(searchPanel, status, results);
 
 // ── Logic ─────────────────────────────────────────────────────────
-let lastQuery = '';
+let lastKey = '';
 
 async function run(e) {
   if (e) e.preventDefault();
   const q = input.value.trim();
   if (!q) { notice(status, 'Type a word to look up.', 'warn'); return; }
-  if (q === lastQuery) return;
-  lastQuery = q;
+  const lang = getLang();
+  const key = `${lang}:${q}`;
+  if (key === lastKey) return;
+  lastKey = key;
 
   results.innerHTML = '';
   notice(status, 'Searching…', 'info');
   searchBtn.disabled = true;
   try {
-    const matches = await suggestWords(q, 3);
+    const matches = await suggestWords(q, 3, lang);
     if (!matches.length) { notice(status, `No close words found for “${q}”.`, 'warn'); return; }
     notice(status, `Closest words to “${q}”:`, 'success');
     matches.forEach((m) => results.appendChild(renderCard(m)));
@@ -66,6 +68,11 @@ async function run(e) {
     searchBtn.disabled = false;
   }
 }
+
+// Re-run the lookup in the new language when the user switches it.
+onLangChange(() => {
+  if (input.value.trim()) { lastKey = ''; run(); }
+});
 
 function renderCard(m) {
   const card = el('div', 'word-card');

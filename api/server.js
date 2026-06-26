@@ -126,6 +126,66 @@ Sentence: ${sentence}`;
   }
 });
 
+app.post('/api/dictionary', async (req, res) => {
+  const { query, lang } = req.body;
+  if (!query || typeof query !== 'string') {
+    return res.status(400).json({ error: 'Missing query.' });
+  }
+  const langName = lang === 'fil' ? 'Filipino (Tagalog)' : 'English';
+  const prompt = `A student who struggles with spelling typed a possibly-misspelled word: "${query}".
+They are reading in ${langName}.
+Return the 3 most likely intended REAL ${langName} words, closest in spelling or sound to what they typed.
+If the typed word is already a correct ${langName} word, make it the first result.
+For each: the correctly spelled word, its part of speech, a simple phonetic respelling (how to say it), and a short one-sentence definition written in very simple ${langName}.`;
+  try {
+    const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 600,
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: 'OBJECT',
+            properties: {
+              matches: {
+                type: 'ARRAY',
+                items: {
+                  type: 'OBJECT',
+                  properties: {
+                    word: { type: 'STRING' },
+                    pos: { type: 'STRING' },
+                    phonetic: { type: 'STRING' },
+                    definition: { type: 'STRING' },
+                  },
+                  required: ['word', 'definition'],
+                },
+              },
+            },
+            required: ['matches'],
+          },
+        },
+      }),
+    });
+    if (!r.ok) {
+      const msg = await r.text();
+      console.error('Gemini error:', r.status, msg);
+      return res.status(502).json({ error: `Gemini returned ${r.status}` });
+    }
+    const data = await r.json();
+    const text =
+      data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() ?? '';
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = { matches: [] }; }
+    res.json({ matches: Array.isArray(parsed.matches) ? parsed.matches : [] });
+  } catch (err) {
+    console.error('Dictionary fetch failed:', err);
+    res.status(500).json({ error: 'Proxy error.' });
+  }
+});
+
 // Health check — nginx can ping this to confirm the process is up.
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
