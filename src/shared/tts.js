@@ -111,7 +111,8 @@ async function googleSpeak(text, opts = {}) {
     };
     await audio.play();
   } catch (err) {
-    onerror && onerror(err);
+    console.warn('Google Cloud TTS failed, falling back to browser speech synthesis:', err);
+    browserSpeak(text, opts);
   }
   return { cancel };
 }
