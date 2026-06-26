@@ -27,6 +27,10 @@ let words = [];
 let index = -1;
 let micOn = false;
 let listening = null;
+let restartTimer = null;   // keep-alive: pending re-listen
+let suppressRestart = false; // true when we stop on purpose (speaking / toggle off)
+let errorStreak = 0;       // consecutive recogniser errors → bail out
+let lastGotResult = false; // pace the restart so feedback is readable
 const grades = {}; // index → 'correct' | 'close' | 'wrong'
 let startTime = null;
 
@@ -179,7 +183,10 @@ function speakWord(word) {
 }
 
 function startListening(word) {
-  if (!asrSupported) return;
+  if (!asrSupported || !micOn) return;
+  if (restartTimer) { clearTimeout(restartTimer); restartTimer = null; }
+  suppressRestart = false;
+  lastGotResult = false;
   listeningNow = true;
   const span = currentSpan();
   if (span) span.classList.add('is-listening');
@@ -188,10 +195,11 @@ function startListening(word) {
   listening = listenOnce({
     lang: meta.asrLang,
     onresult: (best, alts) => {
+      errorStreak = 0;
+      lastGotResult = true;
       const grade = gradePronunciation(word, alts);
       const heard = best || (alts && alts[0]) || '';
       grades[index] = grade;
-      listeningNow = false;
       renderWords(); // re-paint so the word takes its grade colour
       const msg = {
         correct: '✓ Great pronunciation!',
@@ -201,20 +209,32 @@ function startListening(word) {
       notice(status, `${msg} (heard: “${heard}”)`, grade === 'wrong' ? 'error' : grade === 'correct' ? 'success' : 'warn');
     },
     onerror: () => {
-      listeningNow = false;
-      const s = currentSpan();
-      if (s) s.classList.remove('is-listening');
-      notice(status, 'Did not catch that — tap 🔊 to try again.', 'warn');
+      errorStreak++;
     },
     onend: () => {
       listeningNow = false;
       const s = currentSpan();
       if (s) s.classList.remove('is-listening');
+      // Keep the mic alive: while the toggle is on, restart listening for the
+      // current word automatically so it stays on instead of stopping after
+      // one attempt. Bail only if we were stopped on purpose or errors pile up.
+      if (!micOn || suppressRestart) return;
+      if (errorStreak >= 3) {
+        errorStreak = 0;
+        notice(status, 'Mic had trouble — tap 🔊 to hear the word and try again.', 'warn');
+        return;
+      }
+      const delay = lastGotResult ? 1100 : 300; // let feedback be read after a result
+      restartTimer = setTimeout(() => {
+        if (micOn && !suppressRestart) startListening(word);
+      }, delay);
     },
   });
 }
 
-function stopListening() {
+function stopListening({ keepAlive = false } = {}) {
+  suppressRestart = !keepAlive;
+  if (restartTimer) { clearTimeout(restartTimer); restartTimer = null; }
   if (listening) { listening.stop(); listening = null; }
   listeningNow = false;
   const s = currentSpan();
