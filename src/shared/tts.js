@@ -79,7 +79,6 @@ function browserSpeak(text, { lang = 'en-US', rate = 1, pitch = 1, onstart, onen
   return { cancel };
 }
 
-async function googleSpeak(text, { lang = 'en-US', rate = 1, pitch = 1, onstart, onend, onerror } = {}) {
   try {
     const body = {
       input: { text },
@@ -104,7 +103,10 @@ async function googleSpeak(text, { lang = 'en-US', rate = 1, pitch = 1, onstart,
       activeAudio = null;
       onend && onend();
     };
-    audio.onerror = () => onerror && onerror(new Error('Audio playback failed'));
+    audio.onerror = () => {
+      console.warn('Google Cloud TTS audio playback failed, falling back to browser speech synthesis.');
+      browserSpeak(text, opts);
+    };
     await audio.play();
   } catch (err) {
     onerror && onerror(err);
