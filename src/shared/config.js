@@ -55,7 +55,19 @@ const defaults = {
 // Runtime overrides (config.local.js / inline <script>) win over defaults.
 const overrides = (typeof window !== 'undefined' && window.GABAI_CONFIG) || {};
 
-export const config = { ...defaults, ...overrides };
+const merged = { ...defaults, ...overrides };
+
+// Automatically switch to direct APIs if keys are specified directly (no proxy / .env needed)
+if (merged.geminiApiKey && merged.geminiApiKey !== 'proxy') {
+  merged.aiProvider = 'gemini';
+}
+
+if (merged.googleTtsApiKey && merged.googleTtsApiKey !== 'proxy') {
+  merged.ttsProvider = 'google';
+  merged.googleTtsEndpoint = 'https://texttospeech.googleapis.com/v1/text:synthesize';
+}
+
+export const config = merged;
 
 /** True when a usable cloud path is configured for a feature. */
 export const ttsCloudReady = () =>
