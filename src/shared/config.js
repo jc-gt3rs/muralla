@@ -44,7 +44,7 @@ const defaults = {
 
   // ── Languages ───────────────────────────────────────────────────
   languages: {
-    en:  { label: 'English',  speechLang: 'en-US',  asrLang: 'en-US'  },
+    en: { label: 'English', speechLang: 'en-US', asrLang: 'en-US' },
     fil: { label: 'Filipino', speechLang: 'fil-PH', asrLang: 'fil-PH' },
   },
 
