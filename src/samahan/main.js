@@ -387,6 +387,11 @@ function shuffleWords(wordsArr) {
   return shuffled;
 }
 
+function hardTruncate(sentence, maxWords = 7) {
+  const words = sentence.trim().split(/\s+/);
+  return words.length <= maxWords ? sentence : words.slice(0, maxWords).join(' ');
+}
+
 async function simplifySentence(sentence) {
   try {
     const lang = getLang();
@@ -395,11 +400,11 @@ async function simplifySentence(sentence) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sentence, lang }),
     });
-    if (!res.ok) return sentence;
+    if (!res.ok) return hardTruncate(sentence);
     const { text } = await res.json();
-    return text || sentence;
+    return hardTruncate(text || sentence);
   } catch {
-    return sentence;
+    return hardTruncate(sentence);
   }
 }
 
