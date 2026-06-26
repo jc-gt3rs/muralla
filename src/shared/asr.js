@@ -46,6 +46,7 @@ export function listenOnce(opts = {}) {
   const candidates = langCandidates(lang);
   let candidateIdx = 0;
   let finished = false;
+  let stopped = false;   // set when the caller explicitly stops
   let timer = null;
   let rec = null;
 
@@ -96,7 +97,11 @@ export function listenOnce(opts = {}) {
         startWith(candidates[candidateIdx]);
         return;
       }
-      // 'no-speech' / 'aborted' are expected; let onend close the session.
+      // Permission problems are fatal — stop trying so we don't loop forever.
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        stopped = true;
+      }
+      // 'no-speech' / 'aborted' are expected; let onend handle the session.
       if (e.error !== 'no-speech' && e.error !== 'aborted') {
         onerror && onerror(e);
       }
@@ -104,6 +109,19 @@ export function listenOnce(opts = {}) {
 
     myRec.onend = () => {
       if (myRec._dead) return; // superseded by a language retry
+      // KEY FIX: Chrome stops continuous recognition after a silence (or ~60s).
+      // Immediately restart the SAME recogniser so the mic stays live for the
+      // whole session instead of "turning off" between words.
+      if (continuous && !stopped) {
+        try {
+          myRec.start();
+          return;
+        } catch (_) {
+          // Engine wasn't ready to restart in place — rebuild a fresh one.
+          setTimeout(() => { if (!stopped) startWith(candidates[candidateIdx]); }, 200);
+          return;
+        }
+      }
       finish();
     };
 
@@ -123,6 +141,7 @@ export function listenOnce(opts = {}) {
 
   return {
     stop() {
+      stopped = true;
       clearTimer();
       if (rec) rec._dead = true; // suppress the language-retry/onend churn
       try { rec && rec.abort(); } catch (_) {}

@@ -2,15 +2,16 @@
  * Dictionary + spelling-suggestion service for "Ano ang Salita".
  *
  * Built for dyslexic spellers: given a rough/phonetic attempt, return the
- * nearest real words with brief definitions. Lookups run through the Gemini
- * proxy (/api/dictionary) so they work for BOTH English and Filipino — the
- * active language is passed in and definitions come back in that language.
- * Results are cached in localStorage (keyed by language) so repeat lookups are
- * instant and offline.
+ * nearest real words with brief definitions. Uses two free, key-less APIs:
+ *   • Datamuse  (api.datamuse.com) — "spelled like" + "sounds like" + inline defs
+ *   • dictionaryapi.dev            — fallback definition + IPA phonetics
+ * Results are cached in localStorage so repeat lookups are instant + offline.
  */
+import { levenshtein, normalize } from './text.js';
 
-const DICT_ENDPOINT = '/api/dictionary';
-const CACHE_KEY = 'gabai.salita.cache.v2';
+const DATAMUSE = 'https://api.datamuse.com/words';
+const DICT = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+const CACHE_KEY = 'gabai.salita.cache.v1';
 
 let cache = loadCache();
 function loadCache() {
@@ -22,34 +23,90 @@ function saveCache() {
 }
 
 /**
- * Return up to `max` nearest-word suggestions for a (possibly misspelled) query
- * in the given language ('en' | 'fil').
+ * Return up to `max` nearest-word suggestions for a (possibly misspelled) query.
  * Each: { word, pos, phonetic, definition }
  */
-export async function suggestWords(query, max = 3, lang = 'en') {
+export async function suggestWords(query, max = 3) {
   const q = (query || '').trim().toLowerCase();
   if (!q) return [];
-  const key = `${lang}:${q}`;
-  if (cache[key]) return cache[key].slice(0, max);
+  if (cache[q]) return cache[q].slice(0, max);
 
-  const res = await fetch(DICT_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: q, lang }),
-  });
-  if (!res.ok) throw new Error(`Dictionary request failed: ${res.status}`);
-  const data = await res.json();
+  const [spelled, sounds] = await Promise.all([
+    fetchJSON(`${DATAMUSE}?sp=${encodeURIComponent(q)}&md=dp&max=12`),
+    fetchJSON(`${DATAMUSE}?sl=${encodeURIComponent(q)}&md=dp&max=12`),
+  ]);
 
-  const matches = (Array.isArray(data.matches) ? data.matches : [])
-    .map((m) => ({
-      word: (m.word || '').trim(),
-      pos: (m.pos || '').trim(),
-      phonetic: (m.phonetic || '').trim(),
-      definition: (m.definition || '').trim() || 'No definition found.',
-    }))
-    .filter((m) => m.word);
+  // Merge + dedupe, preferring entries we saw in the "spelled like" set.
+  const seen = new Map();
+  for (const w of [...(spelled || []), ...(sounds || [])]) {
+    if (!w.word || seen.has(w.word)) continue;
+    seen.set(w.word, w);
+  }
 
-  cache[key] = matches;
+  // Rank by spelling closeness to the query (dyslexia: keep it forgiving).
+  const ranked = [...seen.values()].sort(
+    (a, b) => levenshtein(normalize(q), normalize(a.word)) - levenshtein(normalize(q), normalize(b.word)),
+  );
+
+  const top = ranked.slice(0, max);
+  const results = await Promise.all(top.map(toResult));
+  cache[q] = results;
   saveCache();
-  return matches.slice(0, max);
+  return results;
+}
+
+async function toResult(entry) {
+  const word = entry.word;
+  let pos = '';
+  let definition = '';
+  let phonetic = '';
+
+  // Datamuse `md=dp` gives part-of-speech tags + definitions inline.
+  if (Array.isArray(entry.defs) && entry.defs.length) {
+    const [tag, ...rest] = entry.defs[0].split('\t');
+    pos = expandPos(tag);
+    definition = rest.join(' ').trim();
+  }
+
+  // Fill gaps (definition/IPA) from dictionaryapi.dev.
+  if (!definition || !phonetic) {
+    const dict = await fetchDictionary(word);
+    if (dict) {
+      phonetic = dict.phonetic || phonetic;
+      if (!definition && dict.definition) {
+        definition = dict.definition;
+        pos = pos || dict.pos;
+      }
+    }
+  }
+
+  return { word, pos, phonetic, definition: definition || 'No definition found.' };
+}
+
+async function fetchDictionary(word) {
+  try {
+    const data = await fetchJSON(`${DICT}${encodeURIComponent(word)}`);
+    if (!Array.isArray(data) || !data.length) return null;
+    const entry = data[0];
+    const phonetic =
+      entry.phonetic || (entry.phonetics || []).map((p) => p.text).find(Boolean) || '';
+    const meaning = (entry.meanings || [])[0];
+    return {
+      phonetic,
+      pos: meaning ? meaning.partOfSpeech : '',
+      definition: meaning && meaning.definitions[0] ? meaning.definitions[0].definition : '',
+    };
+  } catch (_) {
+    return null;
+  }
+}
+
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
+function expandPos(tag) {
+  return { n: 'noun', v: 'verb', adj: 'adjective', adv: 'adverb', u: '' }[tag] || '';
 }

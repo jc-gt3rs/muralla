@@ -1,1 +1,1086 @@
-xd
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GabAI-Basa — Project Brief</title>
+  <meta name="description" content="Project brief for GabAI-Basa, an accessibility-first Filipino reading companion by Team Muralla.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #FAFAF5;
+      color: #1A1A2E;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Design Tokens ── */
+    :root {
+      --primary: #2D6BE4;
+      --primary-dark: #1A4BAA;
+      --primary-soft: #EEF2FF;
+      --ink: #1A1A2E;
+      --paper: #FAFAF5;
+      --surface: #FFFFFF;
+      --muted: #6B7280;
+      --divider: #E5E7EB;
+      --success: #16A34A;
+      --close: #F7C948;
+      --danger: #DC2626;
+    }
+
+    /* ── Print Styles ── */
+    @media print {
+      body { background: #fff; font-size: 11pt; }
+      .brief-nav, .brief-hero::before, .fade-up { opacity: 1 !important; transform: none !important; }
+      section { break-inside: avoid; page-break-inside: avoid; }
+      .no-print { display: none !important; }
+    }
+
+    /* ── Navigation ── */
+    .brief-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--divider);
+    }
+    .brief-nav__inner {
+      max-width: 960px; margin: 0 auto;
+      padding: 0 24px;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brief-nav__brand {
+      font-weight: 800; font-size: 15px; color: var(--ink);
+      text-decoration: none; letter-spacing: -0.01em;
+    }
+    .brief-nav__brand span { color: var(--primary); }
+    .brief-nav__links {
+      display: flex; gap: 6px; list-style: none;
+      overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none;
+    }
+    .brief-nav__links::-webkit-scrollbar { display: none; }
+    .brief-nav__link {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-decoration: none; padding: 6px 12px; border-radius: 8px;
+      white-space: nowrap; transition: color 0.15s, background 0.15s;
+    }
+    .brief-nav__link:hover { color: var(--ink); background: rgba(0,0,0,0.04); }
+
+    @media (max-width: 640px) {
+      .brief-nav__links { display: none; }
+    }
+
+    /* ── Hero ── */
+    .brief-hero {
+      position: relative;
+      background: var(--ink);
+      color: #fff;
+      padding: 80px 24px 64px;
+      overflow: hidden;
+    }
+    .brief-hero::before {
+      content: '';
+      position: absolute; top: -200px; right: -120px;
+      width: 500px; height: 500px;
+      background: var(--primary); border-radius: 50%; opacity: 0.12;
+    }
+    .brief-hero::after {
+      content: '';
+      position: absolute; bottom: -100px; left: 10%;
+      width: 300px; height: 300px;
+      background: var(--primary); border-radius: 50%; opacity: 0.08;
+    }
+    .brief-hero__inner {
+      max-width: 960px; margin: 0 auto; position: relative; z-index: 2;
+    }
+    .brief-hero__eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 16px;
+      opacity: 0.9;
+    }
+    .brief-hero__title {
+      font-size: clamp(36px, 6vw, 60px); font-weight: 800;
+      line-height: 1.05; letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .brief-hero__title span { color: var(--primary); }
+    .brief-hero__subtitle {
+      font-size: 18px; color: rgba(255,255,255,0.7);
+      max-width: 600px; margin-bottom: 28px; line-height: 1.6;
+    }
+    .brief-hero__meta {
+      display: flex; flex-wrap: wrap; gap: 24px; align-items: center;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+    }
+    .brief-hero__meta a {
+      color: var(--primary); text-decoration: none; font-weight: 700;
+    }
+    .brief-hero__meta a:hover { text-decoration: underline; }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.7);
+    }
+    .hero-pill__dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--success);
+      animation: livePulse 2s infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+
+    /* ── Sections ── */
+    .brief-section {
+      padding: 56px 24px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .brief-section:last-of-type { border-bottom: none; }
+    .brief-section--alt { background: var(--surface); }
+    .brief-section--dark { background: var(--ink); color: #fff; border-bottom-color: rgba(255,255,255,0.08); }
+    .brief-section__inner { max-width: 960px; margin: 0 auto; }
+
+    .section-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 8px;
+    }
+    .brief-section--dark .section-eyebrow { color: rgba(255,255,255,0.5); }
+
+    .section-title {
+      font-size: clamp(22px, 3.5vw, 32px); font-weight: 800;
+      line-height: 1.15; letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 15px; color: var(--muted); max-width: 680px;
+      margin-bottom: 24px; line-height: 1.7;
+    }
+    .brief-section--dark .section-desc { color: rgba(255,255,255,0.55); }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid; gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) { .card-grid--2 { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 768px) { .card-grid--3 { grid-template-columns: 1fr 1fr 1fr; } }
+    @media (min-width: 640px) { .card-grid--4 { grid-template-columns: 1fr 1fr; } }
+
+    .card {
+      background: var(--surface); border: 1.5px solid var(--divider);
+      border-radius: 12px; padding: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .card--dark {
+      background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08);
+    }
+    .card--dark:hover { border-color: var(--primary); }
+    .card--star {
+      border-color: var(--primary); border-width: 2px;
+      position: relative;
+    }
+    .card--star::before {
+      content: '★ STAR FEATURE';
+      position: absolute; top: 0; right: 0;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.08em;
+      background: var(--primary); color: #fff;
+      padding: 4px 10px; border-radius: 0 10px 0 10px;
+    }
+
+    .card__icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 12px;
+      background: var(--primary-soft);
+    }
+    .card--dark .card__icon { background: rgba(255,255,255,0.08); }
+
+    .card__title {
+      font-size: 16px; font-weight: 800; margin-bottom: 2px;
+    }
+    .card__sub {
+      font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 8px;
+    }
+    .card--dark .card__sub { color: rgba(255,255,255,0.4); }
+    .card__body {
+      font-size: 14px; color: var(--muted); line-height: 1.65;
+    }
+    .card--dark .card__body { color: rgba(255,255,255,0.6); }
+
+    /* ── Pills ── */
+    .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .pill {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 12px; letter-spacing: 0.03em;
+    }
+    .pill--blue { background: var(--primary-soft); color: var(--primary-dark); }
+    .pill--green { background: #DCFCE7; color: var(--success); }
+    .pill--yellow { background: #FEF3C7; color: #92400E; }
+    .pill--red { background: #FEE2E2; color: var(--danger); }
+    .pill--ghost {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ── Table ── */
+    .brief-table {
+      width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px;
+    }
+    .brief-table th, .brief-table td {
+      text-align: left; padding: 10px 14px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .brief-table th {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      background: var(--paper);
+    }
+    .brief-table td { color: var(--ink); }
+    .brief-table code {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      background: var(--primary-soft); color: var(--primary-dark);
+      padding: 2px 6px; border-radius: 4px;
+    }
+    .brief-table--dark th { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); border-bottom-color: rgba(255,255,255,0.08); }
+    .brief-table--dark td { color: rgba(255,255,255,0.85); border-bottom-color: rgba(255,255,255,0.06); }
+
+    /* ── Callout ── */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--primary-soft);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      font-size: 14px; color: var(--primary-dark);
+    }
+    .callout--yellow {
+      border-left-color: var(--close);
+      background: #FFFBEB; color: #92610A;
+    }
+    .callout--dark {
+      background: rgba(255,255,255,0.04);
+      border-left-color: var(--primary);
+      color: rgba(255,255,255,0.65);
+    }
+    .callout strong { font-weight: 800; }
+
+    /* ── Check list ── */
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .check-list li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 14px; color: var(--ink); line-height: 1.6;
+    }
+    .check-list li::before {
+      content: '✓'; flex-shrink: 0;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #DCFCE7; color: var(--success);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; margin-top: 2px;
+    }
+    .check-list--dark li { color: rgba(255,255,255,0.8); }
+    .check-list--dark li::before {
+      background: rgba(22,163,74,0.2); color: #4ADE80;
+    }
+
+    /* ── Numbered list ── */
+    .num-list { list-style: none; display: flex; flex-direction: column; gap: 12px; counter-reset: numlist; }
+    .num-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 14px; color: var(--ink); line-height: 1.6;
+      counter-increment: numlist;
+    }
+    .num-list li::before {
+      content: counter(numlist); flex-shrink: 0;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--primary-soft); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; margin-top: 2px;
+    }
+
+    /* ── Team grid ── */
+    .team-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .team-member {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 10px 16px;
+    }
+    .team-member__avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800;
+    }
+    .team-member__name { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.9); }
+
+    /* ── Pronunciation demo ── */
+    .rater-demo {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;
+    }
+    .rater-word {
+      font-weight: 700; padding: 6px 14px; border-radius: 8px;
+      font-size: 15px; display: inline-block;
+    }
+    .rater-word--correct { background: var(--success); color: #fff; }
+    .rater-word--close { background: var(--close); color: var(--ink); }
+    .rater-word--wrong { background: var(--danger); color: #fff; }
+    .rater-word--current {
+      background: rgba(255,255,255,0.08); border: 2px solid var(--primary);
+      color: var(--primary); animation: wordPulse 1.4s infinite;
+    }
+    .rater-word--unread { color: rgba(255,255,255,0.2); }
+    @keyframes wordPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(45,107,228,0.35); }
+      50%      { box-shadow: 0 0 0 10px rgba(45,107,228,0); }
+    }
+
+    /* ── Color swatch ── */
+    .swatch-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .swatch {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 1.5px solid var(--divider);
+      border-radius: 10px; padding: 8px 14px;
+      transition: transform 0.15s;
+    }
+    .swatch:hover { transform: translateY(-1px); }
+    .swatch__color {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0;
+    }
+    .swatch__info { font-size: 13px; }
+    .swatch__name { font-weight: 700; color: var(--ink); display: block; line-height: 1.2; }
+    .swatch__hex { color: var(--muted); font-size: 12px; }
+
+    /* ── SDG cards ── */
+    .sdg-card {
+      border-left: 4px solid; padding: 18px 20px;
+      background: var(--surface); border-radius: 0 12px 12px 0;
+      border-top: 1px solid var(--divider);
+      border-bottom: 1px solid var(--divider);
+      border-right: 1px solid var(--divider);
+      transition: transform 0.2s;
+    }
+    .sdg-card:hover { transform: translateY(-2px); }
+    .sdg-card h4 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .sdg-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Fade-up animation ── */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Footer ── */
+    .brief-footer {
+      background: var(--ink); color: rgba(255,255,255,0.4);
+      text-align: center; padding: 32px 24px; font-size: 13px;
+    }
+    .brief-footer a { color: var(--primary); text-decoration: none; }
+    .brief-footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .brief-hero { padding: 60px 20px 48px; }
+      .brief-section { padding: 40px 20px; }
+      .brief-hero__meta { gap: 12px; flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--divider); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ NAVIGATION ═══════════════ -->
+  <nav class="brief-nav no-print">
+    <div class="brief-nav__inner">
+      <a href="/" class="brief-nav__brand">GabAI-<span>Basa</span></a>
+      <ul class="brief-nav__links">
+        <li><a href="#overview" class="brief-nav__link">Overview</a></li>
+        <li><a href="#tools" class="brief-nav__link">Tools</a></li>
+        <li><a href="#user-guide" class="brief-nav__link">User Guide</a></li>
+        <li><a href="#accessibility" class="brief-nav__link">Accessibility</a></li>
+        <li><a href="#design" class="brief-nav__link">Design</a></li>
+        <li><a href="#tech" class="brief-nav__link">Tech Stack</a></li>
+        <li><a href="#sdg" class="brief-nav__link">SDG #4</a></li>
+        <li><a href="#bandwidth" class="brief-nav__link">Bandwidth</a></li>
+        <li><a href="#open-source" class="brief-nav__link">Open Source</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <header class="brief-hero">
+    <div class="brief-hero__inner">
+      <p class="brief-hero__eyebrow">Project Brief — Team Muralla</p>
+      <h1 class="brief-hero__title">GabAI-<span>Basa</span></h1>
+      <p class="brief-hero__subtitle">
+        Reading Guide — an accessibility-first Filipino reading companion engineered for students across different linguistic regions in the Philippines. Primary focus: dyslexia accommodation.
+      </p>
+      <div class="brief-hero__meta">
+        <span class="hero-pill">
+          <span class="hero-pill__dot"></span>
+          Live MVP
+        </span>
+        <a href="https://muralla.didthat.lol" target="_blank" rel="noopener">muralla.didthat.lol ↗</a>
+        <a href="https://github.com/jc-gt3rs/muralla" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+
+      <div class="team-grid" style="margin-top: 28px;">
+        <div class="team-member">
+          <div class="team-member__avatar">JC</div>
+          <span class="team-member__name">John Cris Antor</span>
+        </div>
+        <div class="team-member">
+          <div class="team-member__avatar">DH</div>
+          <span class="team-member__name">Dwyane Heckle Geda</span>
+        </div>
+        <div class="team-member">
+          <div class="team-member__avatar">KJ</div>
+          <span class="team-member__name">Kevin John Adan</span>
+        </div>
+        <div class="team-member">
+          <div class="team-member__avatar">XS</div>
+          <span class="team-member__name">Xyience Salangsang</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ═══════════════ OVERVIEW ═══════════════ -->
+  <section id="overview" class="brief-section">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Overview</p>
+      <h2 class="section-title">What is GabAI-Basa?</h2>
+      <p class="section-desc">
+        GabAI-Basa (Reading Guide) is a browser-native Filipino reading companion targeting Filipino students (Grades 5–10) who struggle with reading fluency. It is a lightweight, browser-native AI study companion that simplifies, explains, reads, and rates pronunciation in English and Filipino — with no login, no install, and no setup.
+      </p>
+
+
+      <div class="callout">
+        <strong>Core challenge:</strong> Cognitive Accessibility — delivering a lightweight, browser-native AI study companion that simplifies, explains, reads, and rates pronunciation in English and Filipino.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ THE FOUR TOOLS ═══════════════ -->
+  <section id="tools" class="brief-section brief-section--alt">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">The Four Tools</p>
+      <h2 class="section-title">Four tools. One URL. No login.</h2>
+      <p class="section-desc">
+        Each tool handles a different part of reading — listening, pronouncing, understanding, and looking up words. Pick the one you need.
+      </p>
+
+      <div class="card-grid card-grid--4">
+        <!-- Basahin Mo -->
+        <div class="card">
+          <div class="card__icon">🔊</div>
+          <div class="card__title">Basahin Mo</div>
+          <div class="card__sub">TTS Reader — /basahin</div>
+          <div class="card__body">
+            An optimized Text-to-Speech audio reader. Students paste or upload text and listen to it read in English and Filipino with sentence-level chunked playback, adjustable reading rate and pitch, session caching, and Opus OGG audio compression for low bandwidths.
+          </div>
+          <div class="pill-row">
+            <span class="pill pill--blue">Google Cloud TTS</span>
+            <span class="pill pill--blue">English & Filipino</span>
+            <span class="pill pill--blue">Speed control</span>
+            <span class="pill pill--green">Low bandwidth</span>
+          </div>
+        </div>
+
+        <!-- Samahan Mo Ako (Star) -->
+        <div class="card card--star">
+          <div class="card__icon">🎤</div>
+          <div class="card__title">Samahan Mo Ako</div>
+          <div class="card__sub">Co-Reader + Pronunciation Rater — /samahan</div>
+          <div class="card__body">
+            An interactive guided reader displaying text word-by-word with high-contrast highlighted pills. Real-time on-device speech-to-text pronunciation scoring with visual feedback (Correct / Close / Incorrect). Supports OpenDyslexic font toggle, letter-spacing, and font-size controls. Comprehension word-drag game after each session.
+          </div>
+          <div class="pill-row">
+            <span class="pill pill--yellow">Web Speech API</span>
+            <span class="pill pill--blue">OpenDyslexic</span>
+            <span class="pill pill--green">✓ Correct</span>
+            <span class="pill pill--yellow">≈ Close</span>
+            <span class="pill pill--red">✗ Needs practice</span>
+          </div>
+        </div>
+
+        <!-- Ano ang Salita -->
+        <div class="card">
+          <div class="card__icon">📖</div>
+          <div class="card__title">Ano ang Salita</div>
+          <div class="card__sub">Dictionary Lookup — /salita</div>
+          <div class="card__body">
+            A clean dictionary lookup for word definitions, types, IPA phonetics, and example sentences. Results are cached in localStorage — look up a word once, and the definition loads instantly next time, even offline.
+          </div>
+          <div class="pill-row">
+            <span class="pill pill--blue">Free Dictionary API</span>
+            <span class="pill pill--blue">IPA pronunciation</span>
+            <span class="pill pill--green">No API key</span>
+            <span class="pill pill--green">Offline cache</span>
+          </div>
+        </div>
+
+        <!-- Ipaliwanag Mo -->
+        <div class="card">
+          <div class="card__icon">💡</div>
+          <div class="card__title">Ipaliwanag Mo</div>
+          <div class="card__sub">AI Summarizer — /ipaliwanag</div>
+          <div class="card__body">
+            An AI simplification tool that translates and summarizes textbook content into student-friendly phrasing relative to grade levels (4-6, 7-9, 10-12) in English and Filipino. Bilingual prompt engineering ensures summaries conform to appropriate vocabulary.
+          </div>
+          <div class="pill-row">
+            <span class="pill pill--blue">Gemini 2.5 Flash</span>
+            <span class="pill pill--blue">English & Filipino</span>
+            <span class="pill pill--blue">Grade-level aware</span>
+            <span class="pill pill--blue">TTS output</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Route Table -->
+      <div style="overflow-x: auto; margin-top: 24px;">
+        <table class="brief-table">
+          <thead>
+            <tr>
+              <th>Route</th>
+              <th>Filipino Name</th>
+              <th>English Name</th>
+              <th>Engine</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/basahin</code></td>
+              <td>Basahin Mo</td>
+              <td>TTS Reader</td>
+              <td>Google Cloud TTS (<code>fil-PH</code>, <code>en-US</code>)</td>
+            </tr>
+            <tr>
+              <td><code>/samahan</code></td>
+              <td>Samahan Mo Ako</td>
+              <td>Co-Reader + Pronunciation Rater</td>
+              <td>Web Speech API (on-device)</td>
+            </tr>
+            <tr>
+              <td><code>/salita</code></td>
+              <td>Ano ang Salita</td>
+              <td>Dictionary Lookup</td>
+              <td>dictionaryapi.dev + localStorage cache</td>
+            </tr>
+            <tr>
+              <td><code>/ipaliwanag</code></td>
+              <td>Ipaliwanag Mo</td>
+              <td>AI Summarizer</td>
+              <td>Gemini 2.5 Flash</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ USER GUIDE ═══════════════ -->
+  <section id="user-guide" class="brief-section">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">User Guide</p>
+      <h2 class="section-title">How to Use GabAI-Basa</h2>
+      <p class="section-desc">
+        GabAI-Basa is completely free and works directly from your browser. No login. No download. Just visit the website and choose the tool you need.
+      </p>
+
+      <div class="card-grid card-grid--2">
+        <div class="card">
+          <div class="card__title">1. Basahin Mo — Read to Me</div>
+          <ul class="num-list" style="margin-top: 10px;">
+            <li>Go to the <strong>Basahin Mo</strong> page.</li>
+            <li>Paste any text you want to read.</li>
+            <li>Press <strong>Play</strong> to hear the text read aloud, sentence by sentence.</li>
+            <li>Adjust reading speed using the slider, or click on any sentence to jump to it.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card__title">2. Samahan Mo Ako — Read with Me</div>
+          <ul class="num-list" style="margin-top: 10px;">
+            <li>Go to the <strong>Samahan Mo</strong> page and paste your text.</li>
+            <li>The app shows the text word-by-word. Tap a word to hear it pronounced.</li>
+            <li>Turn on the <strong>Pronunciation Check (Mic)</strong> switch.</li>
+            <li>Read the word back and get instant color-coded feedback.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card__title">3. Anong Salita — Dictionary</div>
+          <ul class="num-list" style="margin-top: 10px;">
+            <li>Go to the <strong>Anong Salita</strong> page.</li>
+            <li>Type in the word you want to look up.</li>
+            <li>Get the definition, pronunciation, and example sentence.</li>
+            <li>Previously searched words work even offline.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card__title">4. Ipaliwanag Mo — Explain It</div>
+          <ul class="num-list" style="margin-top: 10px;">
+            <li>Go to the <strong>Ipaliwanag Mo</strong> page.</li>
+            <li>Paste the confusing text.</li>
+            <li>Select your <strong>Grade Level</strong> (4-6, 7-9, or 10-12).</li>
+            <li>Click <strong>Explain it simply</strong> — AI rewrites it in simpler words.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 20px;">
+        <strong>Accessibility Settings (Aa):</strong> In the top right corner of any page, click the "Aa" button to change font size, adjust spacing, or toggle the OpenDyslexic font.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ ACCESSIBILITY ═══════════════ -->
+  <section id="accessibility" class="brief-section brief-section--dark">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Accessibility</p>
+      <h2 class="section-title" style="color: #fff;">Accessibility Rules — Non-Negotiable</h2>
+      <p class="section-desc">
+        Every design decision is tested first against: does this work for a student with dyslexia? These rules are baked into the codebase and cannot be overridden.
+      </p>
+
+      <ul class="check-list check-list--dark">
+        <li>Minimum <strong>17px body text</strong>, 18px on reading surfaces.</li>
+        <li>Pronunciation feedback uses <strong>color + icon</strong> together — never color alone (colorblind safety).</li>
+        <li>Word highlight uses a <strong>bold filled pill shape</strong>, not just underline or color.</li>
+        <li><strong>No audio data ever leaves the device</strong> — Web Speech API is on-device only.</li>
+        <li>OpenDyslexic font must be <strong>toggleable at all times</strong> in the co-reader.</li>
+        <li>No modals, popups, or animations on reading surfaces — <strong>motion reserved for feedback only</strong>.</li>
+        <li>All interactive targets: minimum <strong>44px touch area</strong> on mobile.</li>
+      </ul>
+
+      <!-- Pronunciation Demo -->
+      <div style="margin-top: 32px;">
+        <p style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); font-weight: 700; margin-bottom: 12px;">
+          Pronunciation Feedback — Live Word State
+        </p>
+        <div class="rater-demo">
+          <span class="rater-word rater-word--correct">Ang ✓</span>
+          <span class="rater-word rater-word--correct">bata ✓</span>
+          <span class="rater-word rater-word--close">ay ≈</span>
+          <span class="rater-word rater-word--current">nagbabasa</span>
+          <span class="rater-word rater-word--unread">ng</span>
+          <span class="rater-word rater-word--unread">aklat.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: rgba(255,255,255,0.45);">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #16A34A; display: inline-block;"></span> Correct
+          </span>
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #F7C948; display: inline-block;"></span> Close
+          </span>
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #DC2626; display: inline-block;"></span> Incorrect
+          </span>
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; border: 2px solid #2D6BE4; display: inline-block;"></span> Speaking now
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ DESIGN SYSTEM ═══════════════ -->
+  <section id="design" class="brief-section brief-section--alt">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Design System</p>
+      <h2 class="section-title">Visual Language</h2>
+      <p class="section-desc">
+        Mobile-first. Designed for a prepaid-data phone, then scaled up. Calm surfaces — no modals on reading surfaces. Motion reserved for feedback only.
+      </p>
+
+      <!-- Typography -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">Typography</h3>
+      <div class="card-grid card-grid--3" style="margin-bottom: 28px;">
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Primary Typeface</div>
+          <p style="font-size: 28px; font-weight: 800; margin: 8px 0 4px; letter-spacing: -0.02em;">Inter</p>
+          <p style="font-size: 13px; color: var(--muted);">400 / 500 / 600 / 700 / 800 — body & display</p>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Dyslexia Override</div>
+          <p style="font-size: 22px; font-weight: 700; margin: 8px 0 4px;">OpenDyslexic</p>
+          <p style="font-size: 13px; color: var(--muted);">Toggled via <code style="font-size: 11px; background: var(--primary-soft); padding: 2px 5px; border-radius: 3px; color: var(--primary-dark);">.font-dyslexic</code></p>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Reading Scale</div>
+          <p style="font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.8;">
+            Base: <strong>17px</strong><br>
+            Large: <strong>21px</strong><br>
+            XL: <strong>25px</strong><br>
+            Letter spacing: 0 / +0.05em / +0.12em<br>
+            Line height: 1.75 / 2.2
+          </p>
+        </div>
+      </div>
+
+      <!-- Color Palette -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">Color Palette</h3>
+
+      <p style="font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px;">Brand</p>
+      <div class="swatch-grid" style="margin-bottom: 16px;">
+        <div class="swatch">
+          <div class="swatch__color" style="background: #2D6BE4;"></div>
+          <div class="swatch__info"><span class="swatch__name">--primary</span><span class="swatch__hex">#2D6BE4</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #1A4BAA;"></div>
+          <div class="swatch__info"><span class="swatch__name">--primary-dark</span><span class="swatch__hex">#1A4BAA</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #EEF2FF;"></div>
+          <div class="swatch__info"><span class="swatch__name">--primary-soft</span><span class="swatch__hex">#EEF2FF</span></div>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px;">Neutrals</p>
+      <div class="swatch-grid" style="margin-bottom: 16px;">
+        <div class="swatch">
+          <div class="swatch__color" style="background: #1A1A2E;"></div>
+          <div class="swatch__info"><span class="swatch__name">--ink</span><span class="swatch__hex">#1A1A2E</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #FAFAF5;"></div>
+          <div class="swatch__info"><span class="swatch__name">--paper</span><span class="swatch__hex">#FAFAF5</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #FFFFFF; border: 1px solid #E5E7EB;"></div>
+          <div class="swatch__info"><span class="swatch__name">--surface</span><span class="swatch__hex">#FFFFFF</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #6B7280;"></div>
+          <div class="swatch__info"><span class="swatch__name">--muted</span><span class="swatch__hex">#6B7280</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #E5E7EB;"></div>
+          <div class="swatch__info"><span class="swatch__name">--divider</span><span class="swatch__hex">#E5E7EB</span></div>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 8px;">Semantic / Pronunciation States</p>
+      <div class="swatch-grid" style="margin-bottom: 28px;">
+        <div class="swatch">
+          <div class="swatch__color" style="background: #16A34A;"></div>
+          <div class="swatch__info"><span class="swatch__name">--success</span><span class="swatch__hex">#16A34A · Correct</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #F7C948;"></div>
+          <div class="swatch__info"><span class="swatch__name">--close</span><span class="swatch__hex">#F7C948 · Close</span></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background: #DC2626;"></div>
+          <div class="swatch__info"><span class="swatch__name">--danger</span><span class="swatch__hex">#DC2626 · Error</span></div>
+        </div>
+      </div>
+
+      <!-- Components -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">Key Components</h3>
+      <div class="card-grid card-grid--2">
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">App Bar</div>
+          <div class="card__body">Sticky, white @ 95% opacity + blur, 1px divider underline. Layout: [← GabAI-Basa] · [route + tool name] … [EN|FIL] [Aa]</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Language Toggle</div>
+          <div class="card__body">Pill segmented control (EN | FIL) in the app bar. White floating active pill with soft shadow.</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Accessibility Panel</div>
+          <div class="card__body">Drops down from the Aa button. Segmented controls for text size / spacing / line height + OpenDyslexic switch.</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Buttons</div>
+          <div class="card__body">.btn--primary (blue, white text, pill), .btn--ghost (white, divider border), .btn--dark (ink), .btn--icon (round 56px).</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Panels / Cards</div>
+          <div class="card__body">White background, 1.5px divider border, 12px radius. Hover lifts with primary border color.</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Reading Surface</div>
+          <div class="card__body">The one element that responds to accessibility size / spacing / leading / dyslexic-font variables.</div>
+        </div>
+      </div>
+
+      <!-- CSS Architecture -->
+      <div class="callout" style="margin-top: 24px;">
+        <strong>CSS Architecture:</strong> Landing page uses Tailwind via CDN (preflight: false) + :root token block. Tool pages use no Tailwind — a single hand-written stylesheet (<code style="font-size: 12px; background: rgba(45,107,228,0.12); padding: 2px 5px; border-radius: 3px;">src/shared/app.css</code>) holds tokens and components, bundled by Vite for tiny offline-friendly bundles.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ TECH STACK ═══════════════ -->
+  <section id="tech" class="brief-section">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Technical Stack</p>
+      <h2 class="section-title">Built for Speed & Simplicity</h2>
+
+      <div style="overflow-x: auto;">
+        <table class="brief-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Technology</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Framework</strong></td>
+              <td>Vite (Vanilla JS + ES Modules)</td>
+              <td>Route-splits per page — students never download code they don't use</td>
+            </tr>
+            <tr>
+              <td><strong>Styling</strong></td>
+              <td>Tailwind CSS (CDN) + Vanilla CSS</td>
+              <td>Tailwind on landing page (preflight: false), hand-written CSS for tools</td>
+            </tr>
+            <tr>
+              <td><strong>Hosting</strong></td>
+              <td>Self-hosted</td>
+              <td>Server ni JC</td>
+            </tr>
+            <tr>
+              <td><strong>TTS</strong></td>
+              <td>Google Cloud TTS</td>
+              <td><code>fil-PH</code> and <code>en-US</code> voices, OGG Opus encoding</td>
+            </tr>
+            <tr>
+              <td><strong>AI</strong></td>
+              <td>Gemini 2.5 Flash</td>
+              <td>Text simplification via Google AI Studio</td>
+            </tr>
+            <tr>
+              <td><strong>Speech</strong></td>
+              <td>Web Speech API</td>
+              <td>Browser-native, on-device — zero bandwidth</td>
+            </tr>
+            <tr>
+              <td><strong>Dictionary</strong></td>
+              <td>dictionaryapi.dev</td>
+              <td>Free, no API key, localStorage cache for offline</td>
+            </tr>
+            <tr>
+              <td><strong>Fonts</strong></td>
+              <td>Inter (default) & OpenDyslexic (toggleable)</td>
+              <td>Atkinson Hyperlegible available as accessibility option</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ SDG #4 ═══════════════ -->
+  <section id="sdg" class="brief-section brief-section--alt">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">UN SDG #4 Alignment</p>
+      <h2 class="section-title">Advancing Quality Education</h2>
+      <p class="section-desc">
+        GabAI-Basa is directly engineered to advance the UN's Sustainable Development Goal #4 — ensuring inclusive and equitable quality education and promoting lifelong learning opportunities for all.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="sdg-card" style="border-left-color: var(--close);">
+          <h4>Target 4.1 — Equitable & Quality Education</h4>
+          <p>Regional students frequently fall behind due to a lack of learning materials. By introducing bilingual text-to-speech and AI content simplification in English and Filipino, we democratize access to quality study tools regardless of geography or socioeconomic background.</p>
+        </div>
+        <div class="sdg-card" style="border-left-color: var(--primary);">
+          <h4>Target 4.5 — Eliminate Literacy Disparities</h4>
+          <p>Traditional educational software widely overlooks neurodivergent learners. Our application places cognitive accessibility at the forefront — incorporating OpenDyslexic fonts, high-contrast visual pacing, and localized speech scoring to provide an equitable learning landscape for students with dyslexia and reading difficulties.</p>
+        </div>
+        <div class="sdg-card" style="border-left-color: var(--success);">
+          <h4>Target 4.a — Inclusive Learning Environments</h4>
+          <p>We extend the concept of an inclusive "learning environment" into the digital realm. By building a Progressive Web App (PWA) with zero-bandwidth scoring and extreme data optimization, we ensure full functionality in remote, low-connectivity public schools across rural regions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ LOW BANDWIDTH ═══════════════ -->
+  <section id="bandwidth" class="brief-section">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Low-Bandwidth Design</p>
+      <h2 class="section-title">Built for Philippine Internet</h2>
+      <p class="section-desc">
+        Every feature was designed with a prepaid data plan in mind. Nothing is sacrificed — the architecture was designed around these constraints.
+      </p>
+
+      <div class="card-grid card-grid--3">
+        <div class="card">
+          <div class="pill pill--green" style="margin-bottom: 10px;">ZERO BANDWIDTH</div>
+          <div class="card__title" style="font-size: 15px;">Pronunciation Rater</div>
+          <div class="card__body">Web Speech API runs on-device. No audio ever leaves the phone.</div>
+        </div>
+        <div class="card">
+          <div class="pill pill--green" style="margin-bottom: 10px;">MINIMAL BANDWIDTH</div>
+          <div class="card__title" style="font-size: 15px;">Summarizer</div>
+          <div class="card__body">Text in, text out. Responses under 2KB. No images or media sent over the wire.</div>
+        </div>
+        <div class="card">
+          <div class="pill pill--green" style="margin-bottom: 10px;">CACHED</div>
+          <div class="card__title" style="font-size: 15px;">Dictionary</div>
+          <div class="card__body">localStorage cache — second lookup of the same word is completely offline.</div>
+        </div>
+        <div class="card">
+          <div class="pill pill--blue" style="margin-bottom: 10px;">OPTIMIZED</div>
+          <div class="card__title" style="font-size: 15px;">TTS Audio</div>
+          <div class="card__body">Sentence-by-sentence synthesis with OGG Opus encoding — half the size of MP3.</div>
+        </div>
+        <div class="card">
+          <div class="pill pill--blue" style="margin-bottom: 10px;">SPLIT</div>
+          <div class="card__title" style="font-size: 15px;">JS Bundle</div>
+          <div class="card__body">Vite route-splits per page — students never download code they don't use.</div>
+        </div>
+        <div class="card">
+          <div class="pill pill--blue" style="margin-bottom: 10px;">PWA</div>
+          <div class="card__title" style="font-size: 15px;">App Shell</div>
+          <div class="card__body">PWA with service worker for near-instant repeat loads on slow connections.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ MVP CONSTRAINTS ═══════════════ -->
+  <section id="constraints" class="brief-section brief-section--alt">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Known Constraints</p>
+      <h2 class="section-title">MVP Limitations</h2>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="callout--yellow callout">
+          <strong>Browser:</strong> Pronunciation rater requires Chrome or Edge (Web Speech API). Safari/Firefox: manual fallback, no scoring.
+        </div>
+        <div class="callout--yellow callout">
+          <strong>Input cap:</strong> Summarizer input capped at 3,000 characters (Gemini Flash rate limits during demo period).
+        </div>
+        <div class="callout">
+          <strong>Privacy:</strong> No user data stored. Mic access is session-only, never sent to server. No accounts, no tracking, no cookies.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ OPEN SOURCE ═══════════════ -->
+  <section id="open-source" class="brief-section brief-section--dark">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Open Source Deliverable</p>
+      <h2 class="section-title" style="color: #fff;">GitHub Education Track</h2>
+      <p class="section-desc">
+        Published on HuggingFace under MIT license (separate from app repo):
+      </p>
+
+      <ul class="check-list check-list--dark">
+        <li>Curated English + Filipino TTS corpus subsets</li>
+        <li>Fine-tuned VITS / Coqui TTS model checkpoint with model card</li>
+        <li>Reproducible Python training pipeline (retrain or extend to new languages)</li>
+        <li>HuggingFace dataset card with language metadata and known limitations</li>
+      </ul>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px;">
+        <a href="https://github.com/jc-gt3rs/muralla" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; font-weight: 700; font-size: 14px; padding: 12px 24px; border-radius: 8px; text-decoration: none; transition: background 0.2s;">
+          GitHub Repository ↗
+        </a>
+        <a href="https://muralla.didthat.lol" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #fff; font-weight: 700; font-size: 14px; padding: 12px 24px; border-radius: 8px; text-decoration: none; border: 1.5px solid rgba(255,255,255,0.2); transition: border-color 0.2s;">
+          Live MVP ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ AI USAGE ═══════════════ -->
+  <section id="ai-usage" class="brief-section">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">AI Usage</p>
+      <h2 class="section-title">Development Tools</h2>
+      <p class="section-desc">
+        AI tools were utilized in a clean, structured workflow to accelerate development and ensure high-quality implementation during the hackathon.
+      </p>
+
+      <div class="card-grid card-grid--2">
+        <div class="card">
+          <div class="card__icon">🧠</div>
+          <div class="card__title">Claude</div>
+          <div class="card__body">Utilized for conceptual ideation, refining accessibility features, and structuring the initial project documentation and UI/UX design plans.</div>
+        </div>
+        <div class="card">
+          <div class="card__icon">⚡</div>
+          <div class="card__title">Antigravity AI</div>
+          <div class="card__body">Integrated as an agentic coding assistant to rapidly scaffold the application, implement styling, and manage project architecture. Enabled fast iteration on components and documentation drafting.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="brief-footer">
+    <p>GabAI-Basa — Project Brief by <strong style="color: rgba(255,255,255,0.7);">Team Muralla</strong></p>
+    <p style="margin-top: 4px;">
+      <a href="https://muralla.didthat.lol">muralla.didthat.lol</a> · <a href="https://github.com/jc-gt3rs/muralla">github.com/jc-gt3rs/muralla</a>
+    </p>
+  </footer>
+
+
+  <!-- ═══════════════ SCROLL ANIMATIONS ═══════════════ -->
+  <script>
+    // Intersection Observer for fade-up animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('.brief-nav__link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

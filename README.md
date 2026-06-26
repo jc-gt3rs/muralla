@@ -25,6 +25,47 @@ GabAI-Basa is directly engineered to advance SDG #4, which aims to ensure inclus
 
 ---
 
+## 📖 How to Use GabAI-Basa (User Manual)
+
+GabAI-Basa is designed to be completely free and easy to use directly from your browser. There is no need to log in or download an app. Just visit the website and choose the tool you need:
+
+### 1. Basahin Mo (Read to Me)
+Use this when you want to listen to a story or article.
+- Go to the **Basahin Mo** page.
+- Paste any text you want to read.
+- Press **Play** to hear the text read out loud, sentence by sentence.
+- You can adjust the reading speed using the slider, or click on any sentence to jump straight to it.
+
+### 2. Samahan Mo Ako (Read with Me)
+Use this to practice your reading and pronunciation.
+- Go to the **Samahan mo** page and paste your text.
+- The app will show the text word-by-word. Tap a word to hear it pronounced.
+- Turn on the **Pronunciation Check (Mic)** switch.
+- The app will listen to you read the word and give you instant color-coded feedback (Green = Correct, Yellow = Close, Red = Try Again).
+- After you finish, you can play a quick word-drag game to test your comprehension!
+
+### 3. Anong Salita (Dictionary)
+Use this when you encounter a difficult word.
+- Go to the **Anong Salita** page.
+- Type in the word you want to look up.
+- The app will show you its definition, how to pronounce it, and give you an example sentence. 
+- *Bonus: You can even use this offline if you've searched the word before!*
+
+### 4. Ipaliwanag Mo (Explain it to Me)
+Use this when a textbook passage or article is too hard to understand.
+- Go to the **Ipaliwanag Mo** page.
+- Paste the confusing text.
+- Select your **Grade Level** (4-6, 7-9, or 10-12).
+- Click **Explain it simply**. The AI will rewrite the text into simpler words tailored to your reading level.
+
+### Accessibility Settings (Aa)
+In the top right corner of any page, click the **"Aa"** button to open the accessibility menu:
+- **Change Font Size**: Make text bigger and easier to read.
+- **Adjust Spacing**: Increase letter and line spacing.
+- **Dyslexia Font**: Toggle the OpenDyslexic font to help prevent letters from swapping around if you have dyslexia.
+
+---
+
 ## Core Features
 
 ### 1. Basahin Mo (TTS Reader) — `/basahin`
