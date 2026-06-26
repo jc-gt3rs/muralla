@@ -26,6 +26,7 @@ const { root } = mountShell({
 let words = [];
 let index = -1;
 let micOn = false;
+let micStream = null;      // held-open getUserMedia stream while the mic is on
 let listening = null;
 let restartTimer = null;   // keep-alive: pending re-listen
 let suppressRestart = false; // true when we stop on purpose (speaking / toggle off)
@@ -194,6 +195,7 @@ function startListening(word) {
   const meta = getLangMeta();
   listening = listenOnce({
     lang: meta.asrLang,
+    continuous: true, // keep the mic open across pauses instead of one-shot
     onresult: (best, alts) => {
       errorStreak = 0;
       lastGotResult = true;
@@ -430,6 +432,7 @@ async function simplifySentence(sentence) {
 
 async function startComprehensionChallenge() {
   stopListening();
+  releaseMicStream();
   cancel();
   if (practiceListening) { practiceListening.stop(); practiceListening = null; }
 
@@ -622,8 +625,9 @@ function finishSession() {
 
 function showCompletion() {
   stopListening();
+  releaseMicStream();
   cancel();
-  
+
   if (practiceListening) {
     practiceListening.stop();
     practiceListening = null;
@@ -889,6 +893,7 @@ async function toggleMic(on) {
   if (!on) {
     micOn = false;
     stopListening();
+    releaseMicStream();
     return;
   }
   if (!asrSupported) {
@@ -896,12 +901,13 @@ async function toggleMic(on) {
     notice(status, 'Pronunciation check needs Chrome or Edge.', 'warn');
     return;
   }
-  // Explicitly request mic permission on the user gesture so mobile browsers
-  // show the prompt immediately rather than silently denying later.
+  // Hold the mic stream open for the whole time the toggle is on. This keeps the
+  // hardware mic engaged and the permission warm, so the recogniser can restart
+  // seamlessly across pauses instead of dropping the mic between words.
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    stream.getTracks().forEach(t => t.stop()); // release immediately — SpeechRecognition manages its own stream
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
   } catch (err) {
+    micStream = null;
     micSwitch.setAttribute('aria-checked', 'false');
     const denied = err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError';
     notice(status, denied
@@ -912,6 +918,13 @@ async function toggleMic(on) {
   }
   micOn = true;
   if (index >= 0) startListening(words[index]);
+}
+
+function releaseMicStream() {
+  if (micStream) {
+    micStream.getTracks().forEach((t) => t.stop());
+    micStream = null;
+  }
 }
 
 // ── Wire up ───────────────────────────────────────────────────────

@@ -30,10 +30,14 @@ function langCandidates(lang) {
 /**
  * Listen for a single spoken word/phrase.
  * Returns a handle: { stop() }.
- * opts: { lang, onresult(bestTranscript, allTranscripts[]), onerror(err), onend(), timeoutMs }
+ * opts: {
+ *   lang, onresult(bestTranscript, allTranscripts[]), onerror(err), onend(),
+ *   timeoutMs,        // one-shot only: auto-stop a hung session
+ *   continuous,       // keep the mic open across pauses; onresult may fire repeatedly
+ * }
  */
 export function listenOnce(opts = {}) {
-  const { lang = 'en-US', onresult, onerror, onend, timeoutMs = 8000 } = opts;
+  const { lang = 'en-US', onresult, onerror, onend, timeoutMs = 8000, continuous = false } = opts;
   if (!SR) {
     onerror && onerror(new Error('SpeechRecognition not supported'));
     return { stop() {} };
@@ -53,23 +57,34 @@ export function listenOnce(opts = {}) {
     onend && onend();
   };
 
+  function emit(result) {
+    const alts = [];
+    for (let i = 0; i < result.length; i++) {
+      const t = ((result[i] && result[i].transcript) || '').trim();
+      if (t) alts.push(t);
+    }
+    if (alts.length) onresult && onresult(alts[0], alts);
+  }
+
   function startWith(langCode) {
     const myRec = new SR();
     myRec._dead = false;
     rec = myRec;
     myRec.lang = langCode;
-    myRec.interimResults = false;
+    // In continuous mode we want interim results so the engine keeps the mic
+    // open across pauses; we only grade the final ones.
+    myRec.interimResults = continuous;
     myRec.maxAlternatives = 6;
-    myRec.continuous = false;
+    myRec.continuous = continuous;
 
     myRec.onresult = (e) => {
-      const result = e.results[0];
-      const alts = [];
-      for (let i = 0; i < result.length; i++) {
-        const t = ((result[i] && result[i].transcript) || '').trim();
-        if (t) alts.push(t);
+      if (continuous) {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) emit(e.results[i]);
+        }
+      } else {
+        emit(e.results[0]);
       }
-      onresult && onresult(alts[0] || '', alts);
     };
 
     myRec.onerror = (e) => {
@@ -100,12 +115,16 @@ export function listenOnce(opts = {}) {
   }
 
   startWith(candidates[candidateIdx]);
-  // Safety net: stop a session that never returns so it doesn't hang the mic.
-  timer = setTimeout(() => { try { rec && rec.stop(); } catch (_) {} }, timeoutMs);
+  // One-shot safety net: stop a session that never returns. Skipped in
+  // continuous mode, where the caller controls the session lifetime.
+  if (!continuous) {
+    timer = setTimeout(() => { try { rec && rec.stop(); } catch (_) {} }, timeoutMs);
+  }
 
   return {
     stop() {
       clearTimer();
+      if (rec) rec._dead = true; // suppress the language-retry/onend churn
       try { rec && rec.abort(); } catch (_) {}
     },
   };
