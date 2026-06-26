@@ -11,12 +11,14 @@ import { config } from './config.js';
 import { buildSidebar } from './sidebar.js';
 
 /**
- * @param {{ title: string, subtitle?: string, route: string }} opts
+ * @param {{ title: string|(()=>string), subtitle?: string|(()=>string), route: string }} opts
+ *   title / subtitle may be functions so they re-translate on language change.
  * @returns {{ root: HTMLElement }} the element to render the tool into
  */
 export function mountShell({ title, subtitle = '', route }) {
   initA11y();
-  document.title = `${title} — GabAI-Basa`;
+  const resolveTitle = () => (typeof title === 'function' ? title() : title);
+  const resolveSub = () => (typeof subtitle === 'function' ? subtitle() : subtitle);
 
   const app = document.getElementById('app');
   app.innerHTML = '';
@@ -33,13 +35,9 @@ export function mountShell({ title, subtitle = '', route }) {
   burger.setAttribute('aria-label', 'Open tools menu');
   burger.addEventListener('click', openSidebar);
 
-  const home = el('a', 'appbar__home');
-  home.href = '/';
-  home.innerHTML = '<span aria-hidden="true">←</span> GabAI-Basa';
-  home.setAttribute('aria-label', 'Back to home');
-
   const titleWrap = el('div', 'appbar__title');
-  titleWrap.innerHTML = `<span class="appbar__name">${title}</span>`;
+  const nameEl = el('span', 'appbar__name');
+  titleWrap.appendChild(nameEl);
 
   const actions = el('div', 'appbar__actions');
   const lang = buildLangToggle();
@@ -49,7 +47,7 @@ export function mountShell({ title, subtitle = '', route }) {
   a11yBtn.setAttribute('aria-label', 'Reading & accessibility settings');
   a11yBtn.setAttribute('aria-expanded', 'false');
   actions.append(lang, a11yBtn);
-  bar.append(burger, home, titleWrap, actions);
+  bar.append(burger, titleWrap, actions);
 
   // ── Accessibility panel ──────────────────────────────────────────
   const panel = el('div', 'a11y-panel');
@@ -68,14 +66,21 @@ export function mountShell({ title, subtitle = '', route }) {
   // ── Main content area ────────────────────────────────────────────
   const main = el('main', 'app-main');
   const container = el('div', 'container');
-  if (subtitle) {
-    const sub = el('p', 'tool-subtitle');
-    sub.textContent = subtitle;
-    container.appendChild(sub);
-  }
+  const sub = subtitle ? el('p', 'tool-subtitle') : null;
+  if (sub) container.appendChild(sub);
   const root = el('div', 'tool-root');
   container.appendChild(root);
   main.appendChild(container);
+
+  // Title + subtitle re-translate on language change.
+  const applyHeader = () => {
+    const titleText = resolveTitle();
+    document.title = `${titleText} — GabAI-Basa`;
+    nameEl.textContent = titleText;
+    if (sub) sub.textContent = resolveSub();
+  };
+  applyHeader();
+  onLangChange(applyHeader);
 
   // Sidebar sits outside the offset body; the body holds the rest of the chrome
   // and is pushed right to clear the fixed rail on desktop.
@@ -89,6 +94,10 @@ function buildLangToggle() {
   const wrap = el('div', 'langtoggle');
   wrap.setAttribute('role', 'group');
   wrap.setAttribute('aria-label', 'Language');
+  const icon = el('span', 'langtoggle__icon');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.textContent = '🔊';
+  wrap.appendChild(icon);
   const codes = Object.keys(config.languages);
   const buttons = {};
   codes.forEach((code) => {

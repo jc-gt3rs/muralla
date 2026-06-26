@@ -17,7 +17,13 @@ const GRADE_LABEL = {
   '10-12': 'Grades 10 to 12 (around 16 years old)',
 };
 
-const LANG_LABEL = { en: 'simple English', fil: 'simple Filipino (Tagalog)' };
+const LANG_LABEL = {
+  en: 'simple English',
+  fil: 'simple Filipino (Tagalog)',
+  ceb: 'simple Bisaya (Cebuano)',
+  ilo: 'simple Ilocano',
+  hil: 'simple Hiligaynon',
+};
 
 /** Build the instruction prompt shared by every cloud provider. */
 export function buildPrompt(text, { lang = 'en', grade = '7-9' } = {}) {
@@ -27,7 +33,8 @@ export function buildPrompt(text, { lang = 'en', grade = '7-9' } = {}) {
     `suitable for a student in ${GRADE_LABEL[grade] || GRADE_LABEL['7-9']}.`,
     `Rules: use short sentences and everyday words; keep the meaning faithful;`,
     `do not add new facts; if the text is in another language, translate it.`,
-    `Return only the simplified explanation.`,
+    `Output ONLY the simplified summary itself. Do not greet or address the reader.`,
+    `Do not add any introduction, preamble, sign-off, or notes before or after it.`,
     ``,
     `TEXT:`,
     text,

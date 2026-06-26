@@ -4,8 +4,16 @@
  * Both parsers are lazy-loaded only when the matching file type is used.
  */
 
+import { t } from './i18n.js';
+import { onLangChange } from './a11y.js';
+
 const PDFJS_VER = '3.11.174';
 const scriptCache = {};
+
+const UPLOAD_SVG =
+  '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0">' +
+  '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>' +
+  '</svg>';
 
 function loadScript(src) {
   if (scriptCache[src]) return scriptCache[src];
@@ -79,10 +87,9 @@ export function mountUpload(textarea, opts = {}) {
   btn.style.fontSize = '14px';
   btn.style.padding = '10px 18px';
   btn.style.minHeight = '42px';
-  btn.innerHTML =
-    '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0">' +
-    '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>' +
-    '</svg>Upload';
+  const applyLabel = () => { btn.innerHTML = `${UPLOAD_SVG}${t('upload_btn')}`; };
+  applyLabel();
+  onLangChange(applyLabel);
   btn.setAttribute('aria-label', 'Upload a file (.txt, .md, .pdf, .docx)');
 
   btn.addEventListener('click', () => fileInput.click());

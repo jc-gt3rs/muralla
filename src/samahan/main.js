@@ -9,6 +9,7 @@
 import '../shared/app.css';
 import { mountShell, el, notice } from '../shared/shell.js';
 import { getLang, getLangMeta, onLangChange, makeSwitch } from '../shared/a11y.js';
+import { t } from '../shared/i18n.js';
 import { speak, cancel, ttsSupported } from '../shared/tts.js';
 import { listenOnce, asrSupported } from '../shared/asr.js';
 import { splitWords, splitSentences, gradePronunciation } from '../shared/text.js';
@@ -19,7 +20,7 @@ const SAMPLE = 'Ang bata ay masayang nagbabasa ng aklat sa silid-aklatan.';
 
 const { root } = mountShell({
   title: 'Samahan Mo Ako',
-  subtitle: 'Read along word by word. Tap any word to hear it, or use back / next to move through the text. Turn on the mic to check your pronunciation.',
+  subtitle: () => t('samahan_sub'),
   route: '/samahan',
 });
 
@@ -38,15 +39,14 @@ let startTime = null;
 // ── Input ─────────────────────────────────────────────────────────
 const inputPanel = el('div', 'panel');
 const ta = el('textarea', 'textbox reading');
-ta.placeholder = 'Paste the text to practice…';
 ta.value = SAMPLE;
 ta.setAttribute('aria-label', 'Text to practice');
 const startBtn = el('button', 'btn btn--primary');
-startBtn.textContent = 'Start reading';
 const startRow = el('div', 'btn-row');
 startRow.style.marginTop = '12px';
 startRow.appendChild(startBtn);
-inputPanel.append(labelled('Your text', ta), startRow);
+const textField = labelled('Your text', ta);
+inputPanel.append(textField, startRow);
 
 const uploadBtn = mountUpload(ta, {
   maxChars: 100000,
@@ -60,7 +60,6 @@ startRow.appendChild(uploadBtn);
 const micPanel = el('div', 'panel');
 const micRow = el('div', 'a11y-group a11y-group--row');
 const micLabel = el('span', 'a11y-group__label');
-micLabel.textContent = asrSupported ? 'Pronunciation check (mic)' : 'Pronunciation check — needs Chrome/Edge';
 const micSwitch = makeSwitch(false, toggleMic, 'Toggle microphone pronunciation check');
 if (!asrSupported) micSwitch.setAttribute('aria-disabled', 'true');
 micRow.append(micLabel, micSwitch);
@@ -368,6 +367,7 @@ function triggerConfetti() {
 
 // ── Comprehension challenge state ─────────────────────────────
 let compSentences = [];
+let compSourceText = '';
 let compIndex = 0;
 let compCorrect = 0;
 let compSkipped = 0;
@@ -395,42 +395,62 @@ function selectChallengeSentences(text) {
   return candidates.slice(0, 3);
 }
 
-/** Fisher-Yates shuffle. Ensures result differs from original if possible. */
-function shuffleWords(wordsArr) {
-  const shuffled = [...wordsArr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
+/** Fisher-Yates shuffle (in place). */
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  // If shuffle matches original and length > 1, swap first two
-  if (shuffled.length > 1 && shuffled.join(' ') === wordsArr.join(' ')) {
-    [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
-  }
-  return shuffled;
+  return arr;
 }
 
-function hardTruncate(sentence, maxWords = 7) {
+// Short, common words to avoid blanking out (EN + FIL).
+const COMP_STOPWORDS = new Set([
+  'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of',
+  'is', 'are', 'was', 'were', 'it', 'he', 'she', 'they', 'we', 'as', 'by',
+  'with', 'from', 'that', 'this', 'into', 'than', 'then', 'them', 'their',
+  'ang', 'ng', 'sa', 'na', 'ay', 'mga', 'si', 'ni', 'kay', 'ako', 'ikaw',
+  'siya', 'kami', 'tayo', 'kayo', 'sila', 'ito', 'iyan', 'iyon', 'din', 'rin',
+]);
+
+/** Strip surrounding punctuation, keep letters/numbers/apostrophes/hyphens. */
+function cleanWord(w) {
+  return w.replace(/[^\p{L}\p{N}'-]/gu, '');
+}
+
+/**
+ * Build one fill-in-the-blank item from a sentence:
+ * pick the longest content word, blank it, and offer it among decoys
+ * drawn from the rest of the passage.
+ */
+function buildBlankItem(sentence, sourceText) {
   const words = sentence.trim().split(/\s+/);
-  return words.length <= maxWords ? sentence : words.slice(0, maxWords).join(' ');
+
+  // Choose the word to blank: longest content word, else the middle word.
+  const candidates = words
+    .map((w, i) => ({ i, clean: cleanWord(w) }))
+    .filter((o) => o.clean.length >= 4 && !COMP_STOPWORDS.has(o.clean.toLowerCase()));
+  const chosen = candidates.length
+    ? candidates.reduce((a, b) => (b.clean.length > a.clean.length ? b : a))
+    : { i: Math.floor(words.length / 2), clean: cleanWord(words[Math.floor(words.length / 2)]) };
+
+  const answer = chosen.clean.toLowerCase();
+
+  // Blank out the chosen word, preserving its surrounding punctuation.
+  const blanked = words.slice();
+  blanked[chosen.i] = words[chosen.i].replace(chosen.clean, '_____');
+  const stem = blanked.join(' ');
+
+  // Decoys: other words from the passage of similar size.
+  const pool = [...new Set((sourceText.match(/[\p{L}][\p{L}'-]{3,}/gu) || []).map((w) => w.toLowerCase()))]
+    .filter((w) => w !== answer && !COMP_STOPWORDS.has(w));
+  const decoys = shuffleArray(pool).slice(0, 3);
+
+  const options = shuffleArray([answer, ...decoys]);
+  return { stem, answer, options };
 }
 
-async function simplifySentence(sentence) {
-  try {
-    const lang = getLang();
-    const res = await fetch('/api/simplify-sentence', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sentence, lang }),
-    });
-    if (!res.ok) return hardTruncate(sentence);
-    const { text } = await res.json();
-    return hardTruncate(text || sentence);
-  } catch {
-    return hardTruncate(sentence);
-  }
-}
-
-async function startComprehensionChallenge() {
+function startComprehensionChallenge() {
   stopListening();
   releaseMicStream();
   cancel();
@@ -440,8 +460,8 @@ async function startComprehensionChallenge() {
   micPanel.hidden = true;
   inputPanel.hidden = true;
 
-  const originalText = ta.value;
-  const raw = selectChallengeSentences(originalText);
+  compSourceText = ta.value;
+  const raw = selectChallengeSentences(compSourceText);
   compIndex = 0;
   compCorrect = 0;
   compSkipped = 0;
@@ -451,12 +471,8 @@ async function startComprehensionChallenge() {
     return;
   }
 
-  // Show the challenge panel with a loading state while we shorten sentences
+  compSentences = raw;
   challengePanel.hidden = false;
-  challengePanel.innerHTML = '<p class="status" style="text-align:center;padding:32px">Preparing challenge…</p>';
-
-  compSentences = await Promise.all(raw.map(s => simplifySentence(s)));
-
   renderChallenge();
 }
 
@@ -472,8 +488,8 @@ function renderChallenge() {
   h2.textContent = isFil ? '📝 Pagsubok sa Pag-unawa' : '📝 Comprehension Check';
   const pDesc = el('p');
   pDesc.textContent = isFil
-    ? 'Ayusin ang mga salita upang mabuo ang tamang pangungusap.'
-    : 'Arrange the words to form the correct sentence.';
+    ? 'Piliin ang nawawalang salita.'
+    : 'Choose the missing word.';
   header.append(h2, pDesc);
   challengePanel.appendChild(header);
 
@@ -488,66 +504,49 @@ function renderChallenge() {
   progressDiv.append(progLabel, progTrack);
   challengePanel.appendChild(progressDiv);
 
-  // Current sentence
+  // Current sentence → fill-in-the-blank
   const sentence = compSentences[compIndex];
-  const originalWords = sentence.trim().split(/\s+/);
-  const shuffledWords = shuffleWords(originalWords);
+  const { stem, answer, options } = buildBlankItem(sentence, compSourceText);
 
-  // Prompt
-  const prompt = el('p', 'comp-prompt');
-  prompt.textContent = isFil
-    ? 'I-tap ang mga salita sa tamang pagkakasunod:'
-    : 'Tap the words in the correct order:';
-  challengePanel.appendChild(prompt);
+  // Sentence with the blank
+  const stemP = el('p', 'comp-blank-sentence reading');
+  stemP.textContent = stem;
+  challengePanel.appendChild(stemP);
 
-  // Answer zone
-  const answerZone = el('div', 'comp-answer-zone');
-  challengePanel.appendChild(answerZone);
+  // Options
+  const optionsWrap = el('div', 'comp-tile-bank reading');
+  challengePanel.appendChild(optionsWrap);
 
-  // Tile bank
-  const tileBank = el('div', 'comp-tile-bank reading');
-  challengePanel.appendChild(tileBank);
-
-  // State: track which tiles are placed
-  const placed = []; // indices into shuffledWords, in placement order
-  const bankTiles = [];  // references to bank tile elements
-
-  shuffledWords.forEach((word, i) => {
+  let answered = false;
+  options.forEach((opt) => {
     const tile = el('button', 'comp-tile reading');
-    tile.textContent = word;
     tile.type = 'button';
-    tile.dataset.bankIndex = String(i);
-    tile.setAttribute('aria-label', `Word: ${word}`);
-    tile.addEventListener('click', () => placeTile(i));
-    tileBank.appendChild(tile);
-    bankTiles.push(tile);
+    tile.textContent = opt;
+    tile.setAttribute('aria-label', `Choose: ${opt}`);
+    tile.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      const isCorrect = opt === answer;
+      optionsWrap.querySelectorAll('.comp-tile').forEach((b) => { b.disabled = true; });
+
+      if (isCorrect) {
+        compCorrect++;
+        playSuccessSound();
+        tile.classList.add('comp-tile--correct');
+      } else {
+        compSkipped++;
+        tile.classList.add('comp-tile--wrong');
+        optionsWrap.querySelectorAll('.comp-tile').forEach((b) => {
+          if (b.textContent === answer) b.classList.add('comp-tile--correct');
+        });
+      }
+      // Reveal the full sentence (green if right, red if wrong), then advance.
+      stemP.textContent = sentence;
+      stemP.classList.add(isCorrect ? 'comp-blank-sentence--revealed' : 'comp-blank-sentence--wrong');
+      setTimeout(() => advanceChallenge(isFil), isCorrect ? 1100 : 1500);
+    });
+    optionsWrap.appendChild(tile);
   });
-
-  function placeTile(bankIndex) {
-    if (placed.includes(bankIndex)) return; // already placed
-    placed.push(bankIndex);
-    bankTiles[bankIndex].classList.add('comp-tile--ghost');
-
-    const placedTile = el('button', 'comp-tile comp-tile--placed reading');
-    placedTile.textContent = shuffledWords[bankIndex];
-    placedTile.type = 'button';
-    placedTile.dataset.bankIndex = String(bankIndex);
-    placedTile.setAttribute('aria-label', `Remove: ${shuffledWords[bankIndex]}`);
-    placedTile.addEventListener('click', () => removeTile(bankIndex, placedTile));
-    answerZone.appendChild(placedTile);
-  }
-
-  function removeTile(bankIndex, placedTile) {
-    const idx = placed.indexOf(bankIndex);
-    if (idx === -1) return;
-    placed.splice(idx, 1);
-    placedTile.remove();
-    bankTiles[bankIndex].classList.remove('comp-tile--ghost');
-    // Re-trigger pop animation
-    bankTiles[bankIndex].style.animation = 'none';
-    bankTiles[bankIndex].offsetHeight; // force reflow
-    bankTiles[bankIndex].style.animation = '';
-  }
 
   // Buttons
   const btnRow = el('div', 'comp-btn-row');
@@ -555,56 +554,12 @@ function renderChallenge() {
   const skipBtn = el('button', 'btn btn--duo-secondary');
   skipBtn.textContent = isFil ? 'Laktawan' : 'Skip';
   skipBtn.addEventListener('click', () => {
+    if (answered) return;
     compSkipped++;
     advanceChallenge(isFil);
   });
 
-  const checkBtn = el('button', 'btn btn--primary');
-  checkBtn.textContent = isFil ? 'Suriin' : 'Check';
-  checkBtn.addEventListener('click', () => {
-    if (placed.length !== originalWords.length) {
-      // Not all words placed
-      const remaining = originalWords.length - placed.length;
-      const msg = isFil
-        ? `Maglagay pa ng ${remaining} salita.`
-        : `Place ${remaining} more word${remaining > 1 ? 's' : ''}.`;
-      notice(status, msg, 'warn');
-      return;
-    }
-
-    // Build the user's answer
-    const userAnswer = placed.map(bi => shuffledWords[bi]);
-    const isCorrect = userAnswer.join(' ') === originalWords.join(' ');
-
-    if (isCorrect) {
-      // ✓ Correct!
-      compCorrect++;
-      playSuccessSound();
-      answerZone.classList.add('is-correct');
-      answerZone.querySelectorAll('.comp-tile--placed').forEach(t => {
-        t.classList.add('comp-tile--correct');
-      });
-
-      // Show the correct sentence briefly
-      checkBtn.disabled = true;
-      skipBtn.disabled = true;
-      setTimeout(() => advanceChallenge(isFil), 1200);
-    } else {
-      // ✗ Wrong — shake and let them retry
-      answerZone.classList.add('is-wrong');
-      answerZone.querySelectorAll('.comp-tile--placed').forEach(t => {
-        t.classList.add('comp-tile--wrong');
-      });
-      setTimeout(() => {
-        answerZone.classList.remove('is-wrong');
-        answerZone.querySelectorAll('.comp-tile--wrong').forEach(t => {
-          t.classList.remove('comp-tile--wrong');
-        });
-      }, 500);
-    }
-  });
-
-  btnRow.append(skipBtn, checkBtn);
+  btnRow.append(skipBtn);
   challengePanel.appendChild(btnRow);
 }
 
@@ -932,7 +887,16 @@ startBtn.addEventListener('click', start);
 prevBtn.addEventListener('click', () => step(-1));
 nextBtn.addEventListener('click', () => step(1));
 replayBtn.addEventListener('click', () => { if (index >= 0) speakWord(words[index]); });
-onLangChange(() => { if (index >= 0) speakWord(words[index]); });
+// Re-translate static labels on language change.
+function applyStrings() {
+  ta.placeholder = t('samahan_placeholder');
+  startBtn.textContent = t('samahan_startBtn');
+  micLabel.textContent = asrSupported ? t('samahan_micLabel') : t('samahan_micUnsupported');
+  const fieldLab = textField.querySelector('.field-label');
+  if (fieldLab) fieldLab.textContent = t('samahan_yourText');
+}
+applyStrings();
+onLangChange(() => { applyStrings(); if (index >= 0) speakWord(words[index]); });
 
 // Prefill from the landing hero and show the first word ready to read.
 const handoff = consumeHandoff('samahan');

@@ -6,6 +6,7 @@
 import '../shared/app.css';
 import { mountShell, el, notice } from '../shared/shell.js';
 import { getLangMeta, onLangChange } from '../shared/a11y.js';
+import { t } from '../shared/i18n.js';
 import { speak, cancel, ttsSupported, hasVoiceFor } from '../shared/tts.js';
 import { splitSentences } from '../shared/text.js';
 import { consumeHandoff } from '../shared/handoff.js';
@@ -16,7 +17,7 @@ const SAMPLE =
 
 const { root } = mountShell({
   title: 'Basahin Mo',
-  subtitle: 'Paste any text, then listen to it read sentence by sentence. Tap a sentence to jump there.',
+  subtitle: () => t('basahin_sub'),
   route: '/basahin',
 });
 
@@ -27,15 +28,14 @@ let playing = false;
 // ── UI ────────────────────────────────────────────────────────────
 const inputPanel = el('div', 'panel');
 const ta = el('textarea', 'textbox reading');
-ta.placeholder = 'Paste your text here…';
 ta.value = SAMPLE;
 ta.setAttribute('aria-label', 'Text to read');
-const loadBtn = el('button', 'btn btn--ghost');
-loadBtn.textContent = 'Load text';
+const loadBtn = el('button', 'btn btn--primary');
 const inputRow = el('div', 'btn-row');
 inputRow.style.marginTop = '12px';
 inputRow.appendChild(loadBtn);
-inputPanel.append(labelled('Your text', ta), inputRow);
+const textField = labelled('Your text', ta);
+inputPanel.append(textField, inputRow);
 
 const uploadBtn = mountUpload(ta, {
   maxChars: 100000,
@@ -65,7 +65,6 @@ const speedVal = el('span', 'slider-value');
 speedVal.textContent = '1.0×';
 const speedLabel = el('label');
 speedLabel.htmlFor = 'speed';
-speedLabel.textContent = 'Speed';
 speedRow.append(speedLabel, speed, speedVal);
 
 const transport = el('div', 'btn-row');
@@ -91,7 +90,7 @@ function loadText() {
   renderSentences();
   readerPanel.hidden = sentences.length === 0;
   controls.hidden = sentences.length === 0;
-  if (!sentences.length) notice(status, 'Add some text first.', 'warn');
+  if (!sentences.length) notice(status, t('basahin_addText'), 'warn');
   else updateStatus();
 }
 
@@ -133,10 +132,10 @@ function playCurrent() {
         playCurrent();
       } else {
         cancelPlayback();
-        notice(status, 'Finished reading.', 'success');
+        notice(status, t('basahin_finished'), 'success');
       }
     },
-    onerror: () => notice(status, 'Could not play audio for this language on your device.', 'error'),
+    onerror: () => notice(status, t('basahin_playError'), 'error'),
   });
 }
 
@@ -169,7 +168,7 @@ function updateStatus() {
   if (!sentences.length) return;
   const meta = getLangMeta();
   const voiceNote = hasVoiceFor(meta.speechLang) ? '' : ` · no ${meta.label} voice on this device, using closest match`;
-  notice(status, `Sentence ${index + 1} of ${sentences.length}${voiceNote}`, 'info');
+  notice(status, `${t('basahin_sentenceOf', { n: index + 1, total: sentences.length })}${voiceNote}`, 'info');
 }
 
 // ── Wire up ───────────────────────────────────────────────────────
@@ -186,7 +185,16 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') step(1);
   if (e.key === ' ') { e.preventDefault(); togglePlay(); }
 });
-onLangChange(() => { if (playing) playCurrent(); else updateStatus(); });
+// Re-translate the static labels on language change.
+function applyStrings() {
+  ta.placeholder = t('basahin_placeholder');
+  loadBtn.textContent = t('basahin_loadBtn');
+  speedLabel.textContent = t('basahin_speed');
+  const fieldLab = textField.querySelector('.field-label');
+  if (fieldLab) fieldLab.textContent = t('basahin_yourText');
+}
+applyStrings();
+onLangChange(() => { applyStrings(); if (playing) playCurrent(); else updateStatus(); });
 
 // If the user arrived from the landing hero, prefill their text + prepare it.
 // (We don't auto-play: browsers block audio without a user gesture.)
@@ -194,7 +202,7 @@ const handoff = consumeHandoff('basahin');
 if (handoff && handoff.text) {
   ta.value = handoff.text.slice(0, 100000);
   loadText();
-  notice(status, 'Your text is ready — press play to listen.', 'info');
+  notice(status, t('basahin_ready'), 'info');
 } else {
   loadText();
 }

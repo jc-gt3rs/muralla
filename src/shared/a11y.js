@@ -15,7 +15,7 @@ const defaults = {
   spacing: 'normal', // normal | medium | high
   lineHeight: 'normal', // normal | relaxed
   dyslexic: false,
-  lang: 'en', // en | fil
+  lang: 'fil', // en | fil
 };
 
 let prefs = load();

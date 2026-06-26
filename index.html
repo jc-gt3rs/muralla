@@ -418,7 +418,6 @@
       <a href="#demo" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Pronunciation Demo</a>
       <a href="#languages" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Languages</a>
       <a href="#bandwidth" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Bandwidth</a>
-      <a href="#open-source" class="text-white text-xl font-bold font-display hover:text-sun transition-colors mobile-nav-link">Open Source</a>
     </div>
   </div>
 
@@ -631,7 +630,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
         <!-- Tool 1: Basahin Mo -->
-        <article class="tool-card p-6 fade-up" id="tool-basahin">
+        <a href="/basahin" class="tool-card p-6 fade-up block no-underline text-inherit" id="tool-basahin">
           <h3 class="font-display font-extrabold text-xl mb-1">Basahin Mo</h3>
           <p class="text-muted text-[13px] italic mb-3">TTS Reader</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -643,10 +642,10 @@
             <span class="pill bg-soft-blue text-sky-dark">Speed control</span>
             <span class="pill bg-green-100 text-success">Low bandwidth</span>
           </div>
-        </article>
+        </a>
 
         <!-- Tool 2: Samahan Mo Ako (Star) -->
-        <article class="tool-card star-card p-6 fade-up" id="tool-samahan">
+        <a href="/samahan" class="tool-card star-card p-6 fade-up block no-underline text-inherit" id="tool-samahan">
           <h3 class="font-display font-extrabold text-xl mb-1">Samahan Mo Ako</h3>
           <p class="text-muted text-[13px] italic mb-3">Co-Reader + Pronunciation Rater</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -659,10 +658,10 @@
             <span class="pill bg-yellow-100 text-[#92400e]">≈ Close</span>
             <span class="pill bg-red-100 text-danger">✗ Needs practice</span>
           </div>
-        </article>
+        </a>
 
         <!-- Tool 3: Ano ang Salita -->
-        <article class="tool-card p-6 fade-up" id="tool-salita">
+        <a href="/salita" class="tool-card p-6 fade-up block no-underline text-inherit" id="tool-salita">
           <h3 class="font-display font-extrabold text-xl mb-1">Ano ang Salita</h3>
           <p class="text-muted text-[13px] italic mb-3">Dictionary Lookup</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -674,10 +673,10 @@
             <span class="pill bg-green-100 text-success">No API key</span>
             <span class="pill bg-green-100 text-success">Offline cache</span>
           </div>
-        </article>
+        </a>
 
         <!-- Tool 4: Ipaliwanag Mo -->
-        <article class="tool-card p-6 fade-up" id="tool-ipaliwanag">
+        <a href="/ipaliwanag" class="tool-card p-6 fade-up block no-underline text-inherit" id="tool-ipaliwanag">
           <h3 class="font-display font-extrabold text-xl mb-1">Ipaliwanag Mo</h3>
           <p class="text-muted text-[13px] italic mb-3">Summarizer</p>
           <p class="text-ink/80 text-[15px] leading-relaxed mb-4">
@@ -689,7 +688,7 @@
             <span class="pill bg-soft-blue text-sky-dark">Grade-level aware</span>
             <span class="pill bg-soft-blue text-sky-dark">TTS output</span>
           </div>
-        </article>
+        </a>
 
       </div>
     </div>
@@ -894,46 +893,6 @@
   </section>
 
 
-  <!-- ═══════════════ OPEN SOURCE ARTIFACT ═══════════════ -->
-  <section id="open-source" class="py-16 md:py-24 bg-ink">
-    <div class="max-w-[860px] mx-auto px-6 md:px-10">
-      <div class="fade-up">
-        <p class="text-sky-brand font-bold text-xs tracking-[0.18em] uppercase mb-2">The Tools</p>
-        <h2 class="font-extrabold text-[clamp(26px,4vw,36px)] leading-tight text-white mb-4">
-          Four tools. One URL. No login.
-        </h2>
-        <p class="text-white/50 text-[15px] max-w-[600px] mb-10">
-          Each tool is a standalone page built for a single job. Open it, use it, leave. No account. No install. No bandwidth wasted on features you didn't ask for.
-        </p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <a href="/basahin" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
-            <h3 class="font-extrabold text-white text-lg mb-1">Basahin Mo</h3>
-            <p class="text-white/40 text-[13px] mb-3">TTS Reader</p>
-            <p class="text-white/60 text-[14px] leading-relaxed">Paste text, pick a language, press play. Reads sentence-by-sentence in English or Filipino.</p>
-          </a>
-
-          <a href="/samahan" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
-            <h3 class="font-extrabold text-white text-lg mb-1">Samahan Mo Ako</h3>
-            <p class="text-white/40 text-[13px] mb-3">Co-Reader + Pronunciation Rater</p>
-            <p class="text-white/60 text-[14px] leading-relaxed">Word-by-word guided reading with live on-device pronunciation scoring. No audio leaves the phone.</p>
-          </a>
-
-          <a href="/salita" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
-            <h3 class="font-extrabold text-white text-lg mb-1">Ano ang Salita</h3>
-            <p class="text-white/40 text-[13px] mb-3">Dictionary Lookup</p>
-            <p class="text-white/60 text-[14px] leading-relaxed">Definition, IPA, word type, and example sentence. Cached offline after first lookup.</p>
-          </a>
-
-          <a href="/ipaliwanag" class="group bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xl p-6 transition-colors block">
-            <h3 class="font-extrabold text-white text-lg mb-1">Ipaliwanag Mo</h3>
-            <p class="text-white/40 text-[13px] mb-3">AI Summarizer</p>
-            <p class="text-white/60 text-[14px] leading-relaxed">Paste a textbook passage. Gemini rewrites it in plain language at your grade level, in English or Filipino.</p>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
 
 
   <!-- ═══════════════ DESIGN PRINCIPLES ═══════════════ -->

@@ -6,14 +6,15 @@
  */
 import '../shared/app.css';
 import { mountShell, el, notice } from '../shared/shell.js';
-import { getLangMeta } from '../shared/a11y.js';
+import { getLangMeta, onLangChange } from '../shared/a11y.js';
+import { t } from '../shared/i18n.js';
 import { speak } from '../shared/tts.js';
 import { suggestWords } from '../shared/dict.js';
 import { consumeHandoff } from '../shared/handoff.js';
 
 const { root } = mountShell({
   title: 'Ano ang Salita',
-  subtitle: 'Not sure how a word is spelled? Type your best guess — we’ll show the closest real words and what they mean.',
+  subtitle: () => t('salita_sub'),
   route: '/salita',
 });
 
@@ -23,19 +24,28 @@ const form = el('form');
 form.setAttribute('role', 'search');
 const input = el('input', 'input reading');
 input.type = 'text';
-input.placeholder = 'Type a word (even if unsure)…';
 input.autocomplete = 'off';
 input.autocapitalize = 'off';
 input.spellcheck = false;
 input.setAttribute('aria-label', 'Word to look up');
 const searchBtn = el('button', 'btn btn--primary');
 searchBtn.type = 'submit';
-searchBtn.textContent = 'Find words';
 const searchRow = el('div', 'btn-row');
 searchRow.style.marginTop = '12px';
 searchRow.appendChild(searchBtn);
-form.append(labelled('Your spelling', input), searchRow);
+const spellingField = labelled('Your spelling', input);
+form.append(spellingField, searchRow);
 searchPanel.appendChild(form);
+
+// Re-translate static labels on language change.
+function applyStrings() {
+  input.placeholder = t('salita_placeholder');
+  searchBtn.textContent = t('salita_findBtn');
+  const fieldLab = spellingField.querySelector('.field-label');
+  if (fieldLab) fieldLab.textContent = t('salita_yourSpelling');
+}
+applyStrings();
+onLangChange(applyStrings);
 
 const status = el('p', 'status');
 const results = el('div', 'suggestions');
@@ -48,16 +58,16 @@ let lastQuery = '';
 async function run(e) {
   if (e) e.preventDefault();
   const q = input.value.trim();
-  if (!q) { notice(status, 'Type a word to look up.', 'warn'); return; }
+  if (!q) { notice(status, t('salita_typeWord'), 'warn'); return; }
   if (q === lastQuery) return;
   lastQuery = q;
 
   results.innerHTML = '';
-  notice(status, 'Searching…', 'info');
+  notice(status, t('salita_searching'), 'info');
   searchBtn.disabled = true;
   try {
     const matches = await suggestWords(q, 3);
-    if (!matches.length) { notice(status, `No close words found for “${q}”.`, 'warn'); return; }
+    if (!matches.length) { notice(status, t('salita_noMatch', { q }), 'warn'); return; }
     notice(status, `Closest words to “${q}”:`, 'success');
     matches.forEach((m) => results.appendChild(renderCard(m)));
   } catch (err) {
