@@ -13,10 +13,47 @@ import { createServer } from 'node:http';
 
 const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_KEY || '';
-const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
+// Tried in order: the efficient lite model first, falling back to the heavier
+// (more reliably available) flash model when lite is overloaded.
+const GEMINI_MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'];
+const geminiUrl = (model) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 const GOOGLE_TTS_KEY = process.env.GOOGLE_TTS_KEY || '';
 const TTS_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize';
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Call Gemini with automatic resilience:
+ *   • retries transient overloads (429 / 503 UNAVAILABLE) once with backoff
+ *   • falls back through GEMINI_MODELS when a model stays unavailable
+ * @returns {Promise<string>} the generated text
+ * @throws {Error & { status: number }} when every model/attempt fails
+ */
+async function callGemini(prompt, generationConfig) {
+  let last = { status: 502, msg: 'no response' };
+  for (const model of GEMINI_MODELS) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const r = await fetch(`${geminiUrl(model)}?key=${GEMINI_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig }),
+      });
+      if (r.ok) {
+        const data = await r.json();
+        return data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() ?? '';
+      }
+      last = { status: r.status, msg: await r.text() };
+      console.error(`Gemini ${model} error:`, r.status, last.msg);
+      const transient = r.status === 429 || r.status === 503;
+      if (transient && attempt === 0) { await sleep(700); continue; } // retry same model once
+      break; // non-transient or out of retries → try the next model
+    }
+  }
+  const err = new Error(`Gemini failed: ${last.status} ${last.msg}`);
+  err.status = last.status;
+  throw err;
+}
 
 // Allow requests only from our own domain (change if needed).
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://muralla.didthat.lol';
@@ -45,26 +82,16 @@ app.post('/api/summarize', async (req, res) => {
     return res.status(400).json({ error: 'Missing prompt.' });
   }
   try {
-    const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.3, maxOutputTokens: 4000 },
-      }),
-    });
-    if (!r.ok) {
-      const msg = await r.text();
-      console.error('Gemini error:', r.status, msg);
-      return res.status(502).json({ error: `Gemini returned ${r.status}` });
-    }
-    const data = await r.json();
-    const text =
-      data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() ?? '';
+    const text = await callGemini(prompt, { temperature: 0.3, maxOutputTokens: 4000 });
     res.json({ text });
   } catch (err) {
-    console.error('Proxy fetch failed:', err);
-    res.status(500).json({ error: 'Proxy error. Check server logs.' });
+    console.error('Summarize failed:', err.message);
+    const overloaded = err.status === 429 || err.status === 503;
+    res.status(overloaded ? 503 : 502).json({
+      error: overloaded
+        ? 'The AI is busy right now. Please try again in a moment.'
+        : 'Could not reach the AI. Please try again.',
+    });
   }
 });
 
@@ -103,26 +130,11 @@ Keep the core meaning. Return ONLY the shortened sentence with no explanation, q
 
 Sentence: ${sentence}`;
   try {
-    const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 60 },
-      }),
-    });
-    if (!r.ok) {
-      const msg = await r.text();
-      console.error('Gemini error:', r.status, msg);
-      return res.status(502).json({ error: `Gemini returned ${r.status}` });
-    }
-    const data = await r.json();
-    const text =
-      data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() ?? '';
+    const text = await callGemini(prompt, { temperature: 0.2, maxOutputTokens: 60 });
     res.json({ text: text || sentence });
   } catch (err) {
-    console.error('Simplify fetch failed:', err);
-    res.status(500).json({ error: 'Proxy error.', fallback: sentence });
+    console.error('Simplify failed:', err.message);
+    res.status(502).json({ error: 'Proxy error.', fallback: sentence });
   }
 });
 
