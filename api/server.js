@@ -14,7 +14,7 @@ import { createServer } from 'node:http';
 const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_KEY || '';
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
 const GOOGLE_TTS_KEY = process.env.GOOGLE_TTS_KEY || '';
 const TTS_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize';
 
