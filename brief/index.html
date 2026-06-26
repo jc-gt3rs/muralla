@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GabAI-Basa — Project Brief</title>
   <meta name="description" content="Project brief for GabAI-Basa, an accessibility-first Filipino reading companion by Team Muralla.">
+  <link rel="icon" type="image/png" href="/src/gabai.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -417,6 +418,7 @@
         <li><a href="#accessibility" class="brief-nav__link">Accessibility</a></li>
         <li><a href="#design" class="brief-nav__link">Design</a></li>
         <li><a href="#tech" class="brief-nav__link">Tech Stack</a></li>
+        <li><a href="#libraries" class="brief-nav__link">Libraries</a></li>
         <li><a href="#sdg" class="brief-nav__link">SDG #4</a></li>
         <li><a href="#bandwidth" class="brief-nav__link">Bandwidth</a></li>
         <li><a href="#open-source" class="brief-nav__link">Open Source</a></li>
@@ -897,6 +899,118 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ LIBRARIES & DEPENDENCIES ═══════════════ -->
+  <section id="libraries" class="brief-section brief-section--alt">
+    <div class="brief-section__inner fade-up">
+      <p class="section-eyebrow">Libraries & Dependencies</p>
+      <h2 class="section-title">What Powers the App</h2>
+      <p class="section-desc">
+        GabAI-Basa is intentionally lightweight. The npm footprint is minimal — most functionality comes from browser-native APIs and external services accessed over HTTPS.
+      </p>
+
+      <!-- NPM Packages -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">NPM Packages</h3>
+      <div class="card-grid card-grid--2" style="margin-bottom: 28px;">
+        <div class="card">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+            <div class="card__icon" style="margin-bottom: 0; width: 36px; height: 36px; font-size: 16px;">⚡</div>
+            <div>
+              <div class="card__title" style="font-size: 15px;">Vite</div>
+              <div style="font-size: 12px; color: var(--muted);">v8.1 · devDependency</div>
+            </div>
+          </div>
+          <div class="card__body">Build tool and dev server. Handles ES module bundling, route-level code splitting, and hot module replacement during development.</div>
+        </div>
+        <div class="card">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+            <div class="card__icon" style="margin-bottom: 0; width: 36px; height: 36px; font-size: 16px;">🖥️</div>
+            <div>
+              <div class="card__title" style="font-size: 15px;">Express</div>
+              <div style="font-size: 12px; color: var(--muted);">v5.2 · dependency</div>
+            </div>
+          </div>
+          <div class="card__body">Lightweight Node.js web server. Serves the production build and handles API proxy routes for Google Cloud TTS and Gemini to keep keys server-side.</div>
+        </div>
+      </div>
+
+      <!-- External APIs & Services -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">External APIs & Services</h3>
+      <div class="card-grid card-grid--3" style="margin-bottom: 28px;">
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Google Cloud TTS</div>
+          <div class="card__body" style="margin-top: 4px;">Text-to-speech synthesis for <code style="font-size: 11px; background: var(--primary-soft); padding: 1px 4px; border-radius: 3px; color: var(--primary-dark);">fil-PH</code> and <code style="font-size: 11px; background: var(--primary-soft); padding: 1px 4px; border-radius: 3px; color: var(--primary-dark);">en-US</code>. OGG Opus encoding for half-MP3 file sizes.</div>
+          <div class="pill-row"><span class="pill pill--blue">Server-proxied</span></div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Gemini 2.5 Flash</div>
+          <div class="card__body" style="margin-top: 4px;">AI text simplification via Google AI Studio. Bilingual prompt engineering for grade-appropriate summaries.</div>
+          <div class="pill-row"><span class="pill pill--blue">Server-proxied</span></div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Free Dictionary API</div>
+          <div class="card__body" style="margin-top: 4px;">Word definitions, IPA phonetics, parts of speech, and example sentences via dictionaryapi.dev.</div>
+          <div class="pill-row"><span class="pill pill--green">No API key</span><span class="pill pill--green">Free</span></div>
+        </div>
+      </div>
+
+      <!-- Browser-Native APIs -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">Browser-Native APIs</h3>
+      <div class="card-grid card-grid--3" style="margin-bottom: 28px;">
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Web Speech API</div>
+          <div class="card__sub">SpeechRecognition</div>
+          <div class="card__body">On-device speech-to-text for pronunciation scoring. Zero bandwidth — no audio ever leaves the device. Requires Chrome or Edge.</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">localStorage</div>
+          <div class="card__sub">Web Storage API</div>
+          <div class="card__body">Caches dictionary lookups, TTS audio chunks, and accessibility preferences for offline access and repeat visits.</div>
+        </div>
+        <div class="card">
+          <div class="card__title" style="font-size: 14px;">Service Workers</div>
+          <div class="card__sub">PWA App Shell</div>
+          <div class="card__body">Progressive Web App caching layer for near-instant repeat loads and offline app shell access.</div>
+        </div>
+      </div>
+
+      <!-- CDN Resources -->
+      <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px;">CDN Resources</h3>
+      <div style="overflow-x: auto;">
+        <table class="brief-table">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Source</th>
+              <th>Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tailwind CSS</strong></td>
+              <td>cdn.tailwindcss.com</td>
+              <td>Landing page only (preflight: false). Tool pages use hand-written CSS.</td>
+            </tr>
+            <tr>
+              <td><strong>Inter</strong></td>
+              <td>Google Fonts</td>
+              <td>Primary typeface (400–800 weights). Body and display text.</td>
+            </tr>
+            <tr>
+              <td><strong>OpenDyslexic</strong></td>
+              <td>CDN</td>
+              <td>Dyslexia-friendly font, toggled via accessibility panel. Falls back to Comic Sans / Inter.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout" style="margin-top: 20px;">
+        <strong>Zero external JS libraries.</strong> All application logic is hand-written Vanilla JS with ES Modules. No React, no jQuery, no runtime framework — keeping the bundle tiny and offline-friendly.
       </div>
     </div>
   </section>
