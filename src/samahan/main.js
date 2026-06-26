@@ -112,7 +112,11 @@ function start() {
   words = splitWords(ta.value);
   Object.keys(grades).forEach((k) => delete grades[k]);
   if (!words.length) { notice(status, 'Add some text first.', 'warn'); return; }
+  startTime = Date.now();
+  completionPanel.hidden = true;
   stagePanel.hidden = false;
+  inputPanel.hidden = false;
+  micPanel.hidden = false;
   index = 0;
   showWord();
 }
