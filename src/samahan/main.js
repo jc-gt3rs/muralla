@@ -866,15 +866,33 @@ function showCompletion() {
   }
 }
 
-function toggleMic(on) {
-  if (on && !asrSupported) {
+async function toggleMic(on) {
+  if (!on) {
+    micOn = false;
+    stopListening();
+    return;
+  }
+  if (!asrSupported) {
     micSwitch.setAttribute('aria-checked', 'false');
     notice(status, 'Pronunciation check needs Chrome or Edge.', 'warn');
     return;
   }
-  micOn = on;
-  if (!on) stopListening();
-  if (on && index >= 0) startListening(words[index]);
+  // Explicitly request mic permission on the user gesture so mobile browsers
+  // show the prompt immediately rather than silently denying later.
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop()); // release immediately — SpeechRecognition manages its own stream
+  } catch (err) {
+    micSwitch.setAttribute('aria-checked', 'false');
+    const denied = err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError';
+    notice(status, denied
+      ? 'Microphone access was denied. Allow it in your browser settings and try again.'
+      : 'Could not access the microphone. Check your device settings.',
+      'warn');
+    return;
+  }
+  micOn = true;
+  if (index >= 0) startListening(words[index]);
 }
 
 // ── Wire up ───────────────────────────────────────────────────────

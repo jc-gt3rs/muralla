@@ -24,15 +24,6 @@ const { root } = mountShell({
 
 const MAX = config.summarizerMaxChars;
 
-// Demo-mode banner
-if (!aiReady()) {
-  const banner = el('div', 'banner');
-  banner.innerHTML =
-    '<span aria-hidden="true">⚙️</span> Demo mode — no AI key set. Output is a placeholder. ' +
-    'Add a Gemini key or proxy in <code>config.js</code> to enable real summaries.';
-  root.appendChild(banner);
-}
-
 // ── Input ─────────────────────────────────────────────────────────
 const inputPanel = el('div', 'panel');
 const ta = el('textarea', 'textbox reading');

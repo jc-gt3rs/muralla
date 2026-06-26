@@ -81,14 +81,7 @@ transport.append(prevBtn, playBtn, nextBtn);
 const status = el('p', 'status');
 controls.append(speedRow, transport, status);
 
-const browserBanner = el('div', 'banner');
-if (!ttsSupported) {
-  browserBanner.textContent = 'Your browser does not support speech synthesis. Try Chrome or Edge.';
-} else {
-  browserBanner.hidden = true;
-}
-
-root.append(browserBanner, inputPanel, controls, readerPanel);
+root.append(inputPanel, controls, readerPanel);
 
 // ── Logic ─────────────────────────────────────────────────────────
 function loadText() {

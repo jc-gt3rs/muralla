@@ -40,10 +40,7 @@ searchPanel.appendChild(form);
 const status = el('p', 'status');
 const results = el('div', 'suggestions');
 
-const hint = el('div', 'banner banner--info');
-hint.textContent = 'Tip: spell it the way it sounds. “fotosinthesis” still finds “photosynthesis”.';
-
-root.append(hint, searchPanel, status, results);
+root.append(searchPanel, status, results);
 
 // ── Logic ─────────────────────────────────────────────────────────
 let lastQuery = '';
