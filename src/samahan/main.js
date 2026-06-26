@@ -387,7 +387,23 @@ function shuffleWords(wordsArr) {
   return shuffled;
 }
 
-function startComprehensionChallenge() {
+async function simplifySentence(sentence) {
+  try {
+    const lang = getLang();
+    const res = await fetch('/api/simplify-sentence', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sentence, lang }),
+    });
+    if (!res.ok) return sentence;
+    const { text } = await res.json();
+    return text || sentence;
+  } catch {
+    return sentence;
+  }
+}
+
+async function startComprehensionChallenge() {
   stopListening();
   cancel();
   if (practiceListening) { practiceListening.stop(); practiceListening = null; }
@@ -397,18 +413,22 @@ function startComprehensionChallenge() {
   inputPanel.hidden = true;
 
   const originalText = ta.value;
-  compSentences = selectChallengeSentences(originalText);
+  const raw = selectChallengeSentences(originalText);
   compIndex = 0;
   compCorrect = 0;
   compSkipped = 0;
 
-  if (compSentences.length === 0) {
-    // Not enough sentences for a challenge — go straight to completion
+  if (raw.length === 0) {
     showCompletion();
     return;
   }
 
+  // Show the challenge panel with a loading state while we shorten sentences
   challengePanel.hidden = false;
+  challengePanel.innerHTML = '<p class="status" style="text-align:center;padding:32px">Preparing challenge…</p>';
+
+  compSentences = await Promise.all(raw.map(s => simplifySentence(s)));
+
   renderChallenge();
 }
 

@@ -91,6 +91,41 @@ app.post('/api/tts', async (req, res) => {
   }
 });
 
+app.post('/api/simplify-sentence', async (req, res) => {
+  const { sentence, lang } = req.body;
+  if (!sentence || typeof sentence !== 'string') {
+    return res.status(400).json({ error: 'Missing sentence.' });
+  }
+  const langLabel = lang === 'fil' ? 'Filipino (Tagalog)' : 'English';
+  const prompt = `You are helping a young Filipino student practice reading.
+Shorten this sentence into a simple, clear version using at most 6 words in ${langLabel}.
+Keep the core meaning. Return ONLY the shortened sentence, no explanation, no punctuation changes beyond what's needed.
+
+Sentence: ${sentence}`;
+  try {
+    const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 60 },
+      }),
+    });
+    if (!r.ok) {
+      const msg = await r.text();
+      console.error('Gemini error:', r.status, msg);
+      return res.status(502).json({ error: `Gemini returned ${r.status}` });
+    }
+    const data = await r.json();
+    const text =
+      data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() ?? '';
+    res.json({ text: text || sentence });
+  } catch (err) {
+    console.error('Simplify fetch failed:', err);
+    res.status(500).json({ error: 'Proxy error.', fallback: sentence });
+  }
+});
+
 // Health check — nginx can ping this to confirm the process is up.
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
