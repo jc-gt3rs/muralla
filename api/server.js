@@ -98,8 +98,8 @@ app.post('/api/simplify-sentence', async (req, res) => {
   }
   const langLabel = lang === 'fil' ? 'Filipino (Tagalog)' : 'English';
   const prompt = `You are helping a young Filipino student practice reading.
-Shorten this sentence into a simple, clear version using at most 6 words in ${langLabel}.
-Keep the core meaning. Return ONLY the shortened sentence, no explanation, no punctuation changes beyond what's needed.
+Shorten this sentence to exactly 5 words or fewer in ${langLabel}.
+Keep the core meaning. Return ONLY the shortened sentence with no explanation, quotes, or extra punctuation.
 
 Sentence: ${sentence}`;
   try {

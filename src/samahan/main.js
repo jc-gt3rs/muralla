@@ -101,10 +101,6 @@ legend.innerHTML = `
 const status = el('p', 'status');
 stagePanel.append(wordsEl, nav, progress, legend, status);
 
-const ttsBanner = el('div', 'banner');
-if (!ttsSupported) ttsBanner.textContent = 'Speech synthesis is unavailable in this browser. Try Chrome or Edge.';
-else ttsBanner.hidden = true;
-
 const completionPanel = el('div', 'panel duo-completion');
 completionPanel.hidden = true;
 
@@ -116,7 +112,7 @@ const confettiCanvas = el('canvas');
 confettiCanvas.id = 'confetti-canvas';
 document.body.appendChild(confettiCanvas);
 
-root.append(ttsBanner, inputPanel, micPanel, stagePanel, challengePanel, completionPanel);
+root.append(inputPanel, micPanel, stagePanel, challengePanel, completionPanel);
 
 // ── Logic ─────────────────────────────────────────────────────────
 function start() {
@@ -531,7 +527,7 @@ function renderChallenge() {
     advanceChallenge(isFil);
   });
 
-  const checkBtn = el('button', 'btn btn--duo-primary');
+  const checkBtn = el('button', 'btn btn--primary');
   checkBtn.textContent = isFil ? 'Suriin' : 'Check';
   checkBtn.addEventListener('click', () => {
     if (placed.length !== originalWords.length) {
@@ -620,11 +616,6 @@ function showCompletion() {
   const close = vals.filter((g) => g === 'close').length;
   const wrong = vals.filter((g) => g === 'wrong').length;
   
-  // Calculate XP
-  let xp = micOn ? (10 + correct * 5 + close * 2) : 15;
-  // Bonus XP for comprehension
-  xp += compCorrect * 5;
-  
   // Calculate Accuracy
   const totalAttempted = correct + close + wrong;
   const accuracy = totalAttempted > 0 ? Math.round((correct / totalAttempted) * 100) : 100;
@@ -641,7 +632,6 @@ function showCompletion() {
   const t = {
     title: isFil ? 'Leksyon Kumpleto!' : 'Lesson Complete!',
     subtitle: isFil ? 'Magaling! Natapos mo ang talata.' : 'Outstanding! You read the passage.',
-    xpLabel: isFil ? 'Nakuhang XP' : 'XP Gained',
     accLabel: isFil ? 'Wastong Bigkas' : 'Accuracy',
     timeLabel: isFil ? 'Oras' : 'Time Taken',
     reviewTitle: isFil ? 'Sanayin ang mga Salita' : 'Practice Words',
@@ -649,64 +639,22 @@ function showCompletion() {
     noMistakes: isFil ? 'Perpektong Pagbasa! Walang pagkakamali na kailangang sanayin. 🎉' : 'Perfect Reading! No mistakes to practice. 🎉',
     micOffNotice: isFil ? 'Naka-off ang mic kanina. Subukan ang mga mahihirap na salitang ito gamit ang mic!' : 'Pronunciation check was off. Try practicing these key words with the mic!',
     practiceComplete: isFil ? 'Kumpleto na ang Pagsasanay! 🌟' : 'Practice Complete! 🌟',
-    practiceCompleteSubtitle: isFil ? 'Galing! Naitama mo ang lahat ng mga salita! +5 XP' : 'Awesome! You corrected all the words! +5 XP',
+    practiceCompleteSubtitle: isFil ? 'Galing! Naitama mo ang lahat ng mga salita!' : 'Awesome! You corrected all the words!',
     btnReadAgain: isFil ? 'Basahin Muli' : 'Read Again',
     btnContinue: isFil ? 'Magpatuloy' : 'Continue'
   };
 
-  // Render Header & Animated Mascot
+  // Render Header
   const header = el('div', 'duo-header');
-  const mascotDiv = el('div');
-  mascotDiv.innerHTML = `
-    <svg viewBox="0 0 100 100" width="120" height="120" style="margin: 0 auto 16px; display: block; animation: duoBounce 2s infinite ease-in-out;">
-      <style>
-        @keyframes duoBounce {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-8px) scale(1.02); }
-        }
-      </style>
-      <circle cx="50" cy="50" r="45" fill="#f0fdf4" opacity="0.6"/>
-      <circle cx="38" cy="84" r="6" fill="#FF9600" />
-      <circle cx="62" cy="84" r="6" fill="#FF9600" />
-      <path d="M 22 36 L 12 18 L 34 26 Z" fill="#58CC02" stroke="#46a302" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M 78 36 L 88 18 L 66 26 Z" fill="#58CC02" stroke="#46a302" stroke-width="2" stroke-linejoin="round"/>
-      <rect x="18" y="24" width="64" height="60" rx="32" fill="#58CC02" stroke="#46a302" stroke-width="3" />
-      <path d="M 28 60 Q 50 42 72 60 Q 50 82 28 60" fill="#FFFFFF" opacity="0.9" />
-      <path d="M 40 56 Q 44 60 48 56" fill="none" stroke="#A7F3D0" stroke-width="2" stroke-linecap="round"/>
-      <path d="M 52 56 Q 56 60 60 56" fill="none" stroke="#A7F3D0" stroke-width="2" stroke-linecap="round"/>
-      <path d="M 46 66 Q 50 70 54 66" fill="none" stroke="#A7F3D0" stroke-width="2" stroke-linecap="round"/>
-      <path d="M 18 42 C 6 44 10 64 19 58 Z" fill="#46a302" />
-      <path d="M 82 42 C 94 44 90 64 81 58 Z" fill="#46a302" />
-      <circle cx="36" cy="42" r="15" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
-      <circle cx="64" cy="42" r="15" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
-      <circle cx="36" cy="42" r="7" fill="#1E293B"/>
-      <circle cx="64" cy="42" r="7" fill="#1E293B"/>
-      <circle cx="34" cy="40" r="2.5" fill="#FFFFFF"/>
-      <circle cx="62" cy="40" r="2.5" fill="#FFFFFF"/>
-      <path d="M 50 48 L 44 56 Q 50 62 56 56 Z" fill="#FFC800" stroke="#E28A00" stroke-width="1" stroke-linejoin="round" />
-      <circle cx="23" cy="50" r="3.5" fill="#FDA4AF" opacity="0.6"/>
-      <circle cx="77" cy="50" r="3.5" fill="#FDA4AF" opacity="0.6"/>
-    </svg>
-  `;
   const h2 = el('h2');
   h2.textContent = t.title;
   const pMsg = el('p');
   pMsg.textContent = t.subtitle;
-  header.append(mascotDiv, h2, pMsg);
+  header.append(h2, pMsg);
   completionPanel.appendChild(header);
 
-  // Render Stats Grid
+  // Render Stats Grid (accuracy + time only)
   const statsGrid = el('div', 'duo-stats-grid');
-
-  // XP Card
-  const xpCard = el('div', 'duo-stat-card');
-  const xpIcon = el('span', 'duo-stat-card__icon');
-  xpIcon.textContent = '⚡';
-  const xpVal = el('span', 'duo-stat-card__val duo-stat-card__val--xp');
-  xpVal.textContent = `+${xp} XP`;
-  const xpLabel = el('span', 'duo-stat-card__label');
-  xpLabel.textContent = t.xpLabel;
-  xpCard.append(xpIcon, xpVal, xpLabel);
 
   // Accuracy Card
   const accCard = el('div', 'duo-stat-card');
@@ -728,7 +676,7 @@ function showCompletion() {
   timeLabel.textContent = t.timeLabel;
   timeCard.append(timeIcon, timeVal, timeLabel);
 
-  statsGrid.append(xpCard, accCard, timeCard);
+  statsGrid.append(accCard, timeCard);
   completionPanel.appendChild(statsGrid);
 
   // Determine practice words
@@ -817,7 +765,7 @@ function showCompletion() {
     start();
   });
 
-  const continueBtn = el('button', 'btn btn--duo-primary');
+  const continueBtn = el('button', 'btn btn--primary');
   continueBtn.textContent = t.btnContinue;
   continueBtn.addEventListener('click', () => {
     completionPanel.hidden = true;
@@ -877,15 +825,12 @@ function showCompletion() {
         if (grade === 'correct') {
           playSuccessSound();
           micBtn.disabled = true;
-          
+
           // Check if all are correct now
           const allCorrect = practiceItems.every(x => x.grade === 'correct');
           if (allCorrect) {
             playCelebrationSound();
             triggerConfetti();
-            xp += 5;
-            const xpValEl = completionPanel.querySelector('.duo-stat-card__val--xp');
-            if (xpValEl) xpValEl.textContent = `+${xp} XP`;
             
             const banner = el('div', 'banner banner--info');
             banner.style.marginTop = '16px';
