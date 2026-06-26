@@ -79,6 +79,8 @@ function browserSpeak(text, { lang = 'en-US', rate = 1, pitch = 1, onstart, onen
   return { cancel };
 }
 
+async function googleSpeak(text, opts = {}) {
+  const { lang = 'en-US', rate = 1, pitch = 1, onstart, onend, onerror } = opts;
   try {
     const body = {
       input: { text },
