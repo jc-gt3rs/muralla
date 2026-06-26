@@ -38,7 +38,7 @@ const defaults = {
   // 'proxy'  → call YOUR backend, which holds the key (recommended).
   aiProvider: 'proxy',
   geminiApiKey: '',                          // unused in proxy mode — key lives in api/.env on the server
-  geminiModel: 'gemini-2.5-flash-lite',
+  geminiModel: 'gemini-2.5-flash',
   geminiEndpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
   aiProxyEndpoint: '/api/summarize',         // ← your serverless route (proxy mode)
 

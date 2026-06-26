@@ -13,9 +13,8 @@ import { createServer } from 'node:http';
 
 const PORT = process.env.PORT || 3001;
 const GEMINI_KEY = process.env.GEMINI_KEY || '';
-// Tried in order: the efficient lite model first, falling back to the heavier
-// (more reliably available) flash model when lite is overloaded.
-const GEMINI_MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'];
+// The reliably-available model. (Add more here to fall back through them.)
+const GEMINI_MODELS = ['gemini-2.5-flash'];
 const geminiUrl = (model) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 const GOOGLE_TTS_KEY = process.env.GOOGLE_TTS_KEY || '';
@@ -23,17 +22,26 @@ const TTS_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Transient statuses worth retrying (overload / rate limit / Google hiccup).
+const RETRYABLE = new Set([429, 500, 502, 503]);
+// How many full sweeps through every model before giving up, and the pause
+// after each sweep. Total worst case ≈ sum(delays) + request time (~25s),
+// which stays under the nginx proxy timeout while sparing the user from
+// having to click again. Non-transient errors (e.g. 400) fail fast.
+const MAX_ROUNDS = 6;
+const ROUND_DELAY_MS = [800, 1500, 2500, 3500, 5000, 5000];
+
 /**
- * Call Gemini with automatic resilience:
- *   • retries transient overloads (429 / 503 UNAVAILABLE) once with backoff
- *   • falls back through GEMINI_MODELS when a model stays unavailable
+ * Call Gemini, cycling through every model and retrying transient overloads
+ * (429 / 503 UNAVAILABLE) with backoff. Only throws once all models have
+ * failed across all rounds, or on a non-transient error.
  * @returns {Promise<string>} the generated text
- * @throws {Error & { status: number }} when every model/attempt fails
+ * @throws {Error & { status: number }} when retries are exhausted
  */
 async function callGemini(prompt, generationConfig) {
   let last = { status: 502, msg: 'no response' };
-  for (const model of GEMINI_MODELS) {
-    for (let attempt = 0; attempt < 2; attempt++) {
+  for (let round = 0; round < MAX_ROUNDS; round++) {
+    for (const model of GEMINI_MODELS) {
       const r = await fetch(`${geminiUrl(model)}?key=${GEMINI_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -44,13 +52,17 @@ async function callGemini(prompt, generationConfig) {
         return data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim() ?? '';
       }
       last = { status: r.status, msg: await r.text() };
-      console.error(`Gemini ${model} error:`, r.status, last.msg);
-      const transient = r.status === 429 || r.status === 503;
-      if (transient && attempt === 0) { await sleep(700); continue; } // retry same model once
-      break; // non-transient or out of retries → try the next model
+      console.error(`Gemini ${model} error (round ${round + 1}):`, r.status, last.msg);
+      // A non-transient error won't fix itself — stop immediately.
+      if (!RETRYABLE.has(r.status)) {
+        const err = new Error(`Gemini failed: ${r.status} ${last.msg}`);
+        err.status = r.status;
+        throw err;
+      }
     }
+    if (round < MAX_ROUNDS - 1) await sleep(ROUND_DELAY_MS[round] ?? 5000); // pause before next sweep
   }
-  const err = new Error(`Gemini failed: ${last.status} ${last.msg}`);
+  const err = new Error(`Gemini unavailable after ${MAX_ROUNDS} rounds: ${last.status} ${last.msg}`);
   err.status = last.status;
   throw err;
 }
